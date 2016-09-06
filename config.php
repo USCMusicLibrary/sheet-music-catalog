@@ -66,6 +66,9 @@ $solrFieldNames = array(
 ),
 "larger_work" => array("field_title" => "Larger work",
 	"display" => "full"
+),
+"text_t" => array("field_title" => "Text",
+	"display" => "full"
 )
 );
 
