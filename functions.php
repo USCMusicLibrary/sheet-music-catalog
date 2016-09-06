@@ -14,7 +14,7 @@ function importExcelTabFile(){
 	$file = NULL;
 	ini_set("auto_detect_line_endings", true);
 	try {
-	$file = new SplFileObject("smdb6_13.tsv");
+	$file = new SplFileObject("smdb_8_31_2016.tsv");
 	}
 	catch (Exception $error){
 		echo '<div class="jumbotron"><h1 class="text-danger">Unable to open uploaded file. Please try again.</h1><p>'.$error->getMessage().'</p></div>';
@@ -43,7 +43,7 @@ function importExcelTabFile(){
 	$counter2=0;
 	
 	while ($line= $file->fgets()) {
-		print $counter.'<br>';
+		//print $counter.'<br>';
 		  if ($counter++ == 0) continue; //discard first line because it only contains headers
 		
 		//echo $line.'<br>';
@@ -58,35 +58,51 @@ function importExcelTabFile(){
 	
 		$fields = explode("\t",$line4);
 		
+		//function to parse fields with uri data in them
+		$parseURIData = function ($rawValue){
+			$values = array_filter(explode( ' ; ',trim($rawValue)));
+			$finalValues = array();
+			foreach ($values as $val){
+				$finalValues[] = trim(explode('|',$val)[0]);
+			}
+			return $finalValues;
+		};
+
+		$text_t = array();
+		$texts = array_filter(explode( '::',trim($fields[4])));
+		foreach ( $texts as $text){
+			$text_t[] = trim($text);
+		}
 		
+		//print_r( $texts );
 		$document = array (
 				'id' => $fields[1],
 'title' => $fields[2],
-'alternative_title' => trim($fields[3]),
-'composer' => array_filter(explode( '|',trim($fields[6]))),
+'alternative_title' => explode('|',trim($fields[3])),
+'composer' => $parseURIData($fields[6]),
 //'composer_uri' => $fields[4],
-'lyricist' => array_filter(explode( '|',trim($fields[7]))),
+'lyricist' => $parseURIData($fields[7]),
 //'lyricist_uri' => $fields[6],
-'arranger' => array_filter(explode( '|',trim($fields[10]))),
+'arranger' => $parseURIData($fields[8]),
 //'arranger_uri' => $fields[8],
 //'Editors' => $fields[9],
 //'Photographers' => $fields[10],
 //'Illustrators' => $fields[11],
-'publisher' => $fields[16],
-'publisher_location' => explode('|',$fields[17]),
-'years' =>  parseDate($fields[19]),//$fields[14],
+'publisher' => $fields[12],
+'publisher_location' => explode('|',$fields[13]),
+'years' =>  parseDate($fields[14]),//$fields[14],
 'language' => explode('|',$fields[5]),
-'text_t' => array_filter(explode( '::',trim($fields[4]))),
-'notes' => $fields[22],
-'donor' => $fields[20],
+'text_t' => $text_t,
+'notes' => $fields[17],
+'donor' => $fields[15],
 //'Distributor' => $fields[19],
 //'subject_heading' =>  array_filter(explode( '|',trim($fields[20]))),
-'subject_heading' => array_filter(explode( '|',trim($fields[23]))),
-'call_number' => $fields[24],
+'subject_heading' => $parseURIData($fields[18]),
+'call_number' => $fields[19],
 //'PlateNumber' => $fields[23],
-'series' => $fields[26],
+'series' => $fields[21],
 //'CollectionSource' => $fields[25],
-'larger_work' => $fields[28],
+'larger_work' => $fields[23],
 //'Keywords' => $fields[27],
 //'Original_Notes' => $fields[28],
 //'zImagePath' => $fields[29],
