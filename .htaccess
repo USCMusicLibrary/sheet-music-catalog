@@ -1,0 +1,11 @@
+Options +FollowSymLinks
+
+# Rewrite URLs - Removes the ".php" on all file extensions.
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^([^\.]+)$ $1.php [NC,L]
+
+# Error Documents - Redirects to the index page.
+
+#

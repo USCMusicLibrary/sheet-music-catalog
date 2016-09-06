@@ -1,0 +1,53 @@
+body {
+	padding-top:70px;}
+
+
+/* search page styles*/
+hr {
+	margin-top: .5em;
+	margin-bottom: 0px;
+	color: black;
+	height: 1px;
+	background-color:black;
+}
+
+.nopadding {
+   padding-left: 0 !important;
+   padding-right: 0 !important;
+}
+
+.boolean-selector {
+	display: none;
+}
+
+.form-control.close {
+	display: none;
+}
+
+
+mark {
+	padding-top:0px;
+}
+
+
+.panel-results {
+	border-top:none !important;
+}
+.panel-heading-results {
+	background-color:inherit !important;
+}
+/* style for facets */
+
+/* these next two styles set the right or down 
+arrow according to whether a facet is open
+or collapsed. Also check duss-search.js for the
+functions that toggle the accordion-opened class
+*/
+.accordion-toggle:after {
+    font-family: 'FontAwesome';
+    content: "\f054";    
+    /*float: right;*/
+}
+.accordion-opened.accordion-toggle:after {    
+    content: "\f078";    
+}
