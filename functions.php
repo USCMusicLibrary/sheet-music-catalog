@@ -20,32 +20,32 @@ function importExcelTabFile(){
 		echo '<div class="jumbotron"><h1 class="text-danger">Unable to open uploaded file. Please try again.</h1><p>'.$error->getMessage().'</p></div>';
 		return;
 	}
-	
+
 	/*
 	$ch = curl_init();
 	curl_setopt_array($ch, array(
       CURLOPT_RETURNTRANSFER => 1,
       CURLOPT_URL => $_SERVER['HTTP_HOST'].'/sheetmusic/smdbJune2.txt',
 	));
-	
+
 	print  $_SERVER['HTTP_HOST'].'/sheetmusic/smdbJune2.txt';
-	
+
 	$curlResponse = curl_exec($ch);
 	if (curl_error($ch)){
 		throw new Exception('Unable to read file.');
 	}
-	
+
 	//print $curlResponse;
 	$lines = explode('\n',$curlResponse);
 	print_r ($lines);*/
 	$counter=0;
-	
+
 	$counter2=0;
-	
+
 	while ($line= $file->fgets()) {
 		//print $counter.'<br>';
 		  if ($counter++ == 0) continue; //discard first line because it only contains headers
-		
+
 		//echo $line.'<br>';
 		//$line= utf8_encode($line);
 		//echo $line.'<br>';
@@ -55,14 +55,15 @@ function importExcelTabFile(){
 		//echo $line3.'<br>';
 		$line4 =  preg_replace('/""/','"',$line3);
 		//echo $line4.'<br>';
-	
+
 		$fields = explode("\t",$line4);
-		
+
 		//function to parse fields with uri data in them
 		$parseURIData = function ($rawValue){
 			$values = array_filter(explode( ' ; ',trim($rawValue)));
 			$finalValues = array();
 			foreach ($values as $val){
+
 				$finalValues[] = trim(explode('|',$val)[0]);
 			}
 			return $finalValues;
@@ -71,9 +72,11 @@ function importExcelTabFile(){
 		$text_t = array();
 		$texts = array_filter(explode( '::',trim($fields[4])));
 		foreach ( $texts as $text){
-			$text_t[] = trim($text);
+			$newText = trim($text);
+			$newText = preg_replace('/\|/',': ',$newText);
+			$text_t[] = $newText;
 		}
-		
+
 		//print_r( $texts );
 		$document = array (
 				'id' => $fields[1],
@@ -93,7 +96,7 @@ function importExcelTabFile(){
 'years' =>  parseDate($fields[14]),//$fields[14],
 'language' => explode('|',$fields[5]),
 'text_t' => $text_t,
-'notes' => $fields[17],
+'notes' => explode('|',trim($fields[17])),
 'donor' => $fields[15],
 //'Distributor' => $fields[19],
 //'subject_heading' =>  array_filter(explode( '|',trim($fields[20]))),
@@ -111,8 +114,8 @@ function importExcelTabFile(){
 //'TitleSearchHits' => $fields[32],
 //'Incomplete' => $fields[33]
 		);
-		
-		/*		
+
+		/*
 		$MID = $fields[0];
 $Title = $fields[1];
 $altTitles = $fields[2];
@@ -149,7 +152,7 @@ $TitleSearchHits = $fields[32];
 $Incomplete = $fields[33];
 */
 
-		
+
 		if ($document['id']=="") continue; //skip insert into db if empty
 		/*if ($document['id']=='3559') {
 			print_r($document);
@@ -160,9 +163,9 @@ $Incomplete = $fields[33];
 		indexDocument($document);
 
 	}
-	
-	
-	
+
+
+
 }
 
 //TODO: Please add error checking!!!
@@ -207,7 +210,7 @@ function indexDocument($doc){
 					'doc' => $doc
 			)
 	);
-	$data_string = json_encode($data);                                                                                   
+	$data_string = json_encode($data);
 	print 'curl_exec() done <br>';
 	//print_r($doc);
 	print '<br>';
@@ -263,7 +266,7 @@ function postJsonDataToSolr($data, $action){
 		$lastError = 'postJsonDataToSolr(): Invalid Json: '.json_last_error().' - '.json_last_error_msg();
 		return false;
 	}
-	
+
 	$ch = curl_init($url);
 	curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
 	curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
@@ -272,7 +275,7 @@ function postJsonDataToSolr($data, $action){
 			'Content-Type: application/json',
 			'Content-Length: ' . strlen($data))
 			);
-	
+
 	$result = curl_exec($ch);
 	//print_r($data);
 	print_r($result);
@@ -289,7 +292,7 @@ function postJsonDataToSolr($data, $action){
  *  $query['isFullText'] = (bool)
     $query['queryArray'] = array();
     $query['start'] = (int,0);
-    $query['rows'] = (int,20); 
+    $query['rows'] = (int,20);
  *
  * @return {array} or {FALSE} if an error ocurred
  */
@@ -303,13 +306,13 @@ function getResultsFromSolr($query){
       CURLOPT_RETURNTRANSFER => 1,
       CURLOPT_URL => $queryString,
 	));
-	
+
 	$jsonResponse = curl_exec($ch);
 	if (curl_error($ch)){
 		throw new Exception('Unable to connect to search engine.');
 	}
 	//$jsonResponse = file_get_contents($queryString);
-	
+
 	print $queryString;
 
 	if ($jsonResponse === false) return false;
@@ -334,7 +337,7 @@ function getResultsFromSolr($query){
 function buildSolrQuery($query){
 
 	$queryString = 'q=';
-	
+
 	$queryArray = $query['queryArray'];
 
 	$counter=0;
@@ -349,17 +352,17 @@ function buildSolrQuery($query){
 		else {
 			$queryString = $queryString.$queryPartial[0]/*field*/.':('.urlencode($queryPartial[2]).')%0A';
 		}
-		
-		
+
+
 	}
-	
+
 	//filter queries
 	$counter=0;
 	foreach ($query['fq'] as $fq){
 		$queryString = $queryString.'&fq='.urlencode($query['fq_field'][$counter++]).':'.urlencode($fq);
 	}
-	
-	
+
+
 	global $solrUrl;
 	global $solrResultsHighlightTag;
 
@@ -368,8 +371,8 @@ function buildSolrQuery($query){
 		.'&wt=json&hl=true&hl.simple.pre='.urlencode('<'.$solrResultsHighlightTag.'>')
 		.'&hl.simple.post='.urlencode('</'.$solrResultsHighlightTag.'>')
 		.'&hl.fl=*&facet=true&facet.field=publisher_facet&facet.field=publisher_location_facet'
-		.'&facet.field=language&facet.field=subject_heading_facet&stats=true&stats.field=years&indent=true';
-	
+		.'&facet.field=language&facet.field=subject_heading_facet&facet.field=composer_facet&facet.field=years&stats=true&stats.field=years&indent=true';
+
 		/*
 		 * Archive (Digital collection)
 Contributing Institution
@@ -403,7 +406,19 @@ function buildQueryForAllFields($query){
 'larger_work'
 	);
 	foreach ($searchFields as $field){
-		$queryString = $queryString.$field.':('.urlencode($query).')%0A';
+		$queryString = $queryString.$field.':('.urlencode($query);
+		if ($field =="title"){
+			$queryString = $queryString.')^4%0A';
+		}
+		else if ($field =="composer"){
+			$queryString = $queryString.')^3%0A';
+		}
+		else if ($field =="text_t"){
+			$queryString = $queryString.')^2%0A';
+		}
+		else {
+			$queryString = $queryString.')%0A';
+		}
 	}
 	return $queryString;
 }
@@ -446,7 +461,7 @@ function buildFacetBreadcrumbQuery($facet, $query){
 		}
 		$counter++;
 	}
-	
+
 	$newGet['fq_field'] = $new_fq_field;
 	$newGet['fq'] = $new_fq;
 	//print_r($newGet);

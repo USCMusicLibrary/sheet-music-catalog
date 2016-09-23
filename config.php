@@ -43,7 +43,7 @@ $solrFieldNames = array(
 "publisher_location" => array("field_title" => "Publisher location",
 	"display" => "full"
 ),
-"year" => array("field_title" => "Year",
+"years" => array("field_title" => "Date",
 	"display" => "full"
 ),
 "language" => array("field_title" => "Language",
@@ -80,6 +80,7 @@ foreach ($solrFieldNames as $name =>$info){
 
 global $facetFields;
 $facetFields = array(
+		"composer_facet" => "Composer",
 		"publisher_facet" => "Publisher",
 		"publisher_location_facet" => "Publisher Location",
 		"subject_heading_facet" => "LC Subject Headings",
@@ -121,4 +122,3 @@ $advancedSearchFields = array (
 
 global $siteTitle;
 $siteTitle = "";
-

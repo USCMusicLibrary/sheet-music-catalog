@@ -1,4 +1,4 @@
-<?php 
+<?php
 error_reporting(E_ALL);
 ini_set("display_errors", true);
 ini_set("display_startup_errors", true);
@@ -19,16 +19,16 @@ ini_set("display_startup_errors", true);
 
     <!-- Bootstrap core CSS -->
     <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    
-    
+
+
     <link href="css/search.css" rel="stylesheet">
     <link rel="stylesheet" href="css/font-awesome.min.css">
-    
-    
-    
+
+
+
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.0/themes/base/jquery-ui.css">
-  <link rel="stylesheet" href="/resources/demos/style.css">
- 
+  <!--<link rel="stylesheet" href="/resources/demos/style.css">-->
+
 
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
     <!--<link href="bootstrap/css/ie10-viewport-bug-workaround.css" rel="stylesheet">-->
@@ -46,7 +46,7 @@ ini_set("display_startup_errors", true);
   </head>
 
   <body>
- 
+
     <nav class="navbar navbar-inverse navbar-fixed-top">
       <div class="container">
         <div class="navbar-header">
@@ -66,5 +66,5 @@ ini_set("display_startup_errors", true);
         </div><!--/.nav-collapse -->
       </div>
     </nav>
-    
+
   <div class="container-fluid" id="main-container">

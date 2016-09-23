@@ -5,7 +5,7 @@
 	<div class="col-xs-6 col-xs-offset-3">
 		<div class="row center-block">
 			<form class="form-horizontal" id="home-search" name="home-search" method="GET" action="index">
-			
+
 			<?php if($queryArray)://populate search terms in advanced search box
 			foreach ($queryArray as $item):
 			?>
@@ -18,7 +18,7 @@
 					</select>
 				</div>
 				<div class="col-xs-6 nopadding">
-					<input type="text" name="q[]" class="form-control" placeholder="Search our projects" value="<?php print $item[2];?>">
+					<input type="text" name="q[]" class="form-control" placeholder="Search sheet music database" value="<?php print $item[2];?>">
 				</div>
 				<div class="col-xs-4 nopadding">
 					<select class="form-control" name="f[]">
@@ -32,7 +32,7 @@
 				</div>
 				<div class="col-xs-12"></div>
 			</div>
-			<?php 
+			<?php
 			endforeach;
 			else:?>
 			<div class="row form-group search-row">
@@ -44,7 +44,7 @@
 					</select>
 				</div>
 				<div class="col-xs-6 nopadding">
-					<input type="text" name="q[]" class="form-control" placeholder="Search our projects">
+					<input type="text" name="q[]" class="form-control" placeholder="Search sheet music database">
 				</div>
 				<div class="col-xs-4 nopadding">
 					<select class="form-control" name="f[]">
@@ -59,19 +59,19 @@
 				<div class="col-xs-12"></div>
 			</div>
 			<?php endif;?>
-			
-			
+
+
 			<!--<div class="row form-group">
 					<button type="button" class="btn btn-default" id="addRow">Add another search term</button>
 			</div>-->
-			
+
 			<div class="row">
-				<div class="col-xs-6">
+				<div class="col-xs-8">
 					<!--<input type="checkbox" value="<?php //print isset($_GET['full-text-search']) ? $_GET['full-text-search']: 'false' ;?>" name="full-text-search" id="full-text-search">
 					<label for="full-text-search" class="control-label">Search full text</label><br>-->
 				</div>
-				<div class="col-xs-6">
-					<input type="submit" class="btn btn-primary" value="Advanced Search">
+				<div class="col-xs-4">
+					<input type="submit" class="btn btn-primary" value="Search">
 					<input type="hidden" name="form_submitted">
 					<input type="hidden" name="start" value="0">
 				</div>

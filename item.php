@@ -10,6 +10,10 @@ require "functions.php";
 global $solrUrl;
 global $solrResultsHighlightTag;
 
+if (!isset($_GET['id'])){
+	header ('Location: index');
+	die();
+}
 
 $queryString = 'id:'.$_GET['id'];
 	$queryString = $solrUrl
@@ -20,13 +24,13 @@ $queryString = 'id:'.$_GET['id'];
       CURLOPT_RETURNTRANSFER => 1,
       CURLOPT_URL => $queryString,
 	));
-	
+
 	$jsonResponse = curl_exec($ch);
 	if (curl_error($ch)){
 		throw new Exception('Unable to connect to search engine.');
 	}
 	//$jsonResponse = file_get_contents($queryString);
-	
+
 	//print $queryString;
 
 	if ($jsonResponse === false) return false;
@@ -46,17 +50,25 @@ $queryString = 'id:'.$_GET['id'];
         <h2><?php print $result['title'];?></h2>
       </div>
       <div class="col-xs-8 col-xs-offset-2">
+				<table class="item-display-table">
       <?php foreach ($solrFieldNames as $field => $v):
 	    if (!array_key_exists($field,$result)) continue;
+
+			//check if blank
+			if (is_array($result[$field])){
+				if (empty(array_filter($result[$field]))) continue;
+			}
+			else if (trim($result[$field])==""){
+				continue;
+			}
 	  ?>
-      
-        <p>
-          <strong><?php 
+      <tr>
+        <th><?php
 		  print $solrFieldNames[$field]['field_title'];
 		  if (is_array($result[$field]) && count($result[$field])>1){
 		    print '(s)';
 		  }
-		  ?> :</strong>
+		  ?>:</th><td>
 		  <?php
 		  $value = $result[$field];
 		  if (is_array($value)){
@@ -68,12 +80,14 @@ $queryString = 'id:'.$_GET['id'];
 		    print $value;
 		  }
 		  ?>
-        </p>
+		</td>
+			</tr>
       <?php endforeach;?>
+		</table>
       </div>
 	</div>
 </div> <!-- container-fluid -->
-<?php 
+<?php
 
 require "footer.php";
 

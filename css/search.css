@@ -38,16 +38,37 @@ mark {
 }
 /* style for facets */
 
-/* these next two styles set the right or down 
+/* these next two styles set the right or down
 arrow according to whether a facet is open
-or collapsed. Also check duss-search.js for the
+or collapsed. Also check search.js for the
 functions that toggle the accordion-opened class
 */
 .accordion-toggle:after {
     font-family: 'FontAwesome';
-    content: "\f054";    
+    content: "\f054";
     /*float: right;*/
 }
-.accordion-opened.accordion-toggle:after {    
-    content: "\f078";    
+.accordion-opened.accordion-toggle:after {
+    content: "\f078";
+}
+
+
+/*item view*/
+
+.item-display-table td {
+	padding-left: 1em;
+}
+
+.item-display-table th,td {
+	padding-top: .5em;
+}
+
+.item-display-table th {
+	vertical-align: top;
+}
+
+
+/*results styling*/
+.results-title {
+	text-decoration: underline;
 }

@@ -11,14 +11,14 @@ javascript functions for search page
  */
 $("#addRow").click(function (e) {
 	var row = $(".search-row:first").clone();
-	
-	
+
+
 	//alert (row);
-	
+
 	//row.removeAttr("id");
-	
+
 	//alert (row);
-	
+
 	row.insertBefore($(this).parent());
 	//row.show();
 	$(".boolean-selector").show();
@@ -54,11 +54,11 @@ $("#addRow").click(function (e) {
 $("#home-search").on("click", ".close", function (e) {
 	//alert("close");
 	$(this).parent().parent().remove();
-	
+
 	if ($(".close").length == 1){
 		$(".close:first").hide();
 	}
-	
+
 	$(".boolean-selector:first").hide();
 
   e.target.blur();
@@ -67,13 +67,15 @@ $("#home-search").on("click", ".close", function (e) {
 
 
 $(document).ready(function () {
+
+	//alert (currentQuery);
 	$(".boolean-selector").show();
 	$(".boolean-selector:first").hide();
 	$(".form-control.close").show();
 	if ($(".close").length == 1){
 		$(".close:first").hide();
 	}
-	
+
 	//this iterates through the disableArray
 	//defined in search-results.php
 	//each function in the array hides a 'more' button
@@ -83,7 +85,7 @@ $(document).ready(function () {
 	    disableArray[i]();
 	  }
     }
-	
+
 	$( function() {
     $( "#slider-range" ).slider({
       range: true,
@@ -94,14 +96,19 @@ $(document).ready(function () {
         $( "#amount" ).val( ui.values[ 0 ] + " - " + ui.values[ 1 ] );
       },
 	  change: function (event, ui) {
-		console.log ('t');
+			var newMin = ui.values[0];
+			var newMax = ui.values[1];
+
+			currentQuery = currentQuery+'&fq[]=['+newMin +'+TO+'+ newMax+']&fq_field[]=years';
+		  console.log (currentQuery);
+			window.location = currentQuery;
 	  }
     });
     $( "#amount" ).val($( "#slider-range" ).slider( "values", 0 ) +
       " - " + $( "#slider-range" ).slider( "values", 1 ) );
   } );
-	
-	
+
+
 });
 
 $(".btn-results-more").click(function (e){
