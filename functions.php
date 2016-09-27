@@ -474,4 +474,15 @@ function buildFacetBreadcrumbQuery($facet, $query){
 	return $_SERVER['PHP_SELF'].'?'.$newQuery;
 }
 
+function getImagesForId($id){
+	$filePrefix = strval($id).'_';
+	$counter=1;
+	$fileList = array();
+	//print 'sheet-music/'.$filePrefix.strval($counter++);
+	while(file_exists('sheet-music/'.$filePrefix.strval($counter).'.jpg')){
+		$fileList[] = 'sheet-music/'.$filePrefix.strval($counter++).'.jpg';
+	}
+	return $fileList;
+}
+
 ?>

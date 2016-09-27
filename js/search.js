@@ -2,8 +2,9 @@
 javascript functions for search page
 ***/
 
-/** Global variables
+/** Global variables*/
 
+var carouselIndex = 0;
 
 /**
  *
@@ -76,6 +77,19 @@ $(document).ready(function () {
 		$(".close:first").hide();
 	}
 
+	try {
+    minYear;
+		maxYear;
+		rMinYear;
+		rMaxYear;
+} catch(err) {
+    // caught the reference error
+    // code here will execute **only** if variable was never declared
+		minYear=0;
+		maxYear=2000;
+		rMinYear=0;
+		rMaxYear=2000;
+	}
 	//this iterates through the disableArray
 	//defined in search-results.php
 	//each function in the array hides a 'more' button
@@ -84,14 +98,14 @@ $(document).ready(function () {
       for(var i in disableArray){
 	    disableArray[i]();
 	  }
-    }
+  }
 
 	$( function() {
     $( "#slider-range" ).slider({
       range: true,
       min: minYear,
       max: maxYear,
-      values: [ minYear, maxYear ],
+      values: [ rMinYear, rMaxYear ],
       slide: function( event, ui ) {
         $( "#amount" ).val( ui.values[ 0 ] + " - " + ui.values[ 1 ] );
       },
@@ -99,7 +113,7 @@ $(document).ready(function () {
 			var newMin = ui.values[0];
 			var newMax = ui.values[1];
 
-			currentQuery = currentQuery+'&fq[]=['+newMin +'+TO+'+ newMax+']&fq_field[]=years';
+			currentQuery = currentQuery+'&fq[]=['+newMin +'+TO+'+ newMax+']&fq_field[]=years&'+'rMinYear='+newMin+'&rMaxYear='+newMax;
 		  console.log (currentQuery);
 			window.location = currentQuery;
 	  }
@@ -128,4 +142,9 @@ $(".btn-results-more").click(function (e){
 $(".accordion-toggle").click(function (e) {
 	//alert('strst');
 	$(this).toggleClass("accordion-opened");
+});
+
+$('#carouselModal').on('shown.bs.modal', function() {
+	//alert(carouselIndex);
+    $("#musicCarousel").carousel(carouselIndex);
 });

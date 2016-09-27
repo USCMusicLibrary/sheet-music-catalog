@@ -26,8 +26,10 @@ $searchFacetCounts = $solrResponse['facet_counts'];
 $searchHighlighting = $solrResponse['highlighting'];
 $searchYearStats = $solrResponse['stats']['stats_fields']['years'];
 
-$minYear = $searchYearStats['min'];
-$maxYear = $searchYearStats['max'];
+$minYear = (isset($_GET['minYear']))? $_GET['minYear']: $searchYearStats['min'];
+$maxYear = (isset($_GET['maxYear']))? $_GET['maxYear']: $searchYearStats['max'];
+$rMinYear = (isset($_GET['rMinYear']))? $_GET['rMinYear']: $searchYearStats['min'];
+$rMaxYear = (isset($_GET['rMaxYear']))? $_GET['rMaxYear']: $searchYearStats['max'];
 
 //print ($maxYear);
 
@@ -52,6 +54,8 @@ foreach ($oldFqField as $fqField){
 
 $newQuery['fq'] = $newFq;
 $newQuery['fq_field'] = $newFqField;
+$newQuery['minYear'] = $minYear;
+$newQuery['maxYear'] = $maxYear;
 
 
 $currentQuery = '//'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'].'?'.http_build_query($newQuery);
@@ -68,6 +72,8 @@ printResultsNavigation($searchResponse['start'],$searchResponse['numFound'],$sea
 <script>
 var minYear = <?php print $minYear; ?>;
 var maxYear = <?php print $maxYear; ?>;
+var rMinYear = <?php print $rMinYear; ?>;
+var rMaxYear = <?php print $rMaxYear; ?>;
 var currentQuery = <?php print '"'.$currentQuery.'"'; ?>;
 </script>
 <div class="row">
@@ -173,6 +179,14 @@ foreach($displaySearchResults as $result):?>
       <div class="col-xs-11">
         <h3><a class="results-title" href="item?id=<?php print $result['url']?>"><?php print $result['title']?></a></h3>
       </div>
+			<div class="col-xs-2 pull-left">
+				<?php
+				$imageList = getImagesForId($result['url']);
+				if (sizeof($imageList)>0):
+				?>
+				<img class="img-responsive" src="<?php print $imageList[0] ?>">
+			  <?php endif; ?>
+			</div>
 			<div class="col-xs-10 pull-right">
 				<table>
       <?php foreach ($briefDisplayFields as $field):

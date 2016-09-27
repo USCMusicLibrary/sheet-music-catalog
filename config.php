@@ -49,7 +49,7 @@ $solrFieldNames = array(
 "language" => array("field_title" => "Language",
 	"display" => "full"
 ),
-"notes" => array("field_title" => "Notes",
+"notes" => array("field_title" => "Note",
 	"display" => "full"
 ),
 "donor" => array("field_title" => "Donor",
