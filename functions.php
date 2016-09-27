@@ -63,8 +63,10 @@ function importExcelTabFile(){
 			$values = array_filter(explode( ' ; ',trim($rawValue)));
 			$finalValues = array();
 			foreach ($values as $val){
-
-				$finalValues[] = trim(explode('|',$val)[0]);
+				$vals = explode('|',$val);
+				$fVal = $vals[0];
+				$finalValues[] = trim($fVal);
+				//$finalValues[] = trim(explode('|',$val)[0]);
 			}
 			return $finalValues;
 		};

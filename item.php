@@ -56,7 +56,8 @@ $queryString = 'id:'.$_GET['id'];
 
 			//check if blank
 			if (is_array($result[$field])){
-				if (empty(array_filter($result[$field]))) continue;
+				$emptyVar = array_filter($result[$field]);//gotta love php 5.3
+				if (empty($emptyVar)) continue;
 			}
 			else if (trim($result[$field])==""){
 				continue;

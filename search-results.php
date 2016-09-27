@@ -184,7 +184,7 @@ foreach($displaySearchResults as $result):?>
 				$imageList = getImagesForId($result['url']);
 				if (sizeof($imageList)>0):
 				?>
-				<img class="img-responsive" src="<?php print $imageList[0] ?>">
+				<a href="item?id=<?php print $result['url']?>"><img class="img-responsive" src="<?php print $imageList[0] ?>"></a>
 			  <?php endif; ?>
 			</div>
 			<div class="col-xs-10 pull-right">
@@ -192,7 +192,8 @@ foreach($displaySearchResults as $result):?>
       <?php foreach ($briefDisplayFields as $field):
 				//check if blank
 				if (is_array($result[$field])){
-					if (empty(array_filter($result[$field]))) continue;
+					$emptyVar = array_filter($result[$field]);//gotta love php 5.3
+					if (empty($emptyVar)) continue;
 				}
 				else if (trim($result[$field])==""){
 					continue;
