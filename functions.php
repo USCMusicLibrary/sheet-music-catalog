@@ -14,7 +14,7 @@ function importExcelTabFile(){
 	$file = NULL;
 	ini_set("auto_detect_line_endings", true);
 	try {
-	$file = new SplFileObject("smdb_8_31_2016.tsv");
+	$file = new SplFileObject("smdb_2016_09_30.tsv");
 	}
 	catch (Exception $error){
 		echo '<div class="jumbotron"><h1 class="text-danger">Unable to open uploaded file. Please try again.</h1><p>'.$error->getMessage().'</p></div>';
@@ -43,9 +43,10 @@ function importExcelTabFile(){
 	$counter2=0;
 
 	while ($line= $file->fgets()) {
-		//print $counter.'<br>';
-		  if ($counter++ == 0) continue; //discard first line because it only contains headers
-
+		
+		if ($counter++ == 0) {
+			continue; //discard first line because it only contains headers
+		}
 		//echo $line.'<br>';
 		//$line= utf8_encode($line);
 		//echo $line.'<br>';
@@ -57,6 +58,8 @@ function importExcelTabFile(){
 		//echo $line4.'<br>';
 
 		$fields = explode("\t",$line4);
+
+		print $fields[5].' '.$counter;
 
 		//function to parse fields with uri data in them
 		$parseURIData = function ($rawValue){
@@ -72,7 +75,7 @@ function importExcelTabFile(){
 		};
 
 		$text_t = array();
-		$texts = array_filter(explode( '::',trim($fields[4])));
+		$texts = array_filter(explode( '::',trim($fields[22])));
 		foreach ( $texts as $text){
 			$newText = trim($text);
 			$newText = preg_replace('/\|/',': ',$newText);
@@ -81,33 +84,33 @@ function importExcelTabFile(){
 
 		//print_r( $texts );
 		$document = array (
-				'id' => $fields[1],
-'title' => $fields[2],
-'alternative_title' => explode('|',trim($fields[3])),
-'composer' => $parseURIData($fields[6]),
+				'id' => $fields[5],
+'title' => $fields[23],
+'alternative_title' => explode('|',trim($fields[9])),
+'composer' => $parseURIData($fields[26]),
 //'composer_uri' => $fields[4],
-'lyricist' => $parseURIData($fields[7]),
+'lyricist' => $parseURIData($fields[28]),
 //'lyricist_uri' => $fields[6],
-'arranger' => $parseURIData($fields[8]),
+'arranger' => $parseURIData($fields[30]),
 //'arranger_uri' => $fields[8],
 //'Editors' => $fields[9],
 //'Photographers' => $fields[10],
 //'Illustrators' => $fields[11],
-'publisher' => $fields[12],
-'publisher_location' => explode('|',$fields[13]),
-'years' =>  parseDate($fields[14]),//$fields[14],
-'language' => explode('|',$fields[5]),
+'publisher' => $fields[31],
+'publisher_location' => explode('|',$fields[33]),
+'years' =>  parseDate($fields[34]),//$fields[14],
+'language' => explode('|',$fields[15]),
 'text_t' => $text_t,
-'notes' => explode('|',trim($fields[17])),
-'donor' => $fields[15],
+'notes' => explode('|',trim($fields[13])),
+'donor' => $fields[35],
 //'Distributor' => $fields[19],
 //'subject_heading' =>  array_filter(explode( '|',trim($fields[20]))),
-'subject_heading' => $parseURIData($fields[18]),
-'call_number' => $fields[19],
+'subject_heading' => $parseURIData($fields[38]),
+'call_number' => $fields[39],
 //'PlateNumber' => $fields[23],
-'series' => $fields[21],
+'series' => $fields[41],
 //'CollectionSource' => $fields[25],
-'larger_work' => $fields[23],
+'larger_work' => $fields[43],
 //'Keywords' => $fields[27],
 //'Original_Notes' => $fields[28],
 //'zImagePath' => $fields[29],
