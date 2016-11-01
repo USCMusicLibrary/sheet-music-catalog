@@ -14,7 +14,7 @@ function importExcelTabFile(){
 	$file = NULL;
 	ini_set("auto_detect_line_endings", true);
 	try {
-	$file = new SplFileObject("smdb_2016_09_30.tsv");
+	$file = new SplFileObject("sm_db_backup.tsv");
 	}
 	catch (Exception $error){
 		echo '<div class="jumbotron"><h1 class="text-danger">Unable to open uploaded file. Please try again.</h1><p>'.$error->getMessage().'</p></div>';
@@ -43,7 +43,7 @@ function importExcelTabFile(){
 	$counter2=0;
 
 	while ($line= $file->fgets()) {
-		
+
 		if ($counter++ == 0) {
 			continue; //discard first line because it only contains headers
 		}
@@ -59,7 +59,7 @@ function importExcelTabFile(){
 
 		$fields = explode("\t",$line4);
 
-		print $fields[5].' '.$counter;
+		print $fields[1].' '.$counter;
 
 		//function to parse fields with uri data in them
 		$parseURIData = function ($rawValue){
@@ -75,7 +75,7 @@ function importExcelTabFile(){
 		};
 
 		$text_t = array();
-		$texts = array_filter(explode( '::',trim($fields[22])));
+		$texts = array_filter(explode( '::',trim($fields[8])));
 		foreach ( $texts as $text){
 			$newText = trim($text);
 			$newText = preg_replace('/\|/',': ',$newText);
@@ -84,33 +84,34 @@ function importExcelTabFile(){
 
 		//print_r( $texts );
 		$document = array (
-				'id' => $fields[5],
-'title' => $fields[23],
-'alternative_title' => explode('|',trim($fields[9])),
-'composer' => $parseURIData($fields[26]),
+				'id' => $fields[1],
+'title' => $fields[9],
+'alternative_title' => explode('|',trim($fields[5])),
+'composer' => $parseURIData($fields[10]),
 //'composer_uri' => $fields[4],
-'lyricist' => $parseURIData($fields[28]),
+'lyricist' => $parseURIData($fields[11]),
 //'lyricist_uri' => $fields[6],
-'arranger' => $parseURIData($fields[30]),
+'arranger' => $parseURIData($fields[12]),
 //'arranger_uri' => $fields[8],
 //'Editors' => $fields[9],
 //'Photographers' => $fields[10],
-//'Illustrators' => $fields[11],
-'publisher' => $fields[31],
-'publisher_location' => explode('|',$fields[33]),
-'years' =>  parseDate($fields[34]),//$fields[14],
-'language' => explode('|',$fields[15]),
+'illustrator' => $parseURIData($fields[4]),
+'publisher' => $fields[13],
+'publisher_location' => explode('|',$fields[14]),
+'years' =>  parseDate($fields[15]),//$fields[14],
+'years_text' => trim($fields[15]),
+'language' => explode('|',$fields[7]),
 'text_t' => $text_t,
-'notes' => explode('|',trim($fields[13])),
-'donor' => $fields[35],
+'notes' => explode('|',trim($fields[6])),
+'donor' => $fields[16],
 //'Distributor' => $fields[19],
 //'subject_heading' =>  array_filter(explode( '|',trim($fields[20]))),
-'subject_heading' => $parseURIData($fields[38]),
-'call_number' => $fields[39],
+'subject_heading' => $parseURIData($fields[18]),
+'call_number' => $fields[19],
 //'PlateNumber' => $fields[23],
-'series' => $fields[41],
-//'CollectionSource' => $fields[25],
-'larger_work' => $fields[43],
+'series' => $fields[21],
+'collection_source' => $fields[22],
+'larger_work' => $fields[23],
 //'Keywords' => $fields[27],
 //'Original_Notes' => $fields[28],
 //'zImagePath' => $fields[29],
@@ -376,7 +377,8 @@ function buildSolrQuery($query){
 		.'&wt=json&hl=true&hl.simple.pre='.urlencode('<'.$solrResultsHighlightTag.'>')
 		.'&hl.simple.post='.urlencode('</'.$solrResultsHighlightTag.'>')
 		.'&hl.fl=*&facet=true&facet.field=publisher_facet&facet.field=publisher_location_facet'
-		.'&facet.field=language&facet.field=subject_heading_facet&facet.field=composer_facet&facet.field=years&stats=true&stats.field=years&indent=true';
+		.'&facet.field=language&facet.field=subject_heading_facet&facet.field=composer_facet'
+		.'&facet.field=years&facet.field=arranger_facet&facet.field=illustrator_facet&facet.field=lyricist_facet&stats=true&stats.field=years&indent=true';
 
 		/*
 		 * Archive (Digital collection)
@@ -395,21 +397,7 @@ Date (slider to select range)
 
 function buildQueryForAllFields($query){
 	$queryString = '';
-	$searchFields = array(
-			'title',
-'alternative_title',
-'publisher',
-'publisher_location',
-//'year',
-'language',
-'text_t',
-'notes',
-'donor',
-'subject_heading',
-'call_number',
-'series',
-'larger_work'
-	);
+	global $searchFields;
 	foreach ($searchFields as $field){
 		$queryString = $queryString.$field.':('.urlencode($query);
 		if ($field =="title"){

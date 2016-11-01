@@ -40,10 +40,13 @@ $solrFieldNames = array(
 "publisher" => array("field_title" => "Publisher",
 	"display" => "brief"
 ),
+"illustrator" => array("field_title" => "Illustrator",
+	"display" => "full"
+),
 "publisher_location" => array("field_title" => "Publisher location",
 	"display" => "full"
 ),
-"years" => array("field_title" => "Date",
+"years_text" => array("field_title" => "Copyright Date",
 	"display" => "full"
 ),
 "language" => array("field_title" => "Language",
@@ -69,6 +72,9 @@ $solrFieldNames = array(
 ),
 "text_t" => array("field_title" => "Text",
 	"display" => "full"
+),
+"collection_source" => array("field_title" => "Collection Source",
+	"display" => "full"
 )
 );
 
@@ -81,6 +87,10 @@ foreach ($solrFieldNames as $name =>$info){
 global $facetFields;
 $facetFields = array(
 		"composer_facet" => "Composer",
+		"lyricist_facet" => "Lyricist",
+		"arranger_facet" => "Arranger",
+		"illustrator_facet"=> "Illustrator",
+		//"photographer_facet" => "Photographer",
 		"publisher_facet" => "Publisher",
 		"publisher_location_facet" => "Publisher Location",
 		"subject_heading_facet" => "LC Subject Headings",
@@ -90,11 +100,16 @@ $facetFields = array(
 
 global $searchFields;
 $searchFields = array(
-			'title',
+		'title',
 'alternative_title',
 'publisher',
 'publisher_location',
-//'year',
+'composer',
+'lyricist',
+'arranger',
+'illustrator',
+'other_contributor',
+'years_text',
 'language',
 'text_t',
 'notes',
@@ -102,8 +117,9 @@ $searchFields = array(
 'subject_heading',
 'call_number',
 'series',
-'larger_work'
-	);
+'larger_work',
+'collection_source'
+);
 
 global $advancedSearchFields;
 $advancedSearchFields = array (
@@ -111,13 +127,13 @@ $advancedSearchFields = array (
 	"title" => "Title (title and alternative title fields)",
 	"contributor" => "Contributors (authors, editors, etc.)",
 	"publisher" => "Publisher",
-	"larger" => "From Larger Work",
-	"collection" => "Collection",
-	"Donor" => "Donor",
-	"call" => "Call Number",
-	"text" => "Text",
+	"larger_work" => "From Larger Work",
+	"collection_source" => "Collection",
+	"donor" => "Donor",
+	"call_number" => "Call Number",
+	"text_t" => "Text",
 	"notes" => "Notes",
-	"subject" => "LC Subject Headings"
+	"subject_heading" => "LC Subject Headings"
 );
 
 global $siteTitle;

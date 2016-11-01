@@ -126,14 +126,32 @@
    
    <!-- composer -->
    <field name="composer" type="text_en_splitting" indexed="true" stored="true" required="false" multiValued="true" />
+   <field name="composer_facet"  type="string" indexed="true"  stored="true" multiValued="true"/>
+   <copyField source="composer"    dest="composer_facet"/>
    
    <!-- lyricist -->
    <field name="lyricist" type="text_en_splitting" indexed="true" stored="true" required="false" multiValued="true" />
+   <field name="lyricist_facet"  type="string" indexed="true"  stored="true" multiValued="true"/>
+   <copyField source="lyricist"    dest="lyricist_facet"/>
    
    <!-- arranger -->
    <field name="arranger" type="text_en_splitting" indexed="true" stored="true" required="false" multiValued="true" />
+   <field name="arranger_facet"  type="string" indexed="true"  stored="true" multiValued="true"/>
+   <copyField source="arranger"    dest="arranger_facet"/>
+   
+   <!-- illustrator -->
+   <field name="illustrator" type="text_en_splitting" indexed="true" stored="true" required="false" multiValued="true" />
+   <field name="illustrator_facet"  type="string" indexed="true"  stored="true" multiValued="true"/>
+   <copyField source="illustrator"    dest="illustrator_facet"/>
+   
+   <!-- other_contributor -->
+   <field name="other_contributor" type="text_en_splitting" indexed="true" stored="true" required="false" multiValued="true" />
+   <field name="other_contributor_facet"  type="string" indexed="true"  stored="true" multiValued="true"/>
+   <copyField source="other_contributor"    dest="other_contributor_facet"/>
 
    <field name="years" type="int" indexed="true" stored="true" multiValued="true"/>
+   <field name="years_text" type="string" indexed="true" stored="true" multiValued="true"/>
+   <copyField source="years"    dest="years_text"/>
 
    <!-- Publisher -->   
    <field name="publisher" type="text_general" indexed="true" stored="true" required="false" multiValued="false" />
@@ -175,7 +193,10 @@
    <field name="language" type="string" indexed="true" stored="true" required="false" multiValued="true" />
    
    <!-- Notes -->
-   <field name="notes" type="text_en" indexed="true" stored="true" required="false" multiValued="false" />
+   <field name="notes" type="text_en" indexed="true" stored="true" required="false" multiValued="true" />
+   
+   <!-- collection_source-->
+   <field name="collection_source" type="text_en" indexed="true" stored="true" required="false" multiValued="false" />
    
    
    

@@ -20,6 +20,7 @@ catch (Exception $e) {
 	//TODO: email admin to inform that solr is down
 	die();
 }
+//var_dump ($solrResponse);
 $searchResponse = $solrResponse['response'];
 
 $searchFacetCounts = $solrResponse['facet_counts'];
@@ -100,7 +101,7 @@ The following displays the facets column
       		if ($facets[$i+1]==0){
       			$i++;
       			continue;
-      	}
+      	  }
       	$isBreadcrumbSet = false;
       	if (in_array($currentFacet, $searchQuery['fq_field'])):
       	  if (in_array('"'.$facets[$i].'"',$searchQuery['fq'])):
@@ -140,6 +141,35 @@ The following displays the facets column
 	</div>
 	<div class="col-xs-9" id="search-results-column">
 <?php
+
+foreach ($facetFields as $facetField => $facetTitle):
+
+			$currentFacet = $facetField;
+			$facets = $searchFacetCounts['facet_fields'][$currentFacet];
+			for($i=0; $i<sizeof($facets); $i++):
+				if ($facets[$i+1]==0){
+					$i++;
+					continue;
+				}
+			  $isBreadcrumbSet = false;
+			  if (in_array($currentFacet, $searchQuery['fq_field'])):
+				  if (in_array('"'.$facets[$i].'"',$searchQuery['fq'])):
+					  $isBreadcrumbSet = true;
+			      ?>
+				    <a href="<?php print buildFacetBreadcrumbQuery($currentFacet, $facets[$i]);?>"><strong>(X)</strong></a> <span class="text-primary"><?php print ($facets[$i]=='')? "None":$facets[$i];?></span>&nbsp;&nbsp;&nbsp;
+			      <?php
+				  endif;
+			  endif;?>
+		  <?php
+			  $i++;
+		  endfor;?>
+
+<?php
+endforeach;
+print '<br><br>'; //to separate breadcrumbs from search results
+
+
+
 $displaySearchResults = array();
 
 foreach ($searchResults as $result){
@@ -190,6 +220,10 @@ foreach($displaySearchResults as $result):?>
 			<div class="col-xs-10 pull-right">
 				<table>
       <?php foreach ($briefDisplayFields as $field):
+				//check if key exists
+				if (!array_key_exists($field,$result)){
+					continue;
+				}
 				//check if blank
 				if (is_array($result[$field])){
 					$emptyVar = array_filter($result[$field]);//gotta love php 5.3
@@ -240,7 +274,25 @@ foreach($displaySearchResults as $result):?>
 						</tr>
 						<?php
 					}
-					else {}
+					else if (array_key_exists('notes',$highlightArray)){
+						?>
+						<tr>
+							<td><strong><?php print $solrFieldNames['notes']['field_title'];?>:</strong></td>
+							<td><?php print $highlightArray['notes'][0];?></td>
+						</tr>
+						<?php
+					}
+					else {
+						// get the first key of the highlight array
+						$keys = array_keys($highlightArray);
+						$hKey = array_shift($keys);
+						?>
+						<tr>
+							<td><strong><?php print $solrFieldNames[$hKey]['field_title'];?>:</strong></td>
+							<td><?php print $highlightArray[$hKey][0];?></td>
+						</tr>
+						<?php
+					}
 				}
 				foreach ($highlightArray as $key => $value){
 					if (in_array($key,$briefDisplayFields)) continue;
