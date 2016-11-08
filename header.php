@@ -60,7 +60,7 @@ ini_set("display_startup_errors", true);
         </div>
         <div id="navbar" class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
-            <li class="active"><a href="index">Search</a></li>
+            <li class="active"><a href="http://library.sc.edu/p/Music/Sheet_Music">Search</a></li>
             <li><a href="#about">About</a></li>
           </ul>
         </div><!--/.nav-collapse -->

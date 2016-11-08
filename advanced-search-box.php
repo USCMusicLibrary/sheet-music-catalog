@@ -2,7 +2,7 @@
 		<div class="col-xs-12 text-center">
 			<p><?php print $siteTitle;?></p>
 		</div>
-	<div class="col-xs-6 col-xs-offset-3">
+	<div class="col-xs-12 col-md-6 col-md-offset-3">
 		<div class="row center-block">
 			<form class="form-horizontal" id="home-search" name="home-search" method="GET" action="index">
 

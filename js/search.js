@@ -139,7 +139,7 @@ $(".btn-results-more").click(function (e){
 	}
 });
 
-$(".accordion-toggle").click(function (e) {
+$("a .accordion-toggle").click(function (e) {
 	//alert('strst');
 	$(this).toggleClass("accordion-opened");
 });

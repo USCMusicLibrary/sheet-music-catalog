@@ -46,10 +46,10 @@ $queryString = 'id:'.$_GET['id'];
 <!--</pre>-->
 <div class="container-fluid">
 	<div class="row">
-      <div class="col-xs-8 col-xs-offset-2">
+      <div class="col-xs-12 col-md-8 col-md-offset-2">
         <h2><?php print $result['title'];?></h2>
       </div>
-      <div class="col-xs-8 col-xs-offset-2">
+      <div class="col-xs-12 col-md-8 col-md-offset-2">
 				<table class="item-display-table">
       <?php foreach ($solrFieldNames as $field => $v):
 	    if (!array_key_exists($field,$result)) continue;
@@ -87,14 +87,14 @@ $queryString = 'id:'.$_GET['id'];
 		</table>
       </div>
 
-		<div class="col-xs-8 col-xs-offset-2">
+		<div class="col-xs-12 col-md-8 col-md-offset-2">
 			<hr>
 			<?php
 			  $imageList = getImagesForId($_GET['id']);
 				//print_r($imageList);
 				$counter=0;
 				foreach ($imageList as $image):?>
-				  <div class="col-xs-3 thumbnail-div">
+				  <div class="col-xs-6 col-md-3 thumbnail-div">
 						<a class="btn btn-default" data-toggle="modal" data-target="#carouselModal" onclick="javascript:carouselIndex=<?php print $counter++;?>;"><img class="img-responsive" src="<?php print $image; ?>"></a>
 					</div>
 					<?php if (($counter)%4 == 0):?>

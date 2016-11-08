@@ -80,7 +80,7 @@ var currentQuery = <?php print '"'.$currentQuery.'"'; ?>;
 <div class="row">
 <?php /*
 The following displays the facets column
-*/?><div class="col-xs-3">
+*/?><div class="col-xs-12 col-md-3">
 		<div class="col-xs-12"><h4>Facets (under development):</h4>
 			<div class="panel-group" id="accordion">
   <?php
@@ -122,11 +122,11 @@ The following displays the facets column
   <div class="panel panel-default">
     <div class="panel-heading">
       <h4 class="panel-title">
-        <a data-toggle="collapse" href="#collapse7">
-        Date range</a>
+        <span class="accordion-toggle accordion-opened">
+        Date range&nbsp;</span>
       </h4>
     </div>
-    <div id="collapse7" class="panel-collapse collapse in">
+    <div id="collapsez" class="panel-collapse collapse in">
       <div class="panel-body">
         <p>
   <input type="text" id="amount" readonly style="border:0; color:#f6931f; font-weight:bold;">
@@ -139,7 +139,7 @@ The following displays the facets column
 </div>
 		</div>
 	</div>
-	<div class="col-xs-9" id="search-results-column">
+	<div class="col-xs-12 col-md-9" id="search-results-column">
 <?php
 
 foreach ($facetFields as $facetField => $facetTitle):
@@ -209,7 +209,7 @@ foreach($displaySearchResults as $result):?>
       <div class="col-xs-11">
         <h3><a class="results-title" href="item?id=<?php print $result['url']?>"><?php print $result['title']?></a></h3>
       </div>
-			<div class="col-xs-2 pull-left">
+			<div class="col-xs-8 col-md-2 pull-left">
 				<?php
 				$imageList = getImagesForId($result['url']);
 				if (sizeof($imageList)>0):
@@ -217,7 +217,7 @@ foreach($displaySearchResults as $result):?>
 				<a href="item?id=<?php print $result['url']?>"><img class="img-responsive" src="<?php print $imageList[0] ?>"></a>
 			  <?php endif; ?>
 			</div>
-			<div class="col-xs-10 pull-right">
+			<div class="col-xs-12 col-md-10 pull-right">
 				<table>
       <?php foreach ($briefDisplayFields as $field):
 				//check if key exists

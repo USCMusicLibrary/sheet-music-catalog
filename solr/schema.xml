@@ -162,6 +162,8 @@
    <field name="publisher_location_facet"  type="string" indexed="true"  stored="true" multiValued="true"/>
    <copyField source="publisher_location"    dest="publisher_location_facet"/>
    
+   <!-- hasImage -->
+   <field name="has_image" type="string" indexed="true" stored="true" required="true" multiValued="false" />
 
    <!-- Optional Fields -->
    

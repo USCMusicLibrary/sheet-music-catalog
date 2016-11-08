@@ -94,7 +94,8 @@ $facetFields = array(
 		"publisher_facet" => "Publisher",
 		"publisher_location_facet" => "Publisher Location",
 		"subject_heading_facet" => "LC Subject Headings",
-		"language" => "Language"
+		"language" => "Language",
+		"has_image" => "Images available"
 		//"date"
 );
 

@@ -112,6 +112,7 @@ function importExcelTabFile(){
 'series' => $fields[21],
 'collection_source' => $fields[22],
 'larger_work' => $fields[23],
+'has_image' => (idHasImage($fields[1]))?"Images available" : "Images not available"
 //'Keywords' => $fields[27],
 //'Original_Notes' => $fields[28],
 //'zImagePath' => $fields[29],
@@ -376,10 +377,17 @@ function buildSolrQuery($query){
 		.'select?'.$queryString.'&start='.$query['start'].'&rows='.$query['rows']
 		.'&wt=json&hl=true&hl.simple.pre='.urlencode('<'.$solrResultsHighlightTag.'>')
 		.'&hl.simple.post='.urlencode('</'.$solrResultsHighlightTag.'>')
-		.'&hl.fl=*&facet=true&facet.field=publisher_facet&facet.field=publisher_location_facet'
-		.'&facet.field=language&facet.field=subject_heading_facet&facet.field=composer_facet'
-		.'&facet.field=years&facet.field=arranger_facet&facet.field=illustrator_facet&facet.field=lyricist_facet&stats=true&stats.field=years&indent=true';
+		.'&hl.fl=*&facet=true';
 
+global $facetFields;
+foreach ($facetFields as $key=>$val){
+  $queryString = $queryString.'&facet.field='.$key;
+		/*'&facet.field=publisher_facet&facet.field=publisher_location_facet'
+		.'&facet.field=language&facet.field=subject_heading_facet&facet.field=composer_facet'
+		.'&facet.field=years&facet.field=arranger_facet&facet.field=illustrator_facet&facet.field=lyricist_facet&stats=true&stats.field=years&indent=true';*/
+}
+
+$queryString = $queryString.'&stats=true&stats.field=years&indent=true';
 		/*
 		 * Archive (Digital collection)
 Contributing Institution
@@ -476,6 +484,14 @@ function getImagesForId($id){
 		$fileList[] = 'sheet-music/'.$filePrefix.strval($counter++).'.jpg';
 	}
 	return $fileList;
+}
+
+function idHasImage($id){
+	$fileList = getImagesForId($id);
+	if (empty(array_filter($fileList))){
+		return false;
+	}
+	else return true;
 }
 
 ?>
