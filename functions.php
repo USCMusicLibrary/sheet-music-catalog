@@ -488,7 +488,7 @@ function getImagesForId($id){
 
 function idHasImage($id){
 	$fileList = getImagesForId($id);
-	if (empty(array_filter($fileList))){
+	if (empty($fileList)){
 		return false;
 	}
 	else return true;

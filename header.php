@@ -1,4 +1,5 @@
 <?php
+require_once "config.php";
 error_reporting(E_ALL);
 ini_set("display_errors", true);
 ini_set("display_startup_errors", true);
@@ -18,11 +19,11 @@ ini_set("display_startup_errors", true);
     <title>Sheet Music Catalg - Music Library - University of South Carolina</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="<?php print $ROOTURL;?>bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
 
-    <link href="css/search.css" rel="stylesheet">
-    <link rel="stylesheet" href="css/font-awesome.min.css">
+    <link href="<?php print $ROOTURL;?>css/search.css" rel="stylesheet">
+    <link rel="stylesheet" href="<?php print $ROOTURL;?>css/font-awesome.min.css">
 
 
 
