@@ -17,6 +17,38 @@
     <!--<script src="../../assets/js/ie10-viewport-bug-workaround.js"></script>-->
     <script src="<?php print $ROOTURL;?>js/search.js"></script>
     <script src="<?php print $ROOTURL;?>js/admin.js"></script>
+    <script src="<?php print $ROOTURL;?>js/awesomplete.js" async></script>
+
+    <script>
+var defaultText = 'Click me and enter some text';
+
+function endEdit(e) {
+    var input = $(e.target),
+        label = input && input.prev();
+
+    label.text(input.val() === '' ? defaultText : input.val());
+    input.hide();
+    label.show();
+}
+
+$('.clickedit').hide()
+.focusout(endEdit)
+.keyup(function (e) {
+    if ((e.which && e.which == 13) || (e.keyCode && e.keyCode == 13)) {
+        endEdit(e);
+        return false;
+    } else {
+        return true;
+    }
+})
+.prev().click(function () {
+    //alert($(this).html());
+    $(this).hide();
+    $(this).next().show().focus().val($(this).html());
+});
+
+
+</script>
 
   </body>
 </html>

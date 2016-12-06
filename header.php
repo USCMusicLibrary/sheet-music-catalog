@@ -28,6 +28,16 @@ ini_set("display_startup_errors", true);
 
 
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.0/themes/base/jquery-ui.css">
+
+
+    <link rel="stylesheet" href="<?php print $ROOTURL;?>css/awesomplete.css" />
+    <style>
+    label:hover {
+    background: #f2f5ff;
+    border-radius:5px;
+    padding:2px 4px;
+}</style>
+
   <!--<link rel="stylesheet" href="/resources/demos/style.css">-->
 
 
