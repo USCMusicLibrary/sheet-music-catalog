@@ -48,7 +48,7 @@ require "../functions.php";
             </div>
             <div class="col-xs-5">
               <input class="form-control awesomplete"  list="names-list" name="contributor[]">
-              <?php // require ("../data/namesList.php"); ?>
+              <?php require ("../data/namesList.php"); ?>
             </div>
             <div class="col-xs-12"><br></div>
           </div>
@@ -197,7 +197,7 @@ require "../functions.php";
             
           </div>
           <div class="col-xs-10">
-            <input type="submit" class="form-control">
+            <input type="submit" class="form-control btn-success">
           </div>
         </div>
 

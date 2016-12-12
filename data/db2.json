@@ -1,0 +1,128 @@
+{  
+   "433":{  
+      "id":"433",
+      "title":"Domino",
+      "alternative_title":[  
+         ""
+      ],
+      "composer":[  
+         "Ferrari, Louis, 1910-1988"
+      ],
+      "lyricist":[  
+         "Raye, Don"
+      ],
+      "publisher":"Pickwick",
+      "publisher_location":[  
+         "New York, NY"
+      ],
+      "years":[  
+         1951
+      ],
+      "language":[  
+         "English"
+      ],
+      "text_t":[  
+         "First line of text: Just one look in your eyes and I melt with desire.",
+         "First line of verse: Domino, Domino. You're an angel that heaven has sent me."
+      ],
+      "notes":[  
+         "For voice and piano with chord symbols and tablature for ukulele.",
+         "Cover portrait of Bing Crosby.",
+         "Second copy in folder."
+      ],
+      "donor":"",
+      "subject_heading":[  
+         "Popular music--1951-1960",
+         "Songs (Low voice) with piano"
+      ],
+      "call_number":"Sheet music 18",
+      "series":"",
+      "collection_source":"",
+      "larger_work":"",
+      "has_image":"Images not available"
+   },
+   "441":{  
+      "id":"441",
+      "title":"Lover",
+      "alternative_title":[  
+         ""
+      ],
+      "composer":[  
+         "Rodgers, Richard, 1902-1979"
+      ],
+      "lyricist":[  
+         "Hart, Lorenz, 1895-1943"
+      ],
+      "lyricist_facet":[  
+         "Hart, Lorenz, 1895-1943"
+      ],
+      "publisher":"Famous Music",
+      "publisher_location":[  
+         "New York, NY"
+      ],
+      "years":[  
+         1933
+      ],
+      "language":[  
+         "English"
+      ],
+      "text_t":[  
+         "First line of text: When you held your hand to my heart.",
+         "First line of refrain: Lover, when I'm near you."
+      ],
+      "notes":[  
+         "For voice and piano with chord symbols and tablature for ukulele.",
+         "Includes excerpts from \"big song hits\" on p. 2."
+      ],
+      "donor":"",
+      "subject_heading":[  
+         "Songs (Medium voice) with piano",
+         "Popular music--1931-1940"
+      ],
+      "call_number":"Sheet music 27",
+      "series":"",
+      "collection_source":"",
+      "larger_work":"Love me tonight",
+      "has_image":"Images not available"
+   },
+   "333":{  
+      "id":"333",
+      "title":"The little house",
+      "alternative_title":[  
+         ""
+      ],
+      "composer":[  
+         "Jacobs-Bond, Carrie, 1862-1946"
+      ],
+      "lyricist":[  
+         "Turner, Nancy Byrd, 1880-1971"
+      ],
+      "publisher":"Boston Music Co.",
+      "publisher_location":[  
+         "Boston, MA"
+      ],
+      "years":[  
+         1926
+      ],
+      "language":[  
+         "English"
+      ],
+      "text_t":[  
+         "First line of text: I want to have a little house with sunlight on the floor."
+      ],
+      "notes":[  
+         "\"High Ab\"-Cover.",
+         "For voice and song.",
+         "Plate number: B. 361-4"
+      ],
+      "donor":"",
+      "subject_heading":[  
+         "Songs (High voice) with piano"
+      ],
+      "call_number":"Sheet music 364",
+      "series":"",
+      "collection_source":"",
+      "larger_work":"",
+      "has_image":"Images not available"
+   }
+}

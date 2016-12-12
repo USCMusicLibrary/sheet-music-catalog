@@ -8,7 +8,7 @@ global $solrCoreName;
 $solrCoreName = "sheet-music-catalog";
 
 global $ROOTURL;
-$ROOTURL = "http://129.252.210.237/catalog/";
+$ROOTURL = "http://localhost/catalog/";
 
 global $solrUrl;
 $solrUrl = 'http://localhost:8983/solr/'.$solrCoreName.'/';
@@ -23,6 +23,9 @@ $lastError = '';
 global $solrFieldNames;
 $solrFieldNames = array(
 "url" => array("field_title" => "ID",
+	"display" => "full"
+),
+"id" => array("field_title" => "ID",
 	"display" => "full"
 ),
 "title" => array("field_title" => "Title",
@@ -52,6 +55,9 @@ $solrFieldNames = array(
 "years_text" => array("field_title" => "Copyright Date",
 	"display" => "full"
 ),
+"years" => array("field_title" => "Copyright Date",
+	"display" => "full"
+),
 "language" => array("field_title" => "Language",
 	"display" => "full"
 ),
@@ -78,6 +84,9 @@ $solrFieldNames = array(
 ),
 "collection_source" => array("field_title" => "Collection Source",
 	"display" => "full"
+),
+"has_image" => array("field_title" => "Online score:",
+	"display" => "full"
 )
 );
 
@@ -98,7 +107,7 @@ $facetFields = array(
 		"publisher_location_facet" => "Publisher Location",
 		"subject_heading_facet" => "LC Subject Headings",
 		"language" => "Language",
-		"has_image" => "Images available"
+		"has_image" => "Availability"
 		//"date"
 );
 

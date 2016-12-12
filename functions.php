@@ -7,6 +7,7 @@
 
 
 require_once('config.php');
+require_once('db-config.php');
 
 
 function importExcelTabFile(){
@@ -112,7 +113,7 @@ function importExcelTabFile(){
 'series' => $fields[21],
 'collection_source' => $fields[22],
 'larger_work' => $fields[23],
-'has_image' => (idHasImage($fields[1]))?"Images available" : "Images not available"
+'has_image' => (idHasImage($fields[1]))?"Online score" : "Print only"
 //'Keywords' => $fields[27],
 //'Original_Notes' => $fields[28],
 //'zImagePath' => $fields[29],
@@ -121,43 +122,6 @@ function importExcelTabFile(){
 //'TitleSearchHits' => $fields[32],
 //'Incomplete' => $fields[33]
 		);
-
-		/*
-		$MID = $fields[0];
-$Title = $fields[1];
-$altTitles = $fields[2];
-$composer = $fields[3];
-$composer_uri = $fields[4];
-$lyricist = $fields[5];
-$lyricist_uri = $fields[6];
-$arranger = $fields[7];
-$arranger_uri = $fields[8];
-$Editors = $fields[9];
-$Photographers = $fields[10];
-$Illustrators = $fields[12];
-$Publisher = $fields[13];
-$PublisherLocationTest = $fields[14];
-$CopyrightDate = $fields[14];
-$language = $fields[15];
-$text = $fields[16];
-$notes = $fields[17];
-$Donor = $fields[18];
-$Distributor = $fields[19];
-$SubjectHeading = $fields[20];
-$subjects = $fields[21];
-$CallNumber = $fields[22];
-$PlateNumber = $fields[23];
-$Series = $fields[24];
-$CollectionSource = $fields[25];
-$LargerWork = $fields[26];
-$Keywords = $fields[27];
-$Original_Notes = $fields[28];
-$zImagePath = $fields[29];
-$MidiPath = $fields[30];
-$zNumberOfPages = $fields[31];
-$TitleSearchHits = $fields[32];
-$Incomplete = $fields[33];
-*/
 
 
 		if ($document['id']=="") continue; //skip insert into db if empty
@@ -168,12 +132,51 @@ $Incomplete = $fields[33];
 		//echo ++$counter2.'<br>';
 		//print_r($document);
 		indexDocument($document);
+		insertDocDb($document);
 
 	}
+}
+
+
+function insertDocDb($doc){
+  global $mysqli;
+
+  $mid = $doc['id'];
+  $title = $doc['title'];
+  $publisher = $doc['publisher'];
+  $call_number = $doc['call_number'];
+  $series = $doc['series'];
+  $larger_work = $doc['larger_work'];
+  $collection_source = $doc['collection_source'];
+  $donor = $doc['donor'];
+  $scanning_technician = array_key_exists('scanning_technician',$doc)?$doc['scanning_technician']:"";
+  $media_cataloguer =  array_key_exists('media_cataloguer',$doc)?$doc['media_cataloguer']:"";
+  $reviewer = array_key_exists('reviewer',$doc)?$doc['reviewer']:"";
+
+  $statement = $mysqli->prepare("INSERT INTO records (mid,title,publisher,call_number,series,larger_work,collection_source,donor,scanning_technician,media_cataloguer,reviewer)"
+  								." VALUES (?,?,?,?,?,?,?,?,?,?,?)");
+  //var_dump($doc);
+  $statement->bind_param("issssssssss",$mid, 
+							$title, 
+							$publisher, 
+							$call_number, 
+							$series, 
+							$larger_work, 
+							$collection_source, 
+							$donor, 
+							$scanning_technician, 
+							$media_cataloguer, 
+							$reviewer);
+  $statement->execute();
+  $statement->store_result();
+
+  print($mysqli->error);
+
 
 
 
 }
+
 
 //TODO: Please add error checking!!!
 function parseDate($dateString){
