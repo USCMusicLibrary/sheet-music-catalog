@@ -30,16 +30,16 @@ from time import sleep
 from urllib.request import urlopen
 from sys import argv
 
-voc_dict = {"names":["test", "name"],
+voc_dict = {"names":["tbl_name", "name"],
             "subjects":["tbl_subject", "subject"]}
 
 socket.setdefaulttimeout(10)
 #feedparser will hang without this
 
 Connection = pymysql.connect(host='localhost',
-                             user='pybot',
+                             user='root',
                              password='',
-                             db='csv_db',
+                             db='sheetmusic',
                              charset='utf8',
                              cursorclass=pymysql.cursors.DictCursor)
 

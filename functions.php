@@ -172,6 +172,57 @@ function insertDocDb($doc){
 
   print($mysqli->error);
 
+  $recordID = $mysqli->insert_id;
+
+  foreach ($doc['alternative_title'] as $alternative_title){
+    $statement = $mysqli->prepare("INSERT INTO alternative_titles (record_id,alternative_title)"
+  								." VALUES (?,?)");
+    $statement->bind_param("is", $recordID,$alternative_title);
+	$statement->execute();
+    $statement->store_result();
+  }
+
+  foreach ($doc['notes'] as $note){
+    $statement = $mysqli->prepare("INSERT INTO notes (record_id,note)"
+  								." VALUES (?,?)");
+    $statement->bind_param("is", $recordID,$note);
+	$statement->execute();
+    $statement->store_result();
+  }
+
+  foreach ($doc['text_t'] as $text){
+    $statement = $mysqli->prepare("INSERT INTO texts (record_id,text_t)"
+  								." VALUES (?,?)");
+    $statement->bind_param("is", $recordID,$text);
+	$statement->execute();
+    $statement->store_result();
+  }
+
+  foreach ($doc['publisher_location'] as $publisher_location){
+    $statement = $mysqli->prepare("INSERT INTO publisher_locations (record_id,publisher_location)"
+  								." VALUES (?,?)");
+    $statement->bind_param("is", $recordID,$publisher_location);
+	$statement->execute();
+    $statement->store_result();
+  }
+
+  foreach ($doc['language'] as $language){
+    $statement = $mysqli->prepare("INSERT INTO languages (record_id,language)"
+  								." VALUES (?,?)");
+    $statement->bind_param("is", $recordID,$language);
+	$statement->execute();
+    $statement->store_result();
+  }
+
+  foreach ($doc['subject_heading'] as $subject_heading){
+    $statement = $mysqli->prepare("INSERT INTO subject_headings (record_id,subject_heading)"
+  								." VALUES (?,?)");
+    $statement->bind_param("is", $recordID,$subject_heading);
+	$statement->execute();
+    $statement->store_result();
+  }
+
+
 
 
 

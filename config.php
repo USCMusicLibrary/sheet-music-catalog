@@ -85,7 +85,7 @@ $solrFieldNames = array(
 "collection_source" => array("field_title" => "Collection Source",
 	"display" => "full"
 ),
-"has_image" => array("field_title" => "Online score:",
+"has_image" => array("field_title" => "Online score",
 	"display" => "full"
 )
 );
