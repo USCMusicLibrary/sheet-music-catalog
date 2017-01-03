@@ -2,3 +2,4 @@ sheet-music/*
 authoritycheck/dbconfig.py
 db-config.php
 uploads/*
+.vscode
