@@ -36,6 +36,8 @@ voc_dict = {"names":["tbl_name", "name"],
 socket.setdefaulttimeout(10)
 #feedparser will hang without this
 
+#we do this so that we have the db configuration in a separate file 
+#TODO: test
 from past.builtins import execfile
     execfile('dbconfig.py')
 
