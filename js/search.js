@@ -125,22 +125,7 @@ $(document).ready(function () {
 
 });
 
-$(".btn-results-more").click(function (e){
-	e.preventDefault();//gotta use this to avoid a weird jquery bug
-	var text = $(this).text().trim();
-	//console.log('|'+text+'|');
-	if (text=='Show more'){
-		//console.log('more');
-		$(this).html('Show less&nbsp;<i class="fa fa-angle-down"></i>');
-	}
-	else {
-		//console.log('less');
-		$(this).html('Show more&nbsp;<i class="fa fa-angle-right"></i>');
-	}
-});
-
-$("a .accordion-toggle").click(function (e) {
-	//alert('strst');
+$(".accordion-toggle").click(function (e) {
 	$(this).toggleClass("accordion-opened");
 });
 
@@ -148,3 +133,4 @@ $('#carouselModal').on('shown.bs.modal', function() {
 	//alert(carouselIndex);
     $("#musicCarousel").carousel(carouselIndex);
 });
+ 

@@ -1,4 +1,8 @@
 <?php
+/* search-results.php
+ * this field performs a search based on parameters in the $_GET request in index.php
+ * called by: index.php
+ */
 
 //is the search full-text?
 $searchQuery['isFullText'] = (isset($_GET['full-text-search'])) ? $_GET['full-text-search'] : false;
@@ -78,10 +82,11 @@ var rMaxYear = <?php print $rMaxYear; ?>;
 var currentQuery = <?php print '"'.$currentQuery.'"'; ?>;
 </script>
 <div class="row">
-<?php /*
-The following displays the facets column
-*/?><div class="col-xs-12 col-md-3">
-		<div class="col-xs-12"><h4>Facets (under development):</h4>
+<?php
+/*
+ * The following displays the facets column
+ */?><div class="col-xs-12 col-md-3">
+		<div class="col-xs-12"><h4>Facets:</h4>
 			<div class="panel-group" id="accordion">
   <?php
   $counter=1;
@@ -129,19 +134,25 @@ The following displays the facets column
     <div id="collapsez" class="panel-collapse collapse in">
       <div class="panel-body">
         <p>
-  <input type="text" id="amount" readonly style="border:0; color:#f6931f; font-weight:bold;">
-</p>
-<div id="slider-range"></div>
+         <input type="text" id="amount" readonly style="border:0; color:#f6931f; font-weight:bold;">
+        </p>
+        <div id="slider-range"></div>
       </div>
     </div>
   </div>
 
 </div>
 		</div>
-	</div>
-	<div class="col-xs-12 col-md-9" id="search-results-column">
+
+</div><!-- facets column-->
+<?php
+/*
+ * The following displays the search results
+ */?>
+<div class="col-xs-12 col-md-9" id="search-results-column">
 <?php
 
+//build breadcrumbs at the top of search results
 foreach ($facetFields as $facetField => $facetTitle):
 
 			$currentFacet = $facetField;
@@ -167,8 +178,6 @@ foreach ($facetFields as $facetField => $facetTitle):
 <?php
 endforeach;
 print '<br><br>'; //to separate breadcrumbs from search results
-
-
 
 $displaySearchResults = array();
 
@@ -286,12 +295,25 @@ foreach($displaySearchResults as $result):?>
 						// get the first key of the highlight array
 						$keys = array_keys($highlightArray);
 						$hKey = array_shift($keys);
+
+						$condition = true;
+
+						//we need to check if we have already displayed this field
+						//if we have, then we skip
+						foreach($briefDisplayFields as $field){
+							if ($hKey == $field){
+								$condition=false;
+								break;
+							}
+						}
+						if ($condition):
 						?>
 						<tr>
 							<td><strong><?php print $solrFieldNames[$hKey]['field_title'];?>:</strong></td>
 							<td><?php print $highlightArray[$hKey][0];?></td>
 						</tr>
 						<?php
+						endif;
 					}
 				}
 				foreach ($highlightArray as $key => $value){
