@@ -1,4 +1,10 @@
-<div class="row">
+<?php 
+/* advanced-search-box.php
+ * displays the advanced search box
+ *
+ * note: currently, the advanced search features are disabled
+ */
+?><div class="row">
 		<div class="col-xs-12 text-center">
 			<p><?php print $siteTitle;?></p>
 		</div>
