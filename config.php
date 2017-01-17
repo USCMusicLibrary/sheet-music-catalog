@@ -52,10 +52,10 @@ $solrFieldNames = array(
 "publisher_location" => array("field_title" => "Publisher location",
 	"display" => "full"
 ),
-"years_text" => array("field_title" => "Copyright Date",
+"years_text" => array("field_title" => "Date",
 	"display" => "full"
 ),
-"years" => array("field_title" => "Copyright Date",
+"years" => array("field_title" => "Date",
 	"display" => "full"
 ),
 "language" => array("field_title" => "Language",

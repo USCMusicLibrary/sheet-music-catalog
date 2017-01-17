@@ -28,8 +28,7 @@ CREATE TABLE alternative_titles (
 CREATE TABLE years (
   record_id int(11),
   start_year varchar(10),
-  end_year varchar(10),
-  PRIMARY KEY (id)
+  end_year varchar(10)
 );
 
 CREATE TABLE notes (
