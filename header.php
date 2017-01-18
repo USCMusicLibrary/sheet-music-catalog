@@ -16,7 +16,7 @@ ini_set("display_startup_errors", true);
     <meta name="author" content="">
     <link rel="icon" href="../../favicon.ico">
 
-    <title>Sheet Music Catalg - Music Library - University of South Carolina</title>
+    <title>Sheet Music Catalog - Music Library - University of South Carolina</title>
 
     <!-- Bootstrap core CSS -->
     <link href="<?php print $ROOTURL;?>bootstrap/css/bootstrap.min.css" rel="stylesheet">

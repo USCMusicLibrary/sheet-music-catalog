@@ -54,10 +54,10 @@ CREATE TABLE roles (
 
 CREATE TABLE tbl_name (
   name varchar(255),
-  uri varchar(2000),,
+  uri varchar(2000),
   nameUpdate varchar(100),
   localID int(10) UNSIGNED NOT NULL
-)
+);
 
 CREATE TABLE publisher_locations (
   id int(11) NOT NULL AUTO_INCREMENT,
