@@ -68,8 +68,9 @@ function importExcelTabFile(){
 			$finalValues = array();
 			foreach ($values as $val){
 				$vals = explode('|',$val);
-				$fVal = $vals[0];
-				$finalValues[] = trim($fVal);
+                                                                        $nVal = trim($vals[0]);
+                                                                        $uVal = trim($vals[1]);
+                                                                        $finalValues[] = [$nVal, $uVal];
 				//$finalValues[] = trim(explode('|',$val)[0]);
 			}
 			return $finalValues;
@@ -94,8 +95,8 @@ function importExcelTabFile(){
 //'lyricist_uri' => $fields[6],
 'arranger' => $parseURIData($fields[12]),
 //'arranger_uri' => $fields[8],
-//'Editors' => $fields[9],
-//'Photographers' => $fields[10],
+'editor' => $parseURIData($fields[2]),
+'photographer' => $parseURIData($fields[3]),
 'illustrator' => $parseURIData($fields[4]),
 'publisher' => $fields[13],
 'publisher_location' => explode('|',$fields[14]),
@@ -131,7 +132,7 @@ function importExcelTabFile(){
 		}*/
 		//echo ++$counter2.'<br>';
 		//print_r($document);
-		indexDocument($document);
+		//indexDocument($document);
 		insertDocDb($document);
 
 	}
@@ -140,7 +141,7 @@ function importExcelTabFile(){
 
 function insertDocDb($doc){
   global $mysqli;
-
+  
   $mid = $doc['id'];
   $title = $doc['title'];
   $publisher = $doc['publisher'];
@@ -217,14 +218,64 @@ function insertDocDb($doc){
   foreach ($doc['subject_heading'] as $subject_heading){
     $statement = $mysqli->prepare("INSERT INTO subject_headings (record_id,subject_heading)"
   								." VALUES (?,?)");
-    $statement->bind_param("is", $recordID,$subject_heading);
+    $statement->bind_param("is", $recordID,$subject_heading[0]);
 	$statement->execute();
     $statement->store_result();
   }
-
-
-
-
+  
+$contribtypes = ['composer' => 0, 'lyricist' => 1, 'arranger' => 2, 'illustrator' => 3, 'editor' => 4, 'photographer' =>5];
+    foreach (array_keys($contribtypes) as $ctype) {
+        foreach($doc[$ctype] as $contributor){
+            $cname = $contributor[0];
+            if($contributor[1] != null){
+                $curi = $contributor[1];
+            }else{
+                $curi = null;
+            }
+                $roleID = $contribtypes[$ctype];
+                $query = "SELECT localID, uri from names WHERE name = ?";
+                $statement = $mysqli->stmt_init();
+                if (!$statement->prepare($query)) {
+                    print 'Contributor update error: prepared statement failed';
+                } else {
+                    $statement->bind_param('s', $cname);
+                    $statement->execute();
+                    $statement->store_result();
+                    $statement->bind_result($localID, $uri);
+                    $statement->fetch();
+                    if ($localID === null) {
+                        $statement = $mysqli->prepare("INSERT INTO names (name, uri) VALUES(?,?)");
+                        $statement->bind_param('ss', $cname, $curi);
+                        $statement->execute();
+                        $statement->store_result();
+                        $localID = $statement->insert_id;
+                    } else {
+                        if ($curi != $uri && $curi != (null || '')) {
+                            #for typos, etc.; there is probably a better way of handling this
+                            $statement = $mysqli->prepare("UPDATE names SET note = ?, hasProblem = 1 WHERE localID = ?");
+                            $statement->bind_param('si', $curi, $localID);
+                            $statement->execute();
+                            $statement->store_result();
+                            $localID = $statement->insert_id;
+                        } else {
+                            #Either the uris are the same, or they aren't but this would be replacing a uri with a blank/null value
+                        }
+                    }
+                }
+                #Update contributor table
+                print("\n\t".$ctype  . ': ' . $cname ." (LOCAL ID: " . $localID. ') ; URI: ' . $curi . ' </br>');
+                $sql = "INSERT INTO contributors (record_id,contributor_id,role_id) VALUES (?,?,?)";
+                if ($contribstmt = $mysqli->prepare($sql)) {
+                    $contribstmt->bind_param("iii", $recordID, $localID, $roleID);
+                    $contribstmt->execute();
+                    $contribstmt->store_result();
+                } else {
+                    print "DIED";
+                    die("Errormessage: " . $mysqli->error);
+                }
+            }
+    }
+print("</br>");
 
 }
 
