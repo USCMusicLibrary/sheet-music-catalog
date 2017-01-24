@@ -97,3 +97,18 @@ CREATE TABLE hidden_subject_headings (
   hidden_subject_heading text,
   PRIMARY KEY (id)
 );
+
+
+/* sql to delete contents of tables */
+/* USE WITH CARE */
+truncate table alternative_titles;
+truncate table contributors;
+truncate table languages;
+truncate table names;
+truncate table notes;
+truncate table publisher_locations;
+truncate table records;
+truncate table roles;
+truncate table subject_headings;
+truncate table texts;
+truncate table years;

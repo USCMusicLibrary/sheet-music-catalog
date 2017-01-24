@@ -15,7 +15,7 @@ function importExcelTabFile(){
 	$file = NULL;
 	ini_set("auto_detect_line_endings", true);
 	try {
-	$file = new SplFileObject("sm_db_backup.tsv");
+	$file = new SplFileObject("uploads/sm_db_backup.tsv");
 	}
 	catch (Exception $error){
 		echo '<div class="jumbotron"><h1 class="text-danger">Unable to open uploaded file. Please try again.</h1><p>'.$error->getMessage().'</p></div>';
@@ -68,10 +68,9 @@ function importExcelTabFile(){
 			$finalValues = array();
 			foreach ($values as $val){
 				$vals = explode('|',$val);
-                                                                        $nVal = trim($vals[0]);
-                                                                        $uVal = trim($vals[1]);
-                                                                        $finalValues[] = [$nVal, $uVal];
-				//$finalValues[] = trim(explode('|',$val)[0]);
+                $nVal = trim($vals[0]);
+                $uVal = trim($vals[1]);
+                $finalValues[] = [$nVal, $uVal];
 			}
 			return $finalValues;
 		};
@@ -126,13 +125,26 @@ function importExcelTabFile(){
 
 
 		if ($document['id']=="") continue; //skip insert into db if empty
-		/*if ($document['id']=='3559') {
-			print_r($document);
-			return;
-		}*/
-		//echo ++$counter2.'<br>';
+
 		//print_r($document);
-		//indexDocument($document);
+
+		//we need to modify the $document object before we feed it to solr
+		//so it indexes correctly
+		$solrDocument = $document;
+		global $contribtypes;
+		foreach (array_keys($contribtypes) as $ctype) {
+		  //sanity check
+		  if (!array_key_exists($ctype,$solrDocument)) continue;
+		  $contributors = $solrDocument[$ctype];
+		  $newContributors = array();
+		  foreach ($contributors as $contributor){
+			  $newContributors[] = $contributor[0];//we only need name for solr, not uri
+		  }
+		  $solrDocument[$ctype] = $newContributors;
+		}  
+		indexDocument($solrDocument);
+
+		//send unmodified document to database
 		insertDocDb($document);
 
 	}
@@ -223,8 +235,11 @@ function insertDocDb($doc){
     $statement->store_result();
   }
   
-$contribtypes = ['composer' => 0, 'lyricist' => 1, 'arranger' => 2, 'illustrator' => 3, 'editor' => 4, 'photographer' =>5];
+global $contribtypes;
     foreach (array_keys($contribtypes) as $ctype) {
+		//sanity check
+		if (!array_key_exists($ctype,$doc)) continue;
+
         foreach($doc[$ctype] as $contributor){
             $cname = $contributor[0];
             if($contributor[1] != null){

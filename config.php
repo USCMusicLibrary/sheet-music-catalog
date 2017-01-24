@@ -151,3 +151,6 @@ $advancedSearchFields = array (
 
 global $siteTitle;
 $siteTitle = "";
+
+global $contribtypes;
+$contribtypes = ['composer' => 0, 'lyricist' => 1, 'arranger' => 2, 'illustrator' => 3, 'editor' => 4, 'photographer' =>5, 'other' => 6];
