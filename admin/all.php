@@ -5,12 +5,14 @@ require "../header.php";
 
 require "../functions.php";
 
-$path = $ROOTURL.'data/db2.json';
-$dataJson = file_get_contents($path);
-//if ($dataJson===FALSE) echo"error";
-$data = json_decode($dataJson,true);
-//print json_last_error();
-//var_dump($data);
+//select 20 records for now (for testing)
+$statement = $mysqli->prepare("SELECT mid,title,publisher,call_number,series,larger_work,collection_source,donor,scanning_technician,media_cataloguer,reviewer FROM records LIMIT 20");
+$statement->execute();
+$statement->store_result();
+$statement->bind_result($mid, $title, $publisher, $call_number, $series, $larger_work, 	$collection_source, $donor, $scanning_technician, $media_cataloguer, $reviewer);
+
+
+
 
 ?>
 <div class="container-fluid">
@@ -22,18 +24,34 @@ $data = json_decode($dataJson,true);
               <th>ID</th>
               <th>Title</th>
               <th>Composer</th>
+<th>Call Number</th>
+<th>Series</th>
+<th>Larger Work</th>
+<th>Collection Source</th>
+<th>Donor</th>
+<th>Scanning Technician</th>
+<th>Media Cataloguer</th>
+<th>Reviewer</th>
               <th></th>
             </tr>
           </thead>
           <tbody>
-            <?php foreach ($data as $item):?>
+            <?php while ($statement->fetch()):?>
               <tr>
-                <th><?php print $item['id'];?></th>
-                <th><?php print $item['title'];?></th>
-                <th><?php print $item['composer'][0];?></th>
+ <th><?php print $mid;?></th>
+<th><?php print $title;?></th>
+<th><?php print $publisher;?></th>
+<th><?php print $call_number;?></th>
+<th><?php print $series;?></th>
+<th><?php print $larger_work;?></th>
+<th><?php print $collection_source;?></th>
+<th><?php print $donor;?></th>
+<th><?php print $scanning_technician;?></th>
+<th><?php print $media_cataloguer;?></th>
+<th><?php print $reviewer;?></th>
                 <th><a href="edit?id=<?php print $item['id'];?>" class="btn btn-danger">Edit</a></th>
               </tr>
-            <?php endforeach;?>
+            <?php endwhile;?>
           </tbody>
         </table>
       </div>
