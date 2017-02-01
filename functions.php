@@ -522,7 +522,13 @@ Date (slider to select range)
 	return $queryString;
 }
 
-
+/* function buildQueryForAllFields($query)
+ * builds a solr query when "search all fields" is selected
+ * also adds weight to certain fields
+ * @param {string} $query:
+ *   query value
+ * @return {string}: a solr query that will search all fields for $query
+ */
 function buildQueryForAllFields($query){
 	$queryString = '';
 	global $searchFields;
@@ -544,7 +550,16 @@ function buildQueryForAllFields($query){
 	return $queryString;
 }
 
-
+/* function buildFacetFilterQuery($facet,$query)
+ * builds a facet filter query based of the current search terms
+ * and the corresponding facet and query
+ *
+ * @param {string} $facet:
+ *   facet to narrow down by
+ * @param {string} $query:
+ *   value to filter by
+ * @return {string}: href-ready value for a filter query link
+ */
 function buildFacetFilterQuery($facet,$query){
 	$newGet = $_GET;
     //$rows = array("start" => "0");
@@ -563,6 +578,15 @@ function escapeDoubleQuotes($string){
 }
 
 
+/* function buildFacetBreadcrumbQuery($facet, $query){
+ * builds a breadcrumb href to undo a given facet filter query
+ *
+ * @param {string} $facet:
+ *   facet to narrow down by
+ * @param {string} $query:
+ *   value to filter by
+ * @return {string}: href-ready value for a breadbrumb filter query link
+ */
 function buildFacetBreadcrumbQuery($facet, $query){
 	$newGet = array();
 	foreach ($_GET as $key => $value){
