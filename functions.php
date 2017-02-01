@@ -15,7 +15,7 @@ function importExcelTabFile(){
 	$file = NULL;
 	ini_set("auto_detect_line_endings", true);
 	try {
-	$file = new SplFileObject("sm_db_backup.tsv");
+	$file = new SplFileObject("uploads/sm_db_backup.tsv");
 	}
 	catch (Exception $error){
 		echo '<div class="jumbotron"><h1 class="text-danger">Unable to open uploaded file. Please try again.</h1><p>'.$error->getMessage().'</p></div>';
@@ -68,9 +68,9 @@ function importExcelTabFile(){
 			$finalValues = array();
 			foreach ($values as $val){
 				$vals = explode('|',$val);
-				$fVal = $vals[0];
-				$finalValues[] = trim($fVal);
-				//$finalValues[] = trim(explode('|',$val)[0]);
+                $nVal = trim($vals[0]);
+                $uVal = trim($vals[1]);
+                $finalValues[] = [$nVal, $uVal];
 			}
 			return $finalValues;
 		};
@@ -94,8 +94,8 @@ function importExcelTabFile(){
 //'lyricist_uri' => $fields[6],
 'arranger' => $parseURIData($fields[12]),
 //'arranger_uri' => $fields[8],
-//'Editors' => $fields[9],
-//'Photographers' => $fields[10],
+'editor' => $parseURIData($fields[2]),
+'photographer' => $parseURIData($fields[3]),
 'illustrator' => $parseURIData($fields[4]),
 'publisher' => $fields[13],
 'publisher_location' => explode('|',$fields[14]),
@@ -125,13 +125,26 @@ function importExcelTabFile(){
 
 
 		if ($document['id']=="") continue; //skip insert into db if empty
-		/*if ($document['id']=='3559') {
-			print_r($document);
-			return;
-		}*/
-		//echo ++$counter2.'<br>';
+
 		//print_r($document);
-		indexDocument($document);
+
+		//we need to modify the $document object before we feed it to solr
+		//so it indexes correctly
+		$solrDocument = $document;
+		global $contribtypes;
+		foreach (array_keys($contribtypes) as $ctype) {
+		  //sanity check
+		  if (!array_key_exists($ctype,$solrDocument)) continue;
+		  $contributors = $solrDocument[$ctype];
+		  $newContributors = array();
+		  foreach ($contributors as $contributor){
+			  $newContributors[] = $contributor[0];//we only need name for solr, not uri
+		  }
+		  $solrDocument[$ctype] = $newContributors;
+		}  
+		indexDocument($solrDocument);
+
+		//send unmodified document to database
 		insertDocDb($document);
 
 	}
@@ -140,7 +153,7 @@ function importExcelTabFile(){
 
 function insertDocDb($doc){
   global $mysqli;
-
+  
   $mid = $doc['id'];
   $title = $doc['title'];
   $publisher = $doc['publisher'];
@@ -217,14 +230,67 @@ function insertDocDb($doc){
   foreach ($doc['subject_heading'] as $subject_heading){
     $statement = $mysqli->prepare("INSERT INTO subject_headings (record_id,subject_heading)"
   								." VALUES (?,?)");
-    $statement->bind_param("is", $recordID,$subject_heading);
+    $statement->bind_param("is", $recordID,$subject_heading[0]);
 	$statement->execute();
     $statement->store_result();
   }
+  
+global $contribtypes;
+    foreach (array_keys($contribtypes) as $ctype) {
+		//sanity check
+		if (!array_key_exists($ctype,$doc)) continue;
 
-
-
-
+        foreach($doc[$ctype] as $contributor){
+            $cname = $contributor[0];
+            if($contributor[1] != null){
+                $curi = $contributor[1];
+            }else{
+                $curi = null;
+            }
+                $roleID = $contribtypes[$ctype];
+                $query = "SELECT localID, uri from names WHERE name = ?";
+                $statement = $mysqli->stmt_init();
+                if (!$statement->prepare($query)) {
+                    print 'Contributor update error: prepared statement failed';
+                } else {
+                    $statement->bind_param('s', $cname);
+                    $statement->execute();
+                    $statement->store_result();
+                    $statement->bind_result($localID, $uri);
+                    $statement->fetch();
+                    if ($localID === null) {
+                        $statement = $mysqli->prepare("INSERT INTO names (name, uri) VALUES(?,?)");
+                        $statement->bind_param('ss', $cname, $curi);
+                        $statement->execute();
+                        $statement->store_result();
+                        $localID = $statement->insert_id;
+                    } else {
+                        if ($curi != $uri && $curi != (null || '')) {
+                            #for typos, etc.; there is probably a better way of handling this
+                            $statement = $mysqli->prepare("UPDATE names SET note = ?, hasProblem = 1 WHERE localID = ?");
+                            $statement->bind_param('si', $curi, $localID);
+                            $statement->execute();
+                            $statement->store_result();
+                            $localID = $statement->insert_id;
+                        } else {
+                            #Either the uris are the same, or they aren't but this would be replacing a uri with a blank/null value
+                        }
+                    }
+                }
+                #Update contributor table
+                print("\n\t".$ctype  . ': ' . $cname ." (LOCAL ID: " . $localID. ') ; URI: ' . $curi . ' </br>');
+                $sql = "INSERT INTO contributors (record_id,contributor_id,role_id) VALUES (?,?,?)";
+                if ($contribstmt = $mysqli->prepare($sql)) {
+                    $contribstmt->bind_param("iii", $recordID, $localID, $roleID);
+                    $contribstmt->execute();
+                    $contribstmt->store_result();
+                } else {
+                    print "DIED";
+                    die("Errormessage: " . $mysqli->error);
+                }
+            }
+    }
+print("</br>");
 
 }
 

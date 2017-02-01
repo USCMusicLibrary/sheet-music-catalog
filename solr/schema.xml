@@ -144,14 +144,24 @@
    <field name="illustrator_facet"  type="string" indexed="true"  stored="true" multiValued="true"/>
    <copyField source="illustrator"    dest="illustrator_facet"/>
    
-   <!-- other_contributor -->
+   <!-- photographer -->
+   <field name="photographer" type="text_en_splitting" indexed="true" stored="true" required="false" multiValued="true" />
+   <field name="photographer_facet"  type="string" indexed="true"  stored="true" multiValued="true"/>
+   <copyField source="photographer"    dest="photographer_facet"/>
+   
+   <!-- editor -->
+   <field name="editor" type="text_en_splitting" indexed="true" stored="true" required="false" multiValued="true" />
+   <field name="editor_facet"  type="string" indexed="true"  stored="true" multiValued="true"/>
+   <copyField source="illustrator"    dest="illustrator_facet"/>
+   
+   <!-- other_contributor 
    <field name="other_contributor" type="text_en_splitting" indexed="true" stored="true" required="false" multiValued="true" />
    <field name="other_contributor_facet"  type="string" indexed="true"  stored="true" multiValued="true"/>
-   <copyField source="other_contributor"    dest="other_contributor_facet"/>
+   <copyField source="other_contributor"    dest="other_contributor_facet"/> -->
 
    <field name="years" type="int" indexed="true" stored="true" multiValued="true"/>
    <field name="years_text" type="string" indexed="true" stored="true" multiValued="true"/>
-   <copyField source="years"    dest="years_text"/>
+   <!-- <copyField source="years"    dest="years_text"/> -->
 
    <!-- Publisher -->   
    <field name="publisher" type="text_general" indexed="true" stored="true" required="false" multiValued="false" />

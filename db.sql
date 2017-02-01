@@ -28,8 +28,7 @@ CREATE TABLE alternative_titles (
 CREATE TABLE years (
   record_id int(11),
   start_year varchar(10),
-  end_year varchar(10),
-  PRIMARY KEY (id)
+  end_year varchar(10)
 );
 
 CREATE TABLE notes (
@@ -43,22 +42,26 @@ CREATE TABLE contributors (
   id int(11) NOT NULL AUTO_INCREMENT,
   record_id int(11) NOT NULL,
   contributor_id int(11) NOT NULL,
-  role_id varchar(255),
+  role_id int(2) NOT NULL,
   PRIMARY KEY (id)
 );
 
 CREATE TABLE roles (
   id int(11) NOT NULL AUTO_INCREMENT,
   role varchar(255),
+  relatorcode varchar(3),
   PRIMARY KEY (id)
 );
 
-CREATE TABLE tbl_name (
+CREATE TABLE names (
+  localID int(11) NOT NULL AUTO_INCREMENT,
   name varchar(255),
-  uri varchar(2000),,
-  nameUpdate varchar(100),
-  localID int(10) UNSIGNED NOT NULL
-)
+  uri varchar(100),
+  nameUpdate varchar(255),
+  note varchar(255),
+  hasProblem int(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (localID)
+);
 
 CREATE TABLE publisher_locations (
   id int(11) NOT NULL AUTO_INCREMENT,
@@ -94,3 +97,18 @@ CREATE TABLE hidden_subject_headings (
   hidden_subject_heading text,
   PRIMARY KEY (id)
 );
+
+
+/* sql to delete contents of tables */
+/* USE WITH CARE */
+truncate table alternative_titles;
+truncate table contributors;
+truncate table languages;
+truncate table names;
+truncate table notes;
+truncate table publisher_locations;
+truncate table records;
+truncate table roles;
+truncate table subject_headings;
+truncate table texts;
+truncate table years;

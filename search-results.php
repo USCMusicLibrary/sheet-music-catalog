@@ -53,7 +53,7 @@ $newFqField = array();
 foreach ($oldFqField as $fqField){
 	if ($fqField!='years'){
 		$newFqField[] = $fqField;
-		$newFq = $oldFq[$counter++];
+		$newFq[] = $oldFq[$counter++];
 	}
 }
 

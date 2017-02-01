@@ -49,13 +49,19 @@ $solrFieldNames = array(
 "illustrator" => array("field_title" => "Illustrator",
 	"display" => "full"
 ),
+"photographer" => array("field_title" => "Photographer",
+                      "display" => "full"
+),
+"editor" => array("field_title" => "Editor",
+                      "display" => "full"
+),
 "publisher_location" => array("field_title" => "Publisher location",
 	"display" => "full"
 ),
-"years_text" => array("field_title" => "Copyright Date",
+"years_text" => array("field_title" => "Date",
 	"display" => "full"
 ),
-"years" => array("field_title" => "Copyright Date",
+"years" => array("field_title" => "Date",
 	"display" => "full"
 ),
 "language" => array("field_title" => "Language",
@@ -102,7 +108,8 @@ $facetFields = array(
 		"lyricist_facet" => "Lyricist",
 		"arranger_facet" => "Arranger",
 		"illustrator_facet"=> "Illustrator",
-		//"photographer_facet" => "Photographer",
+		"photographer_facet" => "Photographer",
+                                    "editor_facet"  => "Editor",
 		"publisher_facet" => "Publisher",
 		"publisher_location_facet" => "Publisher Location",
 		"subject_heading_facet" => "LC Subject Headings",
@@ -121,7 +128,8 @@ $searchFields = array(
 'lyricist',
 'arranger',
 'illustrator',
-'other_contributor',
+'photographer',
+'editor',
 'years_text',
 'language',
 'text_t',
@@ -151,3 +159,6 @@ $advancedSearchFields = array (
 
 global $siteTitle;
 $siteTitle = "";
+
+global $contribtypes;
+$contribtypes = ['composer' => 0, 'lyricist' => 1, 'arranger' => 2, 'illustrator' => 3, 'editor' => 4, 'photographer' =>5, 'other' => 6];
