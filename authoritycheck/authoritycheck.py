@@ -30,8 +30,8 @@ from time import sleep
 from urllib.request import urlopen
 from sys import argv
 
-voc_dict = {"names":["tbl_name", "name"],
-            "subjects":["tbl_subject", "subject"]}
+voc_dict = {"names":["names", "name"],
+            "subjects":["subject_headings", "subject_heading"]}
 
 socket.setdefaulttimeout(10)
 #feedparser will hang without this
@@ -39,7 +39,7 @@ socket.setdefaulttimeout(10)
 #we do this so that we have the db configuration in a separate file 
 #TODO: test
 from past.builtins import execfile
-    execfile('dbconfig.py')
+execfile('dbconfig.py')
 
 
 def robotscheck():
@@ -263,7 +263,6 @@ to our local db; these will be applied later after approval."""
                     sql = "UPDATE `" + tableName + "` SET `" + labelColumn + "Update` =%s WHERE (`uri` = %s) AND (`" + labelColumn + "` != %s)"
                     #Sets nameUpdate to current name from id.loc if uri matches & names don't
                     cursor.execute(sql, (name, uri, name))
-                    #Do we need to commit?
 
             with open(lastupdatefile, "w", encoding="utf-8") as f:
                 #records uri, name, updatedate, feed page, and message from last update processed
@@ -282,13 +281,12 @@ Records update value to be applied pending approval"""
 
     date = datetime.date(datetime.now())
     today_date = str(date)
-    def on_failure(uri):
-        """If check_all fails, writes the URI that was being checked to a file.
-Eventually, we may use this to add the ability to pick up from where we left off."""
-        #might be good to add ability to pick up where we left off in case of error
-        errfile = 'check_all' + vocabulary + 'Error.txt'
+    def on_failure(uri, problem):
+        """If check_all fails, writes the URI that was being checked to a file"""
+        #TODO: add ability to pick up where we left off, based on the uri last checked
+        errfile = 'check_all' + vocabulary + '_Error.txt'
         with open(errfile, 'w', encoding = 'utf-8') as err:
-            err.write(uri)
+            err.write(uri + '\t' + problem)
 
     if vocabulary in voc_dict:
 
@@ -299,7 +297,7 @@ Eventually, we may use this to add the ability to pick up from where we left off
         name_dict = {}
 
         with Connection.cursor() as cursor:
-
+            #Remember to remove this limit and offset (or consider breaking this out & processing the list in chunks)
             sql_select = "SELECT `uri` FROM `" + tableName + "`"
 
             try:
@@ -312,17 +310,22 @@ Eventually, we may use this to add the ability to pick up from where we left off
 
             for r in results:
                 url = r['uri']
-                print(url)
 
-                if url == "":
+                if url == "" or url == None:
                     pass
 
                 else:
+                    print(url)
                     #lc doesn't care as long as one exists, but we should still come up with a better user-agent
                     m = re.match(r'http://(.*?)(/.*)', url)
                     conn = client.HTTPConnection(m.group(1))
                     headers = {'User-Agent': 'pythontest'}
-                    conn.request( "HEAD", m.group(2), headers=headers)
+                    try:
+                        conn.request( "HEAD", m.group(2), headers=headers)
+                    except socket.gaierror:
+                        print("Error while attempting to connect to host " + m.group(1))
+                        on_failure(url, "DNS Error (gaierror) while attempting to reach id.loc.gov")
+                        raise
 
                     try:
                         res = conn.getresponse()
@@ -337,37 +340,53 @@ Eventually, we may use this to add the ability to pick up from where we left off
                         except socket.timeout:
                             print("LC is busy right now; Try re-running script later.")
                             print("Writing uri for last record checked to vocab's error file")
-                            on_failure(url)
+                            on_failure(url, "Timeout error from id.loc.gov")
                             raise
 
                     except Exception as e:
                         print("We encountered an error while requesting header data from id.loc.gov")
                         print("Writing uri for last record checked to vocab's error file")
-                        on_failure(url)
+                        on_failure(url, "Unspecified issue retrieving data from id.loc.gov")
                         raise e
 
                     else:
                         name = res.getheader('X-PrefLabel')
-                        name = name.encode('ISO-8859-1').decode('utf-8')
-                        name_dict[url] = name
-                        sleep(int(naptime))
+                        
+                        try:
+                            name = name.encode('ISO-8859-1').decode('utf-8')
+                        except AttributeError:
+                            print(res.getheaders())
+                            print(res.status)
+                            print(res.reason)
+                            if res.getheader('X-Uri', default = None) != None:
+                                sql_update = "UPDATE `" + tableName + "` SET `note` ='::ERROR:: uri has been deprecated at id.loc.gov; check for replacement', `hasProblem` =1 WHERE `uri` = %s"
+                            else:
+                                sql_update = "UPDATE `" + tableName + "` SET `note` ='::ERROR:: There is a problem with this URI--typo, maybe?', `hasProblem` =1 WHERE `uri` = %s"
+                            cursor.execute(sql_update, url)
+                        else:
+                            
+                            if name == None or name == '':
+                                #for deleted records
+                                sql_update = "UPDATE `" + tableName + "` SET `note` ='::ERROR:: No name found', hasProblem = 1 WHERE `uri` = %s"
+                                cursor.execute(sql_update, url)
+    
+                            else:
+                                #Otherwise, set name field to X-PrefLabel value
+                                sql_update = "UPDATE `" + tableName + "` SET `"+labelColumn+"Update` = %s WHERE `uri` = %s AND " + labelColumn + " != %s"
+                                cursor.execute(sql_update, (name, url, name))
+                                                          
+                        finally:
+                            sleep(int(naptime))
 
-            with open("last_" + vocabulary + "_check_results.txt", "w", encoding='utf-8') as t:
-                for u, n in name_dict.items():
-                    if n == None:
-                        #for deleted records, set nameUpdate to "This item was deleted"; we can use this to filter deletions
-                        sql_update = "UPDATE `" + tableName + "` SET `" + labelColumn + "Update` ='record deleted' WHERE `uri` = %s"
-                        cursor.execute(sql_update, u)
-                        t.write(u + "\t" + "This item was deleted" + "\n")
-                    else:
-                        #Otherwise, set name field to X-PrefLabel value
-                        sql_update = "UPDATE `" + tableName + "` SET `" + labelColumn + "` =%s WHERE `uri` = %s"
-                        cursor.execute(sql_update, (n, u))
-                        t.write(u + "\t" + n + "\n")
+
+            sql = "SELECT name, uri, nameUpdate, note, hasProblem FROM "+tableName+" WHERE nameUpdate != NULL OR hasProblem = 1"
+            cursor.execute(sql)
+            results = cursor.fetchall()
+            print(results)
 
         with open("last_full_update_" + vocabulary + ".txt", "w", encoding='utf-8') as f:
             f.write(today_date)
-            #on completion, update file date & delete
+            #on completion, delete stale update data:
             try:
                 f = open("fp_last_" + vocabulary + ".txt", "r", encoding="utf-8")
 
