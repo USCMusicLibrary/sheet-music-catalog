@@ -29,9 +29,9 @@ $statement->bind_result($mid, $title, $publisher, $call_number, $series, $larger
 <th>Larger Work</th>
 <th>Collection Source</th>
 <th>Donor</th>
-<th>Scanning Technician</th>
+<!--<th>Scanning Technician</th>
 <th>Media Cataloguer</th>
-<th>Reviewer</th>
+<th>Reviewer</th>-->
               <th></th>
             </tr>
           </thead>
@@ -46,10 +46,10 @@ $statement->bind_result($mid, $title, $publisher, $call_number, $series, $larger
 <th><?php print $larger_work;?></th>
 <th><?php print $collection_source;?></th>
 <th><?php print $donor;?></th>
-<th><?php print $scanning_technician;?></th>
+<!--<th><?php print $scanning_technician;?></th>
 <th><?php print $media_cataloguer;?></th>
-<th><?php print $reviewer;?></th>
-                <th><a href="edit?id=<?php print $item['id'];?>" class="btn btn-danger">Edit</a></th>
+<th><?php print $reviewer;?></th>-->
+                <th><a href="edit?id=<?php print $mid;?>" class="btn btn-danger">Edit</a></th>
               </tr>
             <?php endwhile;?>
           </tbody>

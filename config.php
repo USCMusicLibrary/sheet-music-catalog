@@ -8,7 +8,7 @@ global $solrCoreName;
 $solrCoreName = "sheet-music-catalog";
 
 global $ROOTURL;
-$ROOTURL = "http://localhost/catalog/";
+$ROOTURL = "http://129.252.210.237/catalog/";
 
 global $solrUrl;
 $solrUrl = 'http://localhost:8983/solr/'.$solrCoreName.'/';
@@ -108,8 +108,8 @@ $facetFields = array(
 		"lyricist_facet" => "Lyricist",
 		"arranger_facet" => "Arranger",
 		"illustrator_facet"=> "Illustrator",
-		"photographer_facet" => "Photographer",
-                                    "editor_facet"  => "Editor",
+		//"photographer_facet" => "Photographer",
+          //                          "editor_facet"  => "Editor",
 		"publisher_facet" => "Publisher",
 		"publisher_location_facet" => "Publisher Location",
 		"subject_heading_facet" => "LC Subject Headings",
@@ -128,8 +128,8 @@ $searchFields = array(
 'lyricist',
 'arranger',
 'illustrator',
-'photographer',
-'editor',
+//'photographer',
+//'editor',
 'years_text',
 'language',
 'text_t',
