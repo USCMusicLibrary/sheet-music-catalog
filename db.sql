@@ -48,19 +48,18 @@ CREATE TABLE contributors (
 
 CREATE TABLE roles (
   id int(11) NOT NULL AUTO_INCREMENT,
-  role varchar(255),
+  role varchar(75),
   relatorcode varchar(3),
   PRIMARY KEY (id)
 );
 
 CREATE TABLE names (
-  localID int(11) NOT NULL AUTO_INCREMENT,
+  id int(11) NOT NULL AUTO_INCREMENT,
   name varchar(255),
   uri varchar(100),
   nameUpdate varchar(255),
-  note varchar(255),
-  hasProblem int(1) NOT NULL DEFAULT '0',
-  PRIMARY KEY (localID)
+  problem_note varchar(255),
+  PRIMARY KEY (id)
 );
 
 CREATE TABLE publisher_locations (
@@ -86,9 +85,18 @@ CREATE TABLE languages (
 
 CREATE TABLE subject_headings (
   id int(11) NOT NULL AUTO_INCREMENT,
-  record_id int(11) NOT NULL,
+  uri varchar(100),
   subject_heading text,
+  subjectUpdate varchar(255),
+  problem_note varchar(255),
   PRIMARY KEY (id)
+);
+
+CREATE TABLE has_subject (
+ id int(11) NOT NULL AUTO_INCREMENT,
+ record_id int(11) NOT NULL,
+ subject_id int(11) NOT NULL,
+ PRIMARY KEY(id)
 );
 
 CREATE TABLE hidden_subject_headings (
@@ -112,3 +120,4 @@ truncate table roles;
 truncate table subject_headings;
 truncate table texts;
 truncate table years;
+truncate table has_subject;

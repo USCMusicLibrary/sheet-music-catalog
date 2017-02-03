@@ -8,7 +8,8 @@ global $solrCoreName;
 $solrCoreName = "sheet-music-catalog";
 
 global $ROOTURL;
-$ROOTURL = "http://129.252.210.237/catalog/";
+$ROOTURL = "http://localhost/catalog/";
+//$ROOTURL = "http://129.252.210.237/catalog/";
 
 global $solrUrl;
 $solrUrl = 'http://localhost:8983/solr/'.$solrCoreName.'/';
@@ -108,8 +109,8 @@ $facetFields = array(
 		"lyricist_facet" => "Lyricist",
 		"arranger_facet" => "Arranger",
 		"illustrator_facet"=> "Illustrator",
-		//"photographer_facet" => "Photographer",
-          //                          "editor_facet"  => "Editor",
+		"photographer_facet" => "Photographer",
+                "editor_facet"  => "Editor",
 		"publisher_facet" => "Publisher",
 		"publisher_location_facet" => "Publisher Location",
 		"subject_heading_facet" => "LC Subject Headings",
@@ -128,8 +129,8 @@ $searchFields = array(
 'lyricist',
 'arranger',
 'illustrator',
-//'photographer',
-//'editor',
+'photographer',
+'editor',
 'years_text',
 'language',
 'text_t',
@@ -161,4 +162,17 @@ global $siteTitle;
 $siteTitle = "";
 
 global $contribtypes;
-$contribtypes = ['composer' => 0, 'lyricist' => 1, 'arranger' => 2, 'illustrator' => 3, 'editor' => 4, 'photographer' =>5, 'other' => 6];
+//Supported MARC relator terms
+$contribtypes = array(
+    'composer' => 0, 
+    'lyricist' => 1, 
+    'arranger' => 2,
+    'illustrator' => 3, 
+    'editor' => 4, 
+    'photographer' =>5, 
+    'other' => 6
+    );
+
+global $other_heading_types;
+//Non-lcnaf controlled vocabularies for which we are recording URIs:
+$other_heading_types = array('subject_heading');
