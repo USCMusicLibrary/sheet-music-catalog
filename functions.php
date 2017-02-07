@@ -141,7 +141,14 @@ function importExcelTabFile(){
 			  $newContributors[] = $contributor[0];//we only need name for solr, not uri
 		  }
 		  $solrDocument[$ctype] = $newContributors;
-		}  
+		}
+                                    if(!array_key_exists('subject_heading', $solrDocument)) continue;
+                                    $newSubjects = array();
+                                    $subjects = $solrDocument['subject_heading'];
+                                    foreach($subjects as $subject){
+                                        $newSubjects[] = $subject[0];
+                                    }
+                                    $solrDocument['subject_heading'] = $newSubjects;
 		indexDocument($solrDocument);
 
 		//send unmodified document to database
@@ -226,74 +233,95 @@ function insertDocDb($doc){
 	$statement->execute();
     $statement->store_result();
   }
-
-  foreach ($doc['subject_heading'] as $subject_heading){
-    $statement = $mysqli->prepare("INSERT INTO subject_headings (record_id,subject_heading)"
-  								." VALUES (?,?)");
-    $statement->bind_param("is", $recordID,$subject_heading[0]);
-	$statement->execute();
-    $statement->store_result();
-  }
   
 global $contribtypes;
-    foreach (array_keys($contribtypes) as $ctype) {
+global $other_heading_types;
+    $contributor_headings = array_keys($contribtypes);
+    $headingtypes = array_merge($contributor_headings, $other_heading_types);
+    foreach ( $headingtypes as $htype) {
 		//sanity check
-		if (!array_key_exists($ctype,$doc)) continue;
-
-        foreach($doc[$ctype] as $contributor){
-            $cname = $contributor[0];
-            if($contributor[1] != null){
-                $curi = $contributor[1];
+		if (!array_key_exists($htype,$doc)) continue;
+            foreach($doc[$htype] as $heading){
+            $label = $heading[0];
+            if($heading[1] != null){
+                $uri = $heading[1];
             }else{
-                $curi = null;
+                $uri = null;
             }
-                $roleID = $contribtypes[$ctype];
-                $query = "SELECT localID, uri from names WHERE name = ?";
+                if($htype == 'subject_heading'){
+                    $table = 'subject_headings';
+                    $labelfield = 'subject_heading';
+                    $crosstable = 'has_subject';
+                    $crossID = 'subject_id';
+                    #Any additional supported vocabularies will follow as else ifs here
+                }else{
+                    $table = 'names';
+                    $roleID = $contribtypes[$htype];
+                    $labelfield = 'name';
+                    $crosstable = 'contributors';
+                    $crossID = 'contributor_id';
+                }
+                $query = "SELECT id, uri from ".$table.' WHERE '.$labelfield.' = ?';
                 $statement = $mysqli->stmt_init();
                 if (!$statement->prepare($query)) {
-                    print 'Contributor update error: prepared statement failed';
+                    print 'Complex field update error: prepared statement failed';
                 } else {
-                    $statement->bind_param('s', $cname);
+                    $statement->bind_param('s', $label);
                     $statement->execute();
                     $statement->store_result();
-                    $statement->bind_result($localID, $uri);
+                    $statement->bind_result($localID, $localUri);
                     $statement->fetch();
                     if ($localID === null) {
-                        $statement = $mysqli->prepare("INSERT INTO names (name, uri) VALUES(?,?)");
-                        $statement->bind_param('ss', $cname, $curi);
+                        $statement = $mysqli->prepare("INSERT INTO ".$table.' ('.$labelfield.', uri) VALUES(?,?)');
+                        $statement->bind_param('ss', $label, $uri);
                         $statement->execute();
                         $statement->store_result();
                         $localID = $statement->insert_id;
                     } else {
-                        if ($curi != $uri && $curi != (null || '')) {
+                        if ($uri != $localUri && $uri !='') {
                             #for typos, etc.; there is probably a better way of handling this
-                            $statement = $mysqli->prepare("UPDATE names SET note = ?, hasProblem = 1 WHERE localID = ?");
-                            $statement->bind_param('si', $curi, $localID);
+                            $query = "UPDATE ".$table." SET problem_note = ? WHERE id = ?";
+                            $statement = $mysqli->stmt_init();
+                            if (!$statement ->prepare($query)){
+                                    print "Differing URI prepare statement failed";
+                                    print_r( $statement->error_list) ;
+                            }else{
+                                    $statement->bind_param('si', $uri, $localID);
                             $statement->execute();
                             $statement->store_result();
                             $localID = $statement->insert_id;
+                            
+                            }
                         } else {
                             #Either the uris are the same, or they aren't but this would be replacing a uri with a blank/null value
                         }
                     }
                 }
-                #Update contributor table
-                print("\n\t".$ctype  . ': ' . $cname ." (LOCAL ID: " . $localID. ') ; URI: ' . $curi . ' </br>');
-                $sql = "INSERT INTO contributors (record_id,contributor_id,role_id) VALUES (?,?,?)";
-                if ($contribstmt = $mysqli->prepare($sql)) {
-                    $contribstmt->bind_param("iii", $recordID, $localID, $roleID);
-                    $contribstmt->execute();
-                    $contribstmt->store_result();
+                #Update crosstable
+                print("\n\t".$htype  . ': ' . $label ." (LOCAL ID: " . $localID. ') ; URI: ' . $uri . ' </br>');
+                if ($crosstable == 'contributors'){
+                    $sql = "INSERT INTO ".$crosstable." (record_id,".$crossID.",role_id) VALUES (?,?,?)";
+                    $params = [&$recordID, &$localID, &$roleID];
+                    $type = 'iii';
+                    
                 } else {
-                    print "DIED";
+                    $sql = "INSERT INTO ".$crosstable." (record_id,".$crossID.") VALUES (?,?)";
+                    $params = [&$recordID, &$localID];
+                    $type = 'ii';
+                }
+                if ($contribstmt = $mysqli->prepare($sql)) {
+                       call_user_func_array(array($contribstmt, "bind_param"), array_merge(array($type), $params));
+                       $contribstmt->execute();
+                       $contribstmt->store_result();
+                } else {
+                    print "DIED:\n";
                     die("Errormessage: " . $mysqli->error);
+                }     
                 }
             }
+    
     }
 print("</br>");
-
-}
-
 
 //TODO: Please add error checking!!!
 function parseDate($dateString){
