@@ -70,7 +70,7 @@ function importExcelTabFile(){
 				$vals = explode('|',$val);
                 $nVal = trim($vals[0]);
                 $uVal = trim($vals[1]);
-                $finalValues[] = [$nVal, $uVal];
+				$finalValues[] = array($nVal, $uVal);
 			}
 			return $finalValues;
 		};
