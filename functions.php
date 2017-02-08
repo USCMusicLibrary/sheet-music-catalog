@@ -504,6 +504,9 @@ function buildSolrQuery($query){
 		if ($queryPartial[0]=='all'){
 			$queryString = $queryString.buildQueryForAllFields($queryPartial[2]);
 		}
+		else if ($queryPartial[0]=='contributor'){//temporary
+			$queryString = $queryString.buildQueryForContributors($queryPartial[2]);
+		}
 		else {
 			$queryString = $queryString.$queryPartial[0]/*field*/.':('.urlencode($queryPartial[2]).')%0A';
 		}
@@ -547,6 +550,15 @@ Copyright (Use Rights)
 Date (slider to select range)
 		 * */
 
+	return $queryString;
+}
+
+function buildQueryForContributors($query){
+	$queryString = '';
+	global $contribtypes;
+	foreach ($contribtypes as $field=>$value){
+		$queryString = $queryString.$field.':('.urlencode($query).')%0A';
+	}
 	return $queryString;
 }
 
