@@ -8,10 +8,10 @@ require "../functions.php";
 
 $dialog = "";
 if (isset($_POST["username"], $_POST["password1"], $_POST["password2"], $_POST["email"])) {
-  require_once "includes/adminFunctions.php";
+  require_once "adminFunctions.php";
   $dialog = register($_POST["username"], $_POST["password1"], $_POST["password2"], $_POST["email"]);
   if (strcmp($dialog, "Success") === 0) {
-    header("Location: account");
+    header("Location: users");
   }
 }
 

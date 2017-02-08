@@ -21,7 +21,7 @@ ini_set("display_errors", "On");
  * well enable catpcha later on
  * @param {String} $captcha: The CAPTCHA value.
  */
-function register($username, $password1, $password2, $email, $captcha) {
+function register($username, $password1, $password2, $email/*, $captcha*/) {
   global $mysqli;
   $email     = $mysqli->real_escape_string(trim($email));
   $username  = $mysqli->real_escape_string(trim($username));
