@@ -154,10 +154,10 @@
    <field name="editor_facet"  type="string" indexed="true"  stored="true" multiValued="true"/>
    <copyField source="illustrator"    dest="illustrator_facet"/>
    
-   <!-- other_contributor 
+   <!-- other_contributor -->
    <field name="other_contributor" type="text_en_splitting" indexed="true" stored="true" required="false" multiValued="true" />
    <field name="other_contributor_facet"  type="string" indexed="true"  stored="true" multiValued="true"/>
-   <copyField source="other_contributor"    dest="other_contributor_facet"/> -->
+   <copyField source="other_contributor"    dest="other_contributor_facet"/>
 
    <field name="years" type="int" indexed="true" stored="true" multiValued="true"/>
    <field name="years_text" type="string" indexed="true" stored="true" multiValued="true"/>

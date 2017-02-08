@@ -170,7 +170,7 @@ $contribtypes = array(
     'illustrator' => 3, 
     'editor' => 4, 
     'photographer' =>5, 
-    'other' => 6
+    'other_contributor' => 6
     );
 
 global $other_heading_types;

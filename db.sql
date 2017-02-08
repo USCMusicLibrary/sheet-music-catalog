@@ -106,6 +106,18 @@ CREATE TABLE hidden_subject_headings (
   PRIMARY KEY (id)
 );
 
+CREATE TABLE users (
+  id int(11) NOT NULL AUTO_INCREMENT,
+  username varchar(255) DEFAULT NULL,
+  password_hash varchar(255) DEFAULT NULL,
+  user_role varchar(255),
+  email varchar(255),
+  email_verify tinyint(1),
+  request_time datetime DEFAULT "0000-00-00 00:00:00",
+  password_uid varchar(255),
+  PRIMARY KEY (id)
+);
+
 
 /* sql to delete contents of tables */
 /* USE WITH CARE */
