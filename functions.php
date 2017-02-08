@@ -11,81 +11,81 @@ require_once('db-config.php');
 
 
 function importExcelTabFile(){
-	global $mysqli;
-	$file = NULL;
-	ini_set("auto_detect_line_endings", true);
-	try {
-	$file = new SplFileObject("uploads/sm_db_backup.tsv");
-	}
-	catch (Exception $error){
-		echo '<div class="jumbotron"><h1 class="text-danger">Unable to open uploaded file. Please try again.</h1><p>'.$error->getMessage().'</p></div>';
-		return;
-	}
+  global $mysqli;
+  $file = NULL;
+  ini_set("auto_detect_line_endings", true);
+  try {
+  $file = new SplFileObject("uploads/sm_db_backup.tsv");
+  }
+  catch (Exception $error){
+    echo '<div class="jumbotron"><h1 class="text-danger">Unable to open uploaded file. Please try again.</h1><p>'.$error->getMessage().'</p></div>';
+    return;
+  }
 
-	/*
-	$ch = curl_init();
-	curl_setopt_array($ch, array(
+  /*
+  $ch = curl_init();
+  curl_setopt_array($ch, array(
       CURLOPT_RETURNTRANSFER => 1,
       CURLOPT_URL => $_SERVER['HTTP_HOST'].'/sheetmusic/smdbJune2.txt',
-	));
+  ));
 
-	print  $_SERVER['HTTP_HOST'].'/sheetmusic/smdbJune2.txt';
+  print  $_SERVER['HTTP_HOST'].'/sheetmusic/smdbJune2.txt';
 
-	$curlResponse = curl_exec($ch);
-	if (curl_error($ch)){
-		throw new Exception('Unable to read file.');
-	}
+  $curlResponse = curl_exec($ch);
+  if (curl_error($ch)){
+    throw new Exception('Unable to read file.');
+  }
 
-	//print $curlResponse;
-	$lines = explode('\n',$curlResponse);
-	print_r ($lines);*/
-	$counter=0;
+  //print $curlResponse;
+  $lines = explode('\n',$curlResponse);
+  print_r ($lines);*/
+  $counter=0;
 
-	$counter2=0;
+  $counter2=0;
 
-	while ($line= $file->fgets()) {
+  while ($line= $file->fgets()) {
 
-		if ($counter++ == 0) {
-			continue; //discard first line because it only contains headers
-		}
-		//echo $line.'<br>';
-		//$line= utf8_encode($line);
-		//echo $line.'<br>';
-    	$line2 =  preg_replace('/\\t"/',"\t",$line);
-		//echo $line2.'<br>';
-		$line3 =  preg_replace('/"\\t/',"\t",$line2);
-		//echo $line3.'<br>';
-		$line4 =  preg_replace('/""/','"',$line3);
-		//echo $line4.'<br>';
+    if ($counter++ == 0) {
+      continue; //discard first line because it only contains headers
+    }
+    //echo $line.'<br>';
+    //$line= utf8_encode($line);
+    //echo $line.'<br>';
+      $line2 =  preg_replace('/\\t"/',"\t",$line);
+    //echo $line2.'<br>';
+    $line3 =  preg_replace('/"\\t/',"\t",$line2);
+    //echo $line3.'<br>';
+    $line4 =  preg_replace('/""/','"',$line3);
+    //echo $line4.'<br>';
 
-		$fields = explode("\t",$line4);
+    $fields = explode("\t",$line4);
 
-		print $fields[1].' '.$counter;
+    print $fields[1].' '.$counter;
 
-		//function to parse fields with uri data in them
-		$parseURIData = function ($rawValue){
-			$values = array_filter(explode( ' ; ',trim($rawValue)));
-			$finalValues = array();
-			foreach ($values as $val){
-				$vals = explode('|',$val);
+    //function to parse fields with uri data in them
+    $parseURIData = function ($rawValue){
+      $values = array_filter(explode( ' ; ',trim($rawValue)));
+      $finalValues = array();
+      foreach ($values as $val){
+        $vals = explode('|',$val);
                 $nVal = trim($vals[0]);
                 $uVal = trim($vals[1]);
-				$finalValues[] = array($nVal, $uVal);
-			}
-			return $finalValues;
-		};
+        $finalValues[] = array($nVal, $uVal);
+      }
+      return $finalValues;
+    };
 
-		$text_t = array();
-		$texts = array_filter(explode( '::',trim($fields[8])));
-		foreach ( $texts as $text){
-			$newText = trim($text);
-			$newText = preg_replace('/\|/',': ',$newText);
-			$text_t[] = $newText;
-		}
+    $text_t = array();
+    $texts = array_filter(explode( '::',trim($fields[8])));
+    foreach ( $texts as $text){
+      $newText = trim($text);
+      $newText = preg_replace('/\|/',': ',$newText);
+      $text_t[] = $newText;
+    }
 
-		//print_r( $texts );
-		$document = array (
-				'id' => $fields[1],
+    //print_r( $texts );
+    $document = array (
+        'id' => $fields[1],
 'title' => $fields[9],
 'alternative_title' => explode('|',trim($fields[5])),
 'composer' => $parseURIData($fields[10]),
@@ -121,27 +121,27 @@ function importExcelTabFile(){
 //'zNumberOfPages' => $fields[31],
 //'TitleSearchHits' => $fields[32],
 //'Incomplete' => $fields[33]
-		);
+    );
 
 
-		if ($document['id']=="") continue; //skip insert into db if empty
+    if ($document['id']=="") continue; //skip insert into db if empty
 
-		//print_r($document);
+    //print_r($document);
 
-		//we need to modify the $document object before we feed it to solr
-		//so it indexes correctly
-		$solrDocument = $document;
-		global $contribtypes;
-		foreach (array_keys($contribtypes) as $ctype) {
-		  //sanity check
-		  if (!array_key_exists($ctype,$solrDocument)) continue;
-		  $contributors = $solrDocument[$ctype];
-		  $newContributors = array();
-		  foreach ($contributors as $contributor){
-			  $newContributors[] = $contributor[0];//we only need name for solr, not uri
-		  }
-		  $solrDocument[$ctype] = $newContributors;
-		}
+    //we need to modify the $document object before we feed it to solr
+    //so it indexes correctly
+    $solrDocument = $document;
+    global $contribtypes;
+    foreach (array_keys($contribtypes) as $ctype) {
+      //sanity check
+      if (!array_key_exists($ctype,$solrDocument)) continue;
+      $contributors = $solrDocument[$ctype];
+      $newContributors = array();
+      foreach ($contributors as $contributor){
+        $newContributors[] = $contributor[0];//we only need name for solr, not uri
+      }
+      $solrDocument[$ctype] = $newContributors;
+    }
                                     if(!array_key_exists('subject_heading', $solrDocument)) continue;
                                     $newSubjects = array();
                                     $subjects = $solrDocument['subject_heading'];
@@ -149,12 +149,12 @@ function importExcelTabFile(){
                                         $newSubjects[] = $subject[0];
                                     }
                                     $solrDocument['subject_heading'] = $newSubjects;
-		indexDocument($solrDocument);
+    indexDocument($solrDocument);
 
-		//send unmodified document to database
-		insertDocDb($document);
+    //send unmodified document to database
+    insertDocDb($document);
 
-	}
+  }
 }
 
 
@@ -174,19 +174,19 @@ function insertDocDb($doc){
   $reviewer = array_key_exists('reviewer',$doc)?$doc['reviewer']:"";
 
   $statement = $mysqli->prepare("INSERT INTO records (mid,title,publisher,call_number,series,larger_work,collection_source,donor,scanning_technician,media_cataloguer,reviewer)"
-  								." VALUES (?,?,?,?,?,?,?,?,?,?,?)");
+                  ." VALUES (?,?,?,?,?,?,?,?,?,?,?)");
   //var_dump($doc);
   $statement->bind_param("issssssssss",$mid, 
-							$title, 
-							$publisher, 
-							$call_number, 
-							$series, 
-							$larger_work, 
-							$collection_source, 
-							$donor, 
-							$scanning_technician, 
-							$media_cataloguer, 
-							$reviewer);
+              $title, 
+              $publisher, 
+              $call_number, 
+              $series, 
+              $larger_work, 
+              $collection_source, 
+              $donor, 
+              $scanning_technician, 
+              $media_cataloguer, 
+              $reviewer);
   $statement->execute();
   $statement->store_result();
 
@@ -196,41 +196,41 @@ function insertDocDb($doc){
 
   foreach ($doc['alternative_title'] as $alternative_title){
     $statement = $mysqli->prepare("INSERT INTO alternative_titles (record_id,alternative_title)"
-  								." VALUES (?,?)");
+                  ." VALUES (?,?)");
     $statement->bind_param("is", $recordID,$alternative_title);
-	$statement->execute();
+    $statement->execute();
     $statement->store_result();
   }
 
   foreach ($doc['notes'] as $note){
     $statement = $mysqli->prepare("INSERT INTO notes (record_id,note)"
-  								." VALUES (?,?)");
+                  ." VALUES (?,?)");
     $statement->bind_param("is", $recordID,$note);
-	$statement->execute();
+    $statement->execute();
     $statement->store_result();
   }
 
   foreach ($doc['text_t'] as $text){
     $statement = $mysqli->prepare("INSERT INTO texts (record_id,text_t)"
-  								." VALUES (?,?)");
+                  ." VALUES (?,?)");
     $statement->bind_param("is", $recordID,$text);
-	$statement->execute();
+    $statement->execute();
     $statement->store_result();
   }
 
   foreach ($doc['publisher_location'] as $publisher_location){
     $statement = $mysqli->prepare("INSERT INTO publisher_locations (record_id,publisher_location)"
-  								." VALUES (?,?)");
+                  ." VALUES (?,?)");
     $statement->bind_param("is", $recordID,$publisher_location);
-	$statement->execute();
+  $statement->execute();
     $statement->store_result();
   }
 
   foreach ($doc['language'] as $language){
     $statement = $mysqli->prepare("INSERT INTO languages (record_id,language)"
-  								." VALUES (?,?)");
+                  ." VALUES (?,?)");
     $statement->bind_param("is", $recordID,$language);
-	$statement->execute();
+  $statement->execute();
     $statement->store_result();
   }
   
@@ -239,8 +239,8 @@ global $other_heading_types;
     $contributor_headings = array_keys($contribtypes);
     $headingtypes = array_merge($contributor_headings, $other_heading_types);
     foreach ( $headingtypes as $htype) {
-		//sanity check
-		if (!array_key_exists($htype,$doc)) continue;
+    //sanity check
+    if (!array_key_exists($htype,$doc)) continue;
             foreach($doc[$htype] as $heading){
             $label = $heading[0];
             if($heading[1] != null){
@@ -325,19 +325,19 @@ print("</br>");
 
 //TODO: Please add error checking!!!
 function parseDate($dateString){
-	$parts = explode('-',$dateString);
-	if (sizeof($parts)==1) {
-		return (int)$parts[0];
-	}
-	else if (sizeof($parts)==2){
-		$years = array();
-		while ($parts[0]<=$parts[1]){
-			$years[] = $parts[0];
-			$parts[0]++;
-		}
-		return $years;
-	}
-	else return 0;
+  $parts = explode('-',$dateString);
+  if (sizeof($parts)==1) {
+    return (int)$parts[0];
+  }
+  else if (sizeof($parts)==2){
+    $years = array();
+    while ($parts[0]<=$parts[1]){
+      $years[] = $parts[0];
+      $parts[0]++;
+    }
+    return $years;
+  }
+  else return 0;
 }
 
 
@@ -359,17 +359,17 @@ function parseDate($dateString){
  *
  */
 function indexDocument($doc){
-	//print 'indexDocument()<br>';
-	$data = array(
-			'add' => array (
-					'doc' => $doc
-			)
-	);
-	$data_string = json_encode($data);
-	print 'curl_exec() done <br>';
-	//print_r($doc);
-	print '<br>';
-	return postJsonDataToSolr($data_string, 'update');
+  //print 'indexDocument()<br>';
+  $data = array(
+      'add' => array (
+          'doc' => $doc
+      )
+  );
+  $data_string = json_encode($data);
+  print 'curl_exec() done <br>';
+  //print_r($doc);
+  print '<br>';
+  return postJsonDataToSolr($data_string, 'update');
 }
 /* function commitIndex()
  * commits all pending changes in solr
@@ -377,11 +377,11 @@ function indexDocument($doc){
  * @return {int}: result value of postJsonDataToSolr();
  */
 function commitIndex(){
-	$data = array(
-			'commit' => new stdClass()
-	);
-	$data_string = json_encode($data);
-	return postJsonDataToSolr($data_string, 'update');
+  $data = array(
+      'commit' => new stdClass()
+  );
+  $data_string = json_encode($data);
+  return postJsonDataToSolr($data_string, 'update');
 }
 /* function delete_all()
  * deletes all documents in solr
@@ -389,16 +389,16 @@ function commitIndex(){
  * @return {int}: result value of postJsonDataToSolr();
  */
 function delete_all(){
-	print 'delete_all();<br>';
-	$data = array(
-			'delete' => array(
-						'query' => '*:*'
-					),
-			'commit' => new stdClass()
-	);
-	$data_string = json_encode($data);
-	print $data_string;
-	return postJsonDataToSolr($data_string, 'update');
+  print 'delete_all();<br>';
+  $data = array(
+      'delete' => array(
+            'query' => '*:*'
+          ),
+      'commit' => new stdClass()
+  );
+  $data_string = json_encode($data);
+  print $data_string;
+  return postJsonDataToSolr($data_string, 'update');
 }
 /* function postJsonDataToSolr($data, $action)
  * posts a json-formatted string to solr
@@ -412,29 +412,29 @@ function delete_all(){
  *   sets appropriate global $lastError message
  */
 function postJsonDataToSolr($data, $action){
-	global $solrUrl;
-	$url = $solrUrl.$action;
-	print $url;
-	//validate json data
-	if (json_decode($data)==NULL){
-		echo '<div class="col-xs-12"><h1 class="text-danger">postJsonData() invalid Json</h1><p><pre>'.json_last_error().'<br>'.json_last_error_msg().'</pre></p></div>';
-		$lastError = 'postJsonDataToSolr(): Invalid Json: '.json_last_error().' - '.json_last_error_msg();
-		return false;
-	}
+  global $solrUrl;
+  $url = $solrUrl.$action;
+  print $url;
+  //validate json data
+  if (json_decode($data)==NULL){
+    echo '<div class="col-xs-12"><h1 class="text-danger">postJsonData() invalid Json</h1><p><pre>'.json_last_error().'<br>'.json_last_error_msg().'</pre></p></div>';
+    $lastError = 'postJsonDataToSolr(): Invalid Json: '.json_last_error().' - '.json_last_error_msg();
+    return false;
+  }
 
-	$ch = curl_init($url);
-	curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
-	curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
-	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-	curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-			'Content-Type: application/json',
-			'Content-Length: ' . strlen($data))
-			);
+  $ch = curl_init($url);
+  curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+  curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+  curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+  curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+      'Content-Type: application/json',
+      'Content-Length: ' . strlen($data))
+      );
 
-	$result = curl_exec($ch);
-	//print_r($data);
-	print_r($result);
-	return true;
+  $result = curl_exec($ch);
+  //print_r($data);
+  print_r($result);
+  return true;
 }
 
 
@@ -453,31 +453,31 @@ function postJsonDataToSolr($data, $action){
  */
 function getResultsFromSolr($query){
 
-	$queryString = buildSolrQuery($query);
+  $queryString = buildSolrQuery($query);
 
 
-	$ch = curl_init();
-	curl_setopt_array($ch, array(
+  $ch = curl_init();
+  curl_setopt_array($ch, array(
       CURLOPT_RETURNTRANSFER => 1,
       CURLOPT_URL => $queryString,
-	));
+  ));
 
-	$jsonResponse = curl_exec($ch);
-	if (curl_error($ch)){
-		throw new Exception('Unable to connect to search engine.');
-	}
-	//$jsonResponse = file_get_contents($queryString);
+  $jsonResponse = curl_exec($ch);
+  if (curl_error($ch)){
+    throw new Exception('Unable to connect to search engine.');
+  }
+  //$jsonResponse = file_get_contents($queryString);
 
-	print $queryString;
+  print $queryString;
 
-	if ($jsonResponse === false) return false;
+  if ($jsonResponse === false) return false;
 
-	$responseArray = json_decode($jsonResponse,true);
+  $responseArray = json_decode($jsonResponse,true);
 
-	$searchResults = $responseArray/*["response"]*/;
+  $searchResults = $responseArray/*["response"]*/;
 
 
-	return $searchResults;
+  return $searchResults;
 
 }
 
@@ -491,9 +491,9 @@ function getResultsFromSolr($query){
  */
 function buildSolrQuery($query){
 
-	$queryString = 'q=';
+  $queryString = 'q=';
 
-	$queryArray = $query['queryArray'];
+  $queryArray = $query['queryArray'];
 
 	$counter=0;
 	foreach ($queryArray as $queryPartial){ //$queryPartial = array($_GET['f'][$counter],$_GET['op'][$counter],$query);
@@ -512,35 +512,35 @@ function buildSolrQuery($query){
 		}
 
 
-	}
+  }
 
-	//filter queries
-	$counter=0;
-	foreach ($query['fq'] as $fq){
-		$queryString = $queryString.'&fq='.urlencode($query['fq_field'][$counter++]).':'.urlencode($fq);
-	}
+  //filter queries
+  $counter=0;
+  foreach ($query['fq'] as $fq){
+    $queryString = $queryString.'&fq='.urlencode($query['fq_field'][$counter++]).':'.urlencode($fq);
+  }
 
 
-	global $solrUrl;
-	global $solrResultsHighlightTag;
+  global $solrUrl;
+  global $solrResultsHighlightTag;
 
-	$queryString = $solrUrl
-		.'select?'.$queryString.'&start='.$query['start'].'&rows='.$query['rows']
-		.'&wt=json&hl=true&hl.simple.pre='.urlencode('<'.$solrResultsHighlightTag.'>')
-		.'&hl.simple.post='.urlencode('</'.$solrResultsHighlightTag.'>')
-		.'&hl.fl=*&facet=true';
+  $queryString = $solrUrl
+    .'select?'.$queryString.'&start='.$query['start'].'&rows='.$query['rows']
+    .'&wt=json&hl=true&hl.simple.pre='.urlencode('<'.$solrResultsHighlightTag.'>')
+    .'&hl.simple.post='.urlencode('</'.$solrResultsHighlightTag.'>')
+    .'&hl.fl=*&facet=true';
 
 global $facetFields;
 foreach ($facetFields as $key=>$val){
   $queryString = $queryString.'&facet.field='.$key;
-		/*'&facet.field=publisher_facet&facet.field=publisher_location_facet'
-		.'&facet.field=language&facet.field=subject_heading_facet&facet.field=composer_facet'
-		.'&facet.field=years&facet.field=arranger_facet&facet.field=illustrator_facet&facet.field=lyricist_facet&stats=true&stats.field=years&indent=true';*/
+    /*'&facet.field=publisher_facet&facet.field=publisher_location_facet'
+    .'&facet.field=language&facet.field=subject_heading_facet&facet.field=composer_facet'
+    .'&facet.field=years&facet.field=arranger_facet&facet.field=illustrator_facet&facet.field=lyricist_facet&stats=true&stats.field=years&indent=true';*/
 }
 
 $queryString = $queryString.'&stats=true&stats.field=years&indent=true';
-		/*
-		 * Archive (Digital collection)
+    /*
+     * Archive (Digital collection)
 Contributing Institution
 Type of content
 LC Subject Headings
@@ -548,9 +548,9 @@ File Format
 Language
 Copyright (Use Rights)
 Date (slider to select range)
-		 * */
+     * */
 
-	return $queryString;
+  return $queryString;
 }
 
 function buildQueryForContributors($query){
@@ -570,24 +570,24 @@ function buildQueryForContributors($query){
  * @return {string}: a solr query that will search all fields for $query
  */
 function buildQueryForAllFields($query){
-	$queryString = '';
-	global $searchFields;
-	foreach ($searchFields as $field){
-		$queryString = $queryString.$field.':('.urlencode($query);
-		if ($field =="title"){
-			$queryString = $queryString.')^4%0A';
-		}
-		else if ($field =="composer"){
-			$queryString = $queryString.')^3%0A';
-		}
-		else if ($field =="text_t"){
-			$queryString = $queryString.')^2%0A';
-		}
-		else {
-			$queryString = $queryString.')%0A';
-		}
-	}
-	return $queryString;
+  $queryString = '';
+  global $searchFields;
+  foreach ($searchFields as $field){
+    $queryString = $queryString.$field.':('.urlencode($query);
+    if ($field =="title"){
+      $queryString = $queryString.')^4%0A';
+    }
+    else if ($field =="composer"){
+      $queryString = $queryString.')^3%0A';
+    }
+    else if ($field =="text_t"){
+      $queryString = $queryString.')^2%0A';
+    }
+    else {
+      $queryString = $queryString.')%0A';
+    }
+  }
+  return $queryString;
 }
 
 /* function buildFacetFilterQuery($facet,$query)
@@ -601,20 +601,20 @@ function buildQueryForAllFields($query){
  * @return {string}: href-ready value for a filter query link
  */
 function buildFacetFilterQuery($facet,$query){
-	$newGet = $_GET;
+  $newGet = $_GET;
     //$rows = array("start" => "0");
-	//print_r($rows);
-	//array_merge($rows,$newGet);
-	//print_r($newGet);
-	$newGet['start'] = 0;
-	//print_r($newGet);
-	$newQuery = http_build_query($newGet);
+  //print_r($rows);
+  //array_merge($rows,$newGet);
+  //print_r($newGet);
+  $newGet['start'] = 0;
+  //print_r($newGet);
+  $newQuery = http_build_query($newGet);
 
-	return $_SERVER['PHP_SELF'].'?'.$newQuery.'&fq[]='.urlencode(($query=='')? '""':('"'.escapeDoubleQuotes($query)).'"').'&fq_field[]='.$facet;
+  return $_SERVER['PHP_SELF'].'?'.$newQuery.'&fq[]='.urlencode(($query=='')? '""':('"'.escapeDoubleQuotes($query)).'"').'&fq_field[]='.$facet;
 }
 
 function escapeDoubleQuotes($string){
-	return preg_replace("/\"/", '\\"', $string);
+  return preg_replace("/\"/", '\\"', $string);
 }
 
 
@@ -628,54 +628,54 @@ function escapeDoubleQuotes($string){
  * @return {string}: href-ready value for a breadbrumb filter query link
  */
 function buildFacetBreadcrumbQuery($facet, $query){
-	$newGet = array();
-	foreach ($_GET as $key => $value){
-		$newGet[$key] = $value;
-	}
-	$new_fq = array();
-	$new_fq_field = array();
-	$counter=0;
-	//debug
-	//print_r($newGet);
-	foreach ($newGet['fq_field'] as $fq_field){
-		//debug
-		//print $fq_field.'__'.$newGet['fq'][$counter].'nn'.$query.'--'.'<br>';
-		if (!($fq_field==$facet && $newGet['fq'][$counter]=='"'.$query.'"')){
-			$new_fq[] = $newGet['fq'][$counter];
-			$new_fq_field[] = $fq_field;
-		}
-		$counter++;
-	}
+  $newGet = array();
+  foreach ($_GET as $key => $value){
+    $newGet[$key] = $value;
+  }
+  $new_fq = array();
+  $new_fq_field = array();
+  $counter=0;
+  //debug
+  //print_r($newGet);
+  foreach ($newGet['fq_field'] as $fq_field){
+    //debug
+    //print $fq_field.'__'.$newGet['fq'][$counter].'nn'.$query.'--'.'<br>';
+    if (!($fq_field==$facet && $newGet['fq'][$counter]=='"'.$query.'"')){
+      $new_fq[] = $newGet['fq'][$counter];
+      $new_fq_field[] = $fq_field;
+    }
+    $counter++;
+  }
 
-	$newGet['fq_field'] = $new_fq_field;
-	$newGet['fq'] = $new_fq;
-	//print_r($newGet);
-	$newGet['start'] = 0;
-	//print_r($newGet);
+  $newGet['fq_field'] = $new_fq_field;
+  $newGet['fq'] = $new_fq;
+  //print_r($newGet);
+  $newGet['start'] = 0;
+  //print_r($newGet);
 
-	//debug
-	//print_r($newGet);
-	$newQuery = http_build_query($newGet);
-	return $_SERVER['PHP_SELF'].'?'.$newQuery;
+  //debug
+  //print_r($newGet);
+  $newQuery = http_build_query($newGet);
+  return $_SERVER['PHP_SELF'].'?'.$newQuery;
 }
 
 function getImagesForId($id){
-	$filePrefix = strval($id).'_';
-	$counter=1;
-	$fileList = array();
-	//print 'sheet-music/'.$filePrefix.strval($counter++);
-	while(file_exists('sheet-music/'.$filePrefix.strval($counter).'.jpg')){
-		$fileList[] = 'sheet-music/'.$filePrefix.strval($counter++).'.jpg';
-	}
-	return $fileList;
+  $filePrefix = strval($id).'_';
+  $counter=1;
+  $fileList = array();
+  //print 'sheet-music/'.$filePrefix.strval($counter++);
+  while(file_exists('sheet-music/'.$filePrefix.strval($counter).'.jpg')){
+    $fileList[] = 'sheet-music/'.$filePrefix.strval($counter++).'.jpg';
+  }
+  return $fileList;
 }
 
 function idHasImage($id){
-	$fileList = getImagesForId($id);
-	if (empty($fileList)){
-		return false;
-	}
-	else return true;
+  $fileList = getImagesForId($id);
+  if (empty($fileList)){
+    return false;
+  }
+  else return true;
 }
 
 ?>
