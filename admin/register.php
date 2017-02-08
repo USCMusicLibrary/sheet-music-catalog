@@ -35,6 +35,18 @@ require "../header.php";
     </div>
   </div>
 
+<!-- debug -->
+  <div>
+    <h2 class="text-danger">Debugging</h2>
+    <ul>
+    <?php 
+    foreach (scandir(getcwd()) as $page):?>
+      <li><a href="<?php print $page;?>"><?php print $page;?></a></li>
+    <?php endforeach;
+    ?>
+    </ul>
+  </div>
+
   <div class="row">
     <div class="col-xs-6 center-block">
       <form class="form-horizontal" action="<?php print htmlentities($_SERVER['PHP_SELF']); ?>" method="POST">

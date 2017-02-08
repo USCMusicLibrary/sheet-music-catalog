@@ -4,7 +4,7 @@
  * Functionalities used throughout the website focused mainly on the user.
  */
 // Assure that the config file is imported prior.
-require_once "config.php";
+require_once "../config.php";
 
 // Assure error reporting is on.
 error_reporting(E_ALL);
@@ -201,7 +201,9 @@ function sendUsername($email) {
  * @return {Boolean}
  */
 function sendEmailVerification($email) {
-  $verify = ROOT_FOLDER . "verify?id=" . bin2hex(mcrypt_encrypt(MCRYPT_BLOWFISH, MD5_KEY, base_convert($_SESSION["user_id"], 10, 36), "ecb"));
+  global $ROOTURL;
+  //reenable when needed
+  $verify = $ROOTURL . "verify?id=";// . bin2hex(mcrypt_encrypt(MCRYPT_BLOWFISH, MD5_KEY, base_convert($_SESSION["user_id"], 10, 36), "ecb"));
 
   $message  = "Hello " . $_SESSION["username"] . ",<br><br>";
   $message .= "Welcome to the sheet music catalog!<br><br>";

@@ -44,7 +44,17 @@ require "../header.php";
 
   <div class="row">
    
-
+<!-- debug -->
+  <div>
+    <h2 class="text-danger">Debugging</h2>
+    <ul>
+    <?php 
+    foreach (scandir(getcwd()) as $page):?>
+      <li><a href="<?php print $page;?>"><?php print $page;?></a></li>
+    <?php endforeach;
+    ?>
+    </ul>
+  </div>
       <div class="col-xs-6 center-block">
         <form class="form-horizontal" action="login" method="POST">
           <fieldset>

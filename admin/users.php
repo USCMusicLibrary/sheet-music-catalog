@@ -8,6 +8,8 @@
 
 $title = "Login";
 $loginRequired = false;
+
+require "../db-config.php";
 require "../header.php";
 ?>
 
@@ -16,6 +18,17 @@ require "../header.php";
 
   </div>
   <div class="row">
+<!-- debug -->
+  <div>
+    <h2 class="text-danger">Debugging</h2>
+    <ul>
+    <?php 
+    foreach (scandir(getcwd()) as $page):?>
+      <li><a href="<?php print $page;?>"><?php print $page;?></a></li>
+    <?php endforeach;
+    ?>
+    </ul>
+  </div>
       <div class="col-xs-6 center-block">
         <table class="table table-striped table-hover">
         <tr><th>User</th><th>Email</th><th>Role</th></tr>
