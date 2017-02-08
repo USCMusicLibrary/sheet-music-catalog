@@ -69,7 +69,8 @@ require "../header.php";
 
           <section class="form-group">
             <div class="col-xs-8 pull-right">
-              <div class="g-recaptcha" data-sitekey="6LcrxgkTAAAAAKZk3YRaQzfxOB4qlJ1fyCRxXk8q"></div>
+              <?php //remove site key until we enable captcha ?>
+              <div class="g-recaptcha" data-sitekey=""></div>
             </div>
           </section>
 
