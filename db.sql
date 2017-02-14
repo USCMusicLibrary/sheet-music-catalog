@@ -12,6 +12,9 @@ CREATE TABLE records (
   scanning_technician varchar(255),
   media_cataloguer varchar(255),
   reviewer varchar(255),
+  status varchar(255),
+  date_created datetime,
+  date_modified datetime,
   PRIMARY KEY (id)
 );
 
