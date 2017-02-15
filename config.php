@@ -8,8 +8,8 @@ global $solrCoreName;
 $solrCoreName = "sheet-music-catalog";
 
 global $ROOTURL;
-$ROOTURL = "http://localhost/catalog/";
-//$ROOTURL = "http://129.252.210.237/catalog/";
+//$ROOTURL = "http://localhost/catalog/";
+$ROOTURL = "http://129.252.210.237/catalog/";
 
 global $solrUrl;
 $solrUrl = 'http://localhost:8983/solr/'.$solrCoreName.'/';

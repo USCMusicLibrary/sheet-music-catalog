@@ -43,7 +43,6 @@ require "../functions.php";
                 <option>Illustrator</option>
                 <option>Photographer</option>
                 <option>Other</option>
-                    <?php //printOptions(array("Text","Image")); ?>
               </select>
             </div>
             <div class="col-xs-5">
@@ -62,7 +61,6 @@ require "../functions.php";
                 <option>Illustrator</option>
                 <option>Photographer</option>
                 <option>Other</option>
-                    <?php //printOptions(array("Text","Image")); ?>
               </select>
             </div>
             <div class="col-xs-5">
@@ -84,14 +82,14 @@ require "../functions.php";
           </div>
         </div>
 
-        <div class="form-group">
+        <!--<div class="form-group">
           <div class="col-xs-2">
             <label for="publisher_location" class="control-label">Publisher Location</label>
           </div>
           <div class="col-xs-10">
             <input type="text" class="form-control" name="publisher_location" id="publisher_location" required="">
           </div>
-        </div>
+        </div>-->
 
         <div class="form-group">
           <div class="col-xs-2">
@@ -111,14 +109,14 @@ require "../functions.php";
           </div>
         </div>
 
-        <div class="form-group">
+        <!--<div class="form-group">
           <div class="col-xs-2">
             <label for="language" class="control-label">Language</label>
           </div>
           <div class="col-xs-10">
             <input type="text" class="form-control" name="language" id="language" required="">
           </div>
-        </div>
+        </div>-->
 
         <div class="form-group">
           <div class="col-xs-2">
@@ -165,7 +163,7 @@ require "../functions.php";
           </div>
         </div>
 
-        <div class="form-group">
+        <!--<div class="form-group">
           <div class="col-xs-2">
             <label for="subject_heading" class="control-label">Subject heading</label>
           </div>
@@ -181,7 +179,7 @@ require "../functions.php";
           <div class="col-xs-10">
             <input type="text" class="form-control" name="notes" id="notes" required="">
           </div>
-        </div>
+        </div>-->
 
         <div class="form-group">
           <div class="col-xs-2">
@@ -191,6 +189,8 @@ require "../functions.php";
             <input type="text" class="form-control" name="scanning-tech" id="scanning-tech" required="">
           </div>
         </div>
+
+        
 
         <div class="form-group">
           <div class="col-xs-2">
