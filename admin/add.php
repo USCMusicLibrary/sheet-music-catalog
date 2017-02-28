@@ -33,44 +33,50 @@ require "../functions.php";
           <div class="col-xs-2">
             <label for="contributor_type" class="control-label">Contributor(s)</label>
           </div>
-          <div class="col-xs-10 col-xs-offset-2 contributor-form-group collapse">
-            <div class="col-xs-5">
-              <select class="form-control" name="contributor_type[]" required="">
-                <option>Composer</option>
-                <option>Lyricist</option>
-                <option>Arranger</option>
-                <option>Editor</option>
-                <option>Illustrator</option>
-                <option>Photographer</option>
-                <option>Other</option>
-              </select>
+          <div class="col-xs-10" id="contributors-list"></div>
+
+          <!-- Modal -->
+            <div id="contributorModal" class="modal fade" role="dialog">
+              <div class="modal-dialog">
+              <!-- Modal content-->
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Add a contributor</h4>
+                  </div>
+                  <div class="modal-body">
+
+                    <div class="col-xs-12 contributor-form-group">
+                      <div class="col-xs-5">
+                        <select class="form-control" name="contributor_type_insert" id="contributor_type_insert"required="">
+                          <option>Composer</option>
+                          <option>Lyricist</option>
+                          <option>Arranger</option>
+                          <option>Editor</option>
+                          <option>Illustrator</option>
+                          <option>Photographer</option>
+                          <option>Other</option>
+                        </select>
+                      </div>
+                      <div class="col-xs-5">
+                        <input class="form-control awesomplete"  list="names-list" name="contributor_insert" id="contributor_insert">
+                        <?php require ("../data/namesList.php"); ?>
+                      </div>
+                      <div class="col-xs-2">
+                        <button id="btn-insert-contributor" class="btn btn-danger btn-sm">Add to record</button>
+                      </div>
+                    </div>
+
+                  </div>
+                  <div class="modal-footer" style="margin-top:2em;">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                  </div>
+                </div>
+              </div>
             </div>
-            <div class="col-xs-5">
-              <input class="form-control awesomplete"  list="names-list" name="contributor[]">
-              <?php require ("../data/namesList.php"); ?>
-            </div>
-            <div class="col-xs-12"><br></div>
-          </div>
-          <div class="col-xs-10 col-xs-offset-2 contributor-form-group">
-            <div class="col-xs-5">
-              <select class="form-control" name="contributor_type[]" required="">
-                <option>Composer</option>
-                <option>Lyricist</option>
-                <option>Arranger</option>
-                <option>Editor</option>
-                <option>Illustrator</option>
-                <option>Photographer</option>
-                <option>Other</option>
-              </select>
-            </div>
-            <div class="col-xs-5">
-              <input class="form-control awesomplete"  list="names-list" name="contributor[]">
-              <?php require ("../data/namesList.php"); ?>
-            </div>
-            <div class="col-xs-12"><br></div>
-          </div>
-          
-          <div class="col-xs-10 col-xs-offset-2"><button id="btn-add-contributor" class="btn btn-danger">Add another contributor</button></div>
+
+          <div class="col-xs-10 col-xs-offset-2"></div>
+          <div class="col-xs-10 col-xs-offset-2"><button id="btn-add-contributor" class="btn btn-danger" data-toggle="modal" data-target="#contributorModal">Add a contributor</button></div>
         </div>
 
         <div class="form-group">
