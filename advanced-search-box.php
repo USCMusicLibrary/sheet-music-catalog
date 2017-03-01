@@ -24,7 +24,7 @@
 					</select>
 				</div>
 				<div class="col-xs-6 nopadding">
-					<input type="text" name="q[]" class="form-control" placeholder="Search sheet music database" value="<?php print $item[2];?>">
+					<input type="text" name="q[]" class="form-control" placeholder="Search sheet music database" value="<?php print urldecode($item[2]);?>">
 				</div>
 				<div class="col-xs-4 nopadding">
 					<select class="form-control" name="f[]">

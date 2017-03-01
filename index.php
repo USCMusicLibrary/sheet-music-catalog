@@ -31,7 +31,7 @@ $queryArray = array();
 $counter=0;
 
 foreach ($_GET['q'] as $query){
-	$queryArray[] = array($_GET['f'][$counter],$_GET['op'][$counter],$query);
+	$queryArray[] = array($_GET['f'][$counter],$_GET['op'][$counter],urlencode($query));
 	$counter++;
 }
 

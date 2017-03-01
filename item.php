@@ -53,7 +53,7 @@ $queryString = 'id:'.$_GET['id'];
 				<table class="item-display-table">
 
       <?php foreach ($solrFieldNames as $field => $v):
-			if ($field=="url"||$field=="id"||$field=="years_text") continue;
+			if ($field=="url"||$field=="id"||$field=="years") continue;
 	    if (!array_key_exists($field,$result)) continue;
 
 			//check if blank
