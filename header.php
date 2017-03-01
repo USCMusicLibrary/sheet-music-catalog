@@ -31,6 +31,10 @@ ini_set("display_startup_errors", true);
 
 
     <link rel="stylesheet" href="<?php print $ROOTURL;?>css/awesomplete.css" />
+
+<link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.css" />
+
+
     <style>
     label:hover {
     background: #f2f5ff;

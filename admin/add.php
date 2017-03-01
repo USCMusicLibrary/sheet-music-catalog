@@ -100,10 +100,10 @@ require "../functions.php";
 
         <div class="form-group">
           <div class="col-xs-2">
-            <label for="year" class="control-label">Copyright Year</label>
+            <label for="year" class="control-label">Date</label>
           </div>
           <div class="col-xs-10">
-            <input type="text" class="form-control" name="year" id="year" required="">
+            <input type="text" class="form-control" name="year" id="daterange" required="">
           </div>
         </div>
 

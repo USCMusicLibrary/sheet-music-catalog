@@ -13,6 +13,14 @@
 
 
     <script src="<?php print $ROOTURL;?>bootstrap/js/bootstrap.min.js"></script>
+
+
+    <script type="text/javascript" src="//cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+
+ 
+<!-- Include Date Range Picker -->
+<script type="text/javascript" src="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.js"></script>
+
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
     <!--<script src="../../assets/js/ie10-viewport-bug-workaround.js"></script>-->
     <script src="<?php print $ROOTURL;?>js/search.js"></script>
