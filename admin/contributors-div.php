@@ -11,7 +11,7 @@ if (!$contributors) {
 
 foreach ($contributors as $contributor):?>
   <div class="col-xs-8 col-xs-offset-2">
-    <span><?php print $contributor[0];?>: <b><?php print $contributor[1];?></b></span><button class="btn btn-default btn-sm">x</button>
+    <span><?php print $contributor[0];?>: <b><?php print $contributor[1];?></b></span><button class="btn btn-default btn-sm btn-rm-contributor">x</button>
   </div>
 <?php endforeach;?>
   

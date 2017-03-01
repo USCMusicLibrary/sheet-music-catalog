@@ -37,3 +37,7 @@ $("#btn-insert-contributor").click(function(e){
     );
     $("#contributorModal").modal('hide');
 });
+
+$(document).on("click",".btn-rm-contributor",function(e){
+    e.preventDefault();
+});
