@@ -41,3 +41,17 @@ $("#btn-insert-contributor").click(function(e){
 $(document).on("click",".btn-rm-contributor",function(e){
     e.preventDefault();
 });
+
+$("#btn-add-alt-title").click(function(e){
+
+    e.preventDefault();
+    console.log("add alt title");
+    var formGroup = $(this).parent().prev().clone();
+    formGroup.find("input").val("");
+    formGroup.toggleClass("collapse");
+    formGroup.insertBefore($(this).parent());
+    formGroup.show('slow', function() {
+            console.log("show");
+        });
+    formGroup.toggleClass("collapse");
+});

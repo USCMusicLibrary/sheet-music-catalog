@@ -24,9 +24,10 @@ require "../functions.php";
           <div class="col-xs-2">
             <label for="alt-title" class="control-label">Alternative Title</label>
           </div>
-          <div class="col-xs-10">
-            <input type="text" class="form-control" name="alt-title" id="alt-title" required="">
+          <div class="col-xs-10 col-xs-offset-2">
+            <input type="text" class="form-control" name="alt-title[]" id="alt-title">
           </div>
+          <div class="col-xs-10 col-xs-offset-2"><button id="btn-add-alt-title" class="btn btn-danger">Add another alternative title</button></div>
         </div>
 
         <div class="form-group">
