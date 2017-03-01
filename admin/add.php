@@ -190,7 +190,11 @@ require "../functions.php";
             <label for="call-number" class="control-label">Call Number</label>
           </div>
           <div class="col-xs-10">
-            <input type="text" class="form-control" name="call-number" id="number" required="">
+            <select class="form-control" name="call_number" id="call_number"required="">
+                          <option>Sheet music</option>
+                          <option>Sheet music large</option>
+                          <option>CSAM</option>
+                        </select>
           </div>
         </div>
 
