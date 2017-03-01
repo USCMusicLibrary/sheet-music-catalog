@@ -1,4 +1,5 @@
 var contributorsObject = [];
+var subjectHeadingsObject = [];
 
 $(document).ready(function (e){
 
@@ -7,14 +8,7 @@ $(document).ready(function (e){
 $("#btn-add-contributor").click(function(e){
 
     e.preventDefault();
-    return;
-    console.log("add contributor");
-    var formGroup = $(this).parent().parent().find(".contributor-form-group.collapse").clone();
-    formGroup.insertBefore($(this).parent());
-    formGroup.show('slow', function() {
-            console.log("show");
-        });
-    formGroup.toggleClass("collapse");
+
 });
 
 $("#btn-insert-contributor").click(function(e){
@@ -38,6 +32,32 @@ $("#btn-insert-contributor").click(function(e){
     $("#contributorModal").modal('hide');
 });
 
+$("#btn-add-heading").click(function(e){
+
+    e.preventDefault();
+
+});
+$("#btn-insert-heading").click(function(e){
+
+    e.preventDefault();
+    console.log("insert contributor");
+    var cName = $("#heading_insert").val();
+
+    contributor = ["Subject Heading",cName];
+    subjectHeadingsObject.push(contributor);
+    //console.log(contributorsObject);
+    //return;
+    $.post(
+        "contributors-div",
+        {data:subjectHeadingsObject},
+        function( data ) {
+            $("#subject-headings-list").replaceWith( data );
+        },
+        "html"
+    );
+    $("#headingsModal").modal('hide');
+});
+
 $(document).on("click",".btn-rm-contributor",function(e){
     e.preventDefault();
 });
@@ -50,7 +70,63 @@ $("#btn-add-alt-title").click(function(e){
     formGroup.find("input").val("");
     formGroup.toggleClass("collapse");
     formGroup.insertBefore($(this).parent());
-    formGroup.show('slow', function() {
+    formGroup.show('fast', function() {
+            console.log("show");
+        });
+    formGroup.toggleClass("collapse");
+});
+
+$("#btn-add-note").click(function(e){
+
+    e.preventDefault();
+    console.log("add note");
+    var formGroup = $(this).parent().prev().clone();
+    formGroup.find("input").val("");
+    formGroup.toggleClass("collapse");
+    formGroup.insertBefore($(this).parent());
+    formGroup.show('fast', function() {
+            console.log("show");
+        });
+    formGroup.toggleClass("collapse");
+});
+
+$("#btn-add-text").click(function(e){
+
+    e.preventDefault();
+    console.log("add text");
+    var formGroup = $(this).parent().prev().clone();
+    formGroup.find("textarea").val("");
+    formGroup.toggleClass("collapse");
+    formGroup.insertBefore($(this).parent());
+    formGroup.show('fast', function() {
+            console.log("show");
+        });
+    formGroup.toggleClass("collapse");
+});
+
+$("#btn-add-language").click(function(e){
+
+    e.preventDefault();
+    console.log("add language");
+    var formGroup = $(this).parent().prev().clone();
+    formGroup.find("textarea").val("");
+    formGroup.toggleClass("collapse");
+    formGroup.insertBefore($(this).parent());
+    formGroup.show('fast', function() {
+            console.log("show");
+        });
+    formGroup.toggleClass("collapse");
+});
+
+$("#btn-add-heading").click(function(e){
+
+    e.preventDefault();
+    console.log("add language");
+    var formGroup = $(this).parent().prev().clone();
+    formGroup.find("input").val("");
+    formGroup.toggleClass("collapse");
+    formGroup.insertBefore($(this).parent());
+    formGroup.show('fast', function() {
             console.log("show");
         });
     formGroup.toggleClass("collapse");

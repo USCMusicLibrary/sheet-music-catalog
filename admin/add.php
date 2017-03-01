@@ -109,11 +109,71 @@ require "../functions.php";
 
         <div class="form-group">
           <div class="col-xs-2">
+            <label for="Notes" class="control-label">Notes</label>
+          </div>
+          <div class="col-xs-10 col-xs-offset-2">
+            <input type="text" class="form-control" name="note[]" id="note">
+          </div>
+          <div class="col-xs-10 col-xs-offset-2"><button id="btn-add-note" class="btn btn-danger">Add another note</button></div>
+        </div>
+
+        <div class="form-group">
+          <div class="col-xs-2">
             <label for="text-t" class="control-label">Text</label>
           </div>
-          <div class="col-xs-10">
+          <div class="col-xs-10 col-xs-offset-2">
             <textarea name="text-t"></textarea>
           </div>
+          <div class="col-xs-10 col-xs-offset-2"><button id="btn-add-text" class="btn btn-danger">Add another text</button></div>
+        </div>
+
+        <div class="form-group">
+          <div class="col-xs-2">
+            <label for="Notes" class="control-label">Languages</label>
+          </div>
+          <div class="col-xs-10 col-xs-offset-2">
+            <input type="text" class="form-control" name="language[]" id="language" value="AUTOCOMPLETE">
+          </div>
+          <div class="col-xs-10 col-xs-offset-2"><button id="btn-add-language" class="btn btn-danger">Add another language</button></div>
+        </div>
+
+        <div class="form-group">
+          <div class="col-xs-2">
+            <label for="subject_heading" class="control-label">Subject Headings(s)</label>
+          </div>
+          <div class="col-xs-10" id="subject-headings-list"></div>
+
+          <!-- Modal -->
+            <div id="headingsModal" class="modal fade" role="dialog">
+              <div class="modal-dialog">
+              <!-- Modal content-->
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Add a subject heading</h4>
+                  </div>
+                  <div class="modal-body">
+
+                    <div class="col-xs-12 contributor-form-group">
+                      <div class="col-xs-10">
+                        <input class="form-control awesomplete"  list="headings-list" name="heading_insert" id="heading_insert">
+                        <?php require ("../data/subjectHeadingsList.php"); ?>
+                      </div>
+                      <div class="col-xs-2">
+                        <button id="btn-insert-heading" class="btn btn-danger btn-sm">Add to record</button>
+                      </div>
+                    </div>
+
+                  </div>
+                  <div class="modal-footer" style="margin-top:2em;">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          <div class="col-xs-10 col-xs-offset-2"></div>
+          <div class="col-xs-10 col-xs-offset-2"><button id="btn-add-heading" class="btn btn-danger" data-toggle="modal" data-target="#headingsModal">Add a subject heading</button></div>
         </div>
 
         <!--<div class="form-group">
@@ -194,6 +254,14 @@ require "../functions.php";
           </div>
           <div class="col-xs-10">
             <input type="text" class="form-control" name="scanning-tech" id="scanning-tech" required="">
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="col-xs-2">
+            <label for="text-t" class="control-label">Notes for Jen</label>
+          </div>
+          <div class="col-xs-10 col-xs-offset-2">
+            <textarea name="text-t"></textarea>
           </div>
         </div>
 
