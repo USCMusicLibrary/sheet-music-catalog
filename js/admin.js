@@ -40,15 +40,13 @@ $("#btn-add-heading").click(function(e){
 $("#btn-insert-heading").click(function(e){
 
     e.preventDefault();
-    console.log("insert contributor");
+    console.log("insert heading");
     var cName = $("#heading_insert").val();
 
     contributor = ["Subject Heading",cName];
     subjectHeadingsObject.push(contributor);
-    //console.log(contributorsObject);
-    //return;
     $.post(
-        "contributors-div",
+        "headings-div",
         {data:subjectHeadingsObject},
         function( data ) {
             $("#subject-headings-list").replaceWith( data );
