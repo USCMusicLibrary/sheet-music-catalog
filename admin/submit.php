@@ -10,12 +10,14 @@ require_once "../db-config.php";
 ?>
 <div class="container-fluid">
   <div class="row">
+   <h1><a class="btn btn-lg btn-danger" href="all">continue</a></h1>
       <div class="col-xs-8 col-xs-offset-2">
       <pre>
-      <?php //print_r ($_POST);?>
+      <?php print_r ($_POST);?>
       </pre>
 
-      <?php foreach ($_POST as $key => $val):?>
+      <?php foreach ($_POST as $key => $val):
+      continue;?>
         <p>
           <strong><?php print $key;?>: </strong>
           <?php 
@@ -30,34 +32,46 @@ require_once "../db-config.php";
         </p>
       <?php endforeach;
 
-      $title = $_POST['title'];
-      //$alt_title = $_POST['alt-title'];
-      $publisher = $_POST['publisher'];
-      //$publisher_location = $_POST['publisher_location'];
-      $text_t = $_POST['text-t'];
-      $call_number = $_POST['call-number'];
-      $series = $_POST['series'];
-      $larger_work = $_POST['larger-work'];
-      $collection_source = $_POST['collection'];
-      $donor = $_POST['donor'];
-      $scanning_tech = $_POST['scanning-tech'];
+      $document = array (
+        'id' => 0,
+'title' => $_POST['title'],
+'alternative_title' => $_POST['alt-title'],
+'composer' => $_POST['composers'],
+//'composer_uri' => $fields[4],
+'lyricist' => $_POST['lyricists'],
+//'lyricist_uri' => $fields[6],
+'arranger' => $_POST['$arrangers'],
+//'arranger_uri' => $fields[8],
+'editor' => $_POST['$editors'],
+'photographer' => $_POST['photographers'],
+'illustrator' =>$_POST['illustrators'],
+'publisher' => $_POST['publisher'],
+'publisher_location' => $_POST['publisher_location'],
+'years' =>  [1234],
+'years_text' => "1234",
+'language' => $_POST['language'],
+'text_t' => $_POST['text-t'],
+'notes' => $_POST['note'],
+'donor' => $_POST['donor'],
+//'Distributor' => $fields[19],
+//'subject_heading' =>  array_filter(explode( '|',trim($fields[20]))),
+'subject_heading' => [],
+'call_number' => $_POST['call_number'],
+//'PlateNumber' => $fields[23],
+'series' => $_POST['series'],
+'collection_source' =>$_POST['collection'],
+'larger_work' => $_POST['larger-work']
+//'has_image' => (idHasImage($fields[1]))?"Online score" : "Print only"
+//'Keywords' => $fields[27],
+//'Original_Notes' => $fields[28],
+//'zImagePath' => $fields[29],
+//'MidiPath' => $fields[30],
+//'zNumberOfPages' => $fields[31],
+//'TitleSearchHits' => $fields[32],
+//'Incomplete' => $fields[33]
+    );
 
-      $media_cataloguer = "CURRENTUSER";
-
-      $statement = $mysqli->prepare("INSERT INTO records (title,publisher,call_number,series,larger_work,collection_source,donor,scanning_technician,media_cataloguer,status,date_created,date_modified)"
-                  ." VALUES (?,?,?,?,?,?,?,?,?,'pending',NOW(),NOW())");
-      $statement->bind_param("sssssssss", 
-              $title, 
-              $publisher, 
-              $call_number, 
-              $series, 
-              $larger_work, 
-              $collection_source, 
-              $donor, 
-              $scanning_technician, 
-              $media_cataloguer);
-  $statement->execute();
-  $statement->store_result();
+    insertDocDb($document,'pending');
       ?>
 
       </div>

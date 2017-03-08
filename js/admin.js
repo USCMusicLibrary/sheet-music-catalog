@@ -5,6 +5,13 @@ $(document).ready(function (e){
 
 });
 
+function insertContributor(type,value,parent){
+    var newElem = "<input type=\"hidden\" name=\""+type.toLowerCase() + "[]\" value=\""+ value+"\">";
+    console.log(newElem);
+    $(parent).after(newElem);
+};
+
+
 $("#btn-add-contributor").click(function(e){
 
     e.preventDefault();
@@ -12,7 +19,6 @@ $("#btn-add-contributor").click(function(e){
 });
 
 $("#btn-insert-contributor").click(function(e){
-
     e.preventDefault();
     console.log("insert contributor");
     var cName = $("#contributor_insert").val();
@@ -30,6 +36,8 @@ $("#btn-insert-contributor").click(function(e){
         "html"
     );
     $("#contributorModal").modal('hide');
+    insertContributor(cType,cName,$(this).parent());
+
 });
 
 $("#btn-add-heading").click(function(e){
@@ -108,6 +116,19 @@ $("#btn-add-language").click(function(e){
     console.log("add language");
     var formGroup = $(this).parent().prev().clone();
     formGroup.find("textarea").val("");
+    formGroup.toggleClass("collapse");
+    formGroup.insertBefore($(this).parent());
+    formGroup.show('fast', function() {
+            console.log("show");
+        });
+    formGroup.toggleClass("collapse");
+});
+
+$("#btn-add-pub-loc").click(function(e){
+    e.preventDefault();
+    console.log("add publisher location");
+    var formGroup = $(this).parent().prev().clone();
+    formGroup.find("input").val("");
     formGroup.toggleClass("collapse");
     formGroup.insertBefore($(this).parent());
     formGroup.show('fast', function() {

@@ -49,7 +49,7 @@ require "../functions.php";
 
                     <div class="col-xs-12 contributor-form-group">
                       <div class="col-xs-5">
-                        <select class="form-control" name="contributor_type_insert" id="contributor_type_insert"required="">
+                        <select class="form-control" name="contributor_type_insert" id="contributor_type_insert">
                           <option>Composer</option>
                           <option>Lyricist</option>
                           <option>Arranger</option>
@@ -85,25 +85,26 @@ require "../functions.php";
             <label for="publisher" class="control-label">Publisher</label>
           </div>
           <div class="col-xs-10">
-            <input type="text" class="form-control" name="publisher" id="publisher" required="">
+            <input type="text" class="form-control" name="publisher" id="publisher">
           </div>
         </div>
 
-        <!--<div class="form-group">
+        <div class="form-group">
           <div class="col-xs-2">
             <label for="publisher_location" class="control-label">Publisher Location</label>
           </div>
-          <div class="col-xs-10">
-            <input type="text" class="form-control" name="publisher_location" id="publisher_location" required="">
+          <div class="col-xs-10 col-xs-offset-2">
+            <input type="text" class="form-control" name="publisher_location[]" id="pub_loc">
           </div>
-        </div>-->
+          <div class="col-xs-10 col-xs-offset-2"><button id="btn-add-pub-loc" class="btn btn-danger">Add another publisher location</button></div>
+        </div>
 
         <div class="form-group">
           <div class="col-xs-2">
             <label for="year" class="control-label">Date</label>
           </div>
           <div class="col-xs-10">
-            <input type="text" class="form-control" name="year" id="daterange" required="">
+            <input type="text" class="form-control" name="year" id="daterange">
           </div>
         </div>
 
@@ -122,7 +123,7 @@ require "../functions.php";
             <label for="text-t" class="control-label">Text</label>
           </div>
           <div class="col-xs-10 col-xs-offset-2">
-            <textarea name="text-t"></textarea>
+            <textarea name="text-t[]"></textarea>
           </div>
           <div class="col-xs-10 col-xs-offset-2"><button id="btn-add-text" class="btn btn-danger">Add another text</button></div>
         </div>
@@ -132,7 +133,7 @@ require "../functions.php";
             <label for="Notes" class="control-label">Languages</label>
           </div>
           <div class="col-xs-10 col-xs-offset-2">
-            <input type="text" class="form-control" name="language[]" id="language" value="AUTOCOMPLETE">
+            <input type="text" class="form-control" name="language[]" id="language" value="">
           </div>
           <div class="col-xs-10 col-xs-offset-2"><button id="btn-add-language" class="btn btn-danger">Add another language</button></div>
         </div>
@@ -176,21 +177,13 @@ require "../functions.php";
           <div class="col-xs-10 col-xs-offset-2"><button id="btn-add-heading" class="btn btn-danger" data-toggle="modal" data-target="#headingsModal">Add a subject heading</button></div>
         </div>
 
-        <!--<div class="form-group">
-          <div class="col-xs-2">
-            <label for="language" class="control-label">Language</label>
-          </div>
-          <div class="col-xs-10">
-            <input type="text" class="form-control" name="language" id="language" required="">
-          </div>
-        </div>-->
 
         <div class="form-group">
           <div class="col-xs-2">
             <label for="call-number" class="control-label">Call Number</label>
           </div>
           <div class="col-xs-10">
-            <select class="form-control" name="call_number" id="call_number"required="">
+            <select class="form-control" name="call_number" id="call_number">
                           <option>Sheet music</option>
                           <option>Sheet music large</option>
                           <option>CSAM</option>
@@ -203,7 +196,7 @@ require "../functions.php";
             <label for="series" class="control-label">Series</label>
           </div>
           <div class="col-xs-10">
-            <input type="text" class="form-control" name="series" id="series" required="">
+            <input type="text" class="form-control" name="series" id="series">
           </div>
         </div>
 
@@ -212,7 +205,7 @@ require "../functions.php";
             <label for="larger-work" class="control-label">Larger Work</label>
           </div>
           <div class="col-xs-10">
-            <input type="text" class="form-control" name="larger-work" id="larger-work" required="">
+            <input type="text" class="form-control" name="larger-work" id="larger-work">
           </div>
         </div>
 
@@ -221,7 +214,7 @@ require "../functions.php";
             <label for="collection" class="control-label">Collection Source</label>
           </div>
           <div class="col-xs-10">
-            <input type="text" class="form-control" name="collection" id="collection" required="">
+            <input type="text" class="form-control" name="collection" id="collection">
           </div>
         </div>
 
@@ -230,42 +223,24 @@ require "../functions.php";
             <label for="donor" class="control-label">Donor</label>
           </div>
           <div class="col-xs-10">
-            <input type="text" class="form-control" name="donor" id="donor" required="">
+            <input type="text" class="form-control" name="donor" id="donor">
           </div>
         </div>
-
-        <!--<div class="form-group">
-          <div class="col-xs-2">
-            <label for="subject_heading" class="control-label">Subject heading</label>
-          </div>
-          <div class="col-xs-10">
-            <input type="text" class="form-control" name="subject_heading[]" required="">
-          </div>
-        </div>
-
-        <div class="form-group">
-          <div class="col-xs-2">
-            <label for="notes" class="control-label">Notes</label>
-          </div>
-          <div class="col-xs-10">
-            <input type="text" class="form-control" name="notes" id="notes" required="">
-          </div>
-        </div>-->
 
         <div class="form-group">
           <div class="col-xs-2">
             <label for="scanning-tech" class="control-label">Scanning technician</label>
           </div>
           <div class="col-xs-10">
-            <input type="text" class="form-control" name="scanning-tech" id="scanning-tech" required="">
+            <input type="text" class="form-control" name="scanning-tech" id="scanning-tech">
           </div>
         </div>
         <div class="form-group">
           <div class="col-xs-2">
-            <label for="text-t" class="control-label">Notes for Jen</label>
+            <label for="msg" class="control-label">Messages for supervisor</label>
           </div>
           <div class="col-xs-10 col-xs-offset-2">
-            <textarea name="text-t"></textarea>
+            <textarea name="msg"></textarea>
           </div>
         </div>
 

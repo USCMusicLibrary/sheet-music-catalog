@@ -154,13 +154,16 @@ function importExcelTabFile(){
     indexDocument($solrDocument);
 
     //send unmodified document to database
-    insertDocDb($document);
+    insertDocDb($document,'approved');
+
+    //add addVocabularies
+    addVocabularies($document);
 
   }
 }
 
 
-function insertDocDb($doc){
+function insertDocDb($doc,$status){
   global $mysqli;
   
   $mid = $doc['id'];
@@ -176,9 +179,9 @@ function insertDocDb($doc){
   $reviewer = array_key_exists('reviewer',$doc)?$doc['reviewer']:"";
 
   $statement = $mysqli->prepare("INSERT INTO records (mid,title,publisher,call_number,series,larger_work,collection_source,donor,scanning_technician,media_cataloguer,reviewer,status,date_created,date_modified)"
-                  ." VALUES (?,?,?,?,?,?,?,?,?,?,?,'approved',NOW(),NOW())");
+                  ." VALUES (?,?,?,?,?,?,?,?,?,?,?,?,NOW(),NOW())");
   //var_dump($doc);
-  $statement->bind_param("issssssssss",$mid, 
+  $statement->bind_param("isssssssssss",$mid, 
               $title, 
               $publisher, 
               $call_number, 
@@ -188,7 +191,8 @@ function insertDocDb($doc){
               $donor, 
               $scanning_technician, 
               $media_cataloguer, 
-              $reviewer);
+              $reviewer,
+              $status);
   $statement->execute();
   $statement->store_result();
 
@@ -236,7 +240,13 @@ function insertDocDb($doc){
     $statement->store_result();
   }
   
-global $contribtypes;
+
+
+    }
+
+function addVocabularies($doc){
+    global $mysqli;
+    global $contribtypes;
 global $other_heading_types;
     $contributor_headings = array_keys($contribtypes);
     $headingtypes = array_merge($contributor_headings, $other_heading_types);
@@ -329,8 +339,8 @@ global $other_heading_types;
                 }     
                 }
             }
+}
 
-    }
 //print("</br>");
 
 //TODO: Please add error checking!!!
