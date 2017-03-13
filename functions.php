@@ -159,6 +159,7 @@ function importExcelTabFile(){
     //add addVocabularies
     addVocabularies($document);
 
+    flush();
   }
 }
 
@@ -488,7 +489,7 @@ function getResultsFromSolr($query){
   }
   //$jsonResponse = file_get_contents($queryString);
 
-  print $queryString;
+  //print $queryString;
 
   if ($jsonResponse === false) return false;
 
@@ -518,6 +519,9 @@ function buildSolrQuery($query){
 	$counter=0;
 	foreach ($queryArray as $queryPartial){ //$queryPartial = array($_GET['f'][$counter],$_GET['op'][$counter],$query);
 		if ($queryPartial[2]=='') continue; //check it's not empty
+    //make sure to undo url encoding
+    $queryPartial[2] = urldecode($queryPartial[2]);
+
 		if($counter++ !=0){
 			$queryString = $queryString.$queryPartial[1]/*op*/.'+';
 		}

@@ -6,7 +6,7 @@ require "../header.php";
 require "../functions.php";
 
 //select 20 records for now (for testing)
-$statement = $mysqli->prepare("SELECT mid,title,publisher,call_number,series,larger_work,collection_source,donor,scanning_technician,media_cataloguer,reviewer FROM records WHERE status='pending'");
+$statement = $mysqli->prepare("SELECT id,title,publisher,call_number,series,larger_work,collection_source,donor,scanning_technician,media_cataloguer,reviewer FROM records WHERE status='pending'");
 $statement->execute();
 $statement->store_result();
 $statement->bind_result($mid, $title, $publisher, $call_number, $series, $larger_work, 	$collection_source, $donor, $scanning_technician, $media_cataloguer, $reviewer);
@@ -46,9 +46,9 @@ $statement->bind_result($mid, $title, $publisher, $call_number, $series, $larger
 <th><?php print $larger_work;?></th>
 <th><?php print $collection_source;?></th>
 <th><?php print $donor;?></th>
-<!--<th><?php print $scanning_technician;?></th>
-<th><?php print $media_cataloguer;?></th>
-<th><?php print $reviewer;?></th>-->
+<!--<th><?php //print $scanning_technician;?></th>
+<th><?php //print $media_cataloguer;?></th>
+<th><?php // print $reviewer;?></th>-->
                 <th><a href="edit?id=<?php print $mid;?>" class="btn btn-danger">Edit</a></th>
               </tr>
             <?php endwhile;?>
