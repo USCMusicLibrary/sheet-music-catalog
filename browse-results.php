@@ -85,7 +85,7 @@ var currentQuery = <?php print '"'.$currentQuery.'"'; ?>;
 <?php
 /*
  * The following displays the facets column
- */?><div class="col-xs-12 col-md-3">
+ */?><div class="col-xs-12 col-md-12">
 		<div class="col-xs-12"><h4>Facets:</h4>
 			<div class="panel-group" id="accordion">
   <?php
@@ -102,6 +102,7 @@ var currentQuery = <?php print '"'.$currentQuery.'"'; ?>;
       	<?php
         $currentFacet = $facetField;
       	$facets = $searchFacetCounts['facet_fields'][$currentFacet];
+				//sort($facets);
       	for($i=0; $i<sizeof($facets); $i++):
       		if ($facets[$i+1]==0){
       			$i++;
@@ -124,215 +125,13 @@ var currentQuery = <?php print '"'.$currentQuery.'"'; ?>;
   <?php
   $counter++;
   endforeach;?>
-  <div class="panel panel-default">
-    <div class="panel-heading">
-      <h4 class="panel-title">
-        <span class="accordion-toggle accordion-opened">
-        Date range&nbsp;</span>
-      </h4>
-    </div>
-    <div id="collapsez" class="panel-collapse collapse in">
-      <div class="panel-body">
-        <p>
-         <input type="text" id="amount" readonly style="border:0; color:#f6931f; font-weight:bold;">
-        </p>
-        <div id="slider-range"></div>
-      </div>
-    </div>
-  </div>
+
 
 </div>
 		</div>
 
 </div><!-- facets column-->
-<?php
-/*
- * The following displays the search results
- */?>
-<div class="col-xs-12 col-md-9" id="search-results-column">
-<?php
 
-//build breadcrumbs at the top of search results
-foreach ($facetFields as $facetField => $facetTitle):
-
-			$currentFacet = $facetField;
-			$facets = $searchFacetCounts['facet_fields'][$currentFacet];
-			for($i=0; $i<sizeof($facets); $i++):
-				if ($facets[$i+1]==0){
-					$i++;
-					continue;
-				}
-			  $isBreadcrumbSet = false;
-			  if (in_array($currentFacet, $searchQuery['fq_field'])):
-				  if (in_array('"'.$facets[$i].'"',$searchQuery['fq'])):
-					  $isBreadcrumbSet = true;
-			      ?>
-				    <a href="<?php print buildFacetBreadcrumbQuery($currentFacet, $facets[$i]);?>"><strong>(X)</strong></a> <span class="text-primary"><?php print ($facets[$i]=='')? "None":$facets[$i];?></span>&nbsp;&nbsp;&nbsp;
-			      <?php
-				  endif;
-			  endif;?>
-		  <?php
-			  $i++;
-		  endfor;?>
-
-<?php
-endforeach;
-print '<br><br>'; //to separate breadcrumbs from search results
-
-$displaySearchResults = array();
-
-foreach ($searchResults as $result){
-	$displayResult = array();
-	$url = $result['id']; //Fix this!!!
-	$highlightArray = $searchHighlighting[$url];
-
-	//title
-	$displayResult['title'] = isset($highlightArray['title']) ? $highlightArray['title'][0] : $result['title'];
-
-	//brief display
-	foreach ($briefDisplayFields as $field){
-		if (!isset($result[$field])) continue;//TODO: fix this
-		$displayResult[$field] = isset($highlightArray[$field]) ? $highlightArray[$field][0] : $result[$field];
-	}
-
-	global $solrFieldNames;
-
-	foreach ($highlightArray as $key => $value){
-		if (in_array($key,$briefDisplayFields)) continue;
-		if (!isset($solrFieldNames[$key])) continue;
-		$displayResult[$key] = $value[0];
-	}
-	$displayResult['url'] = $url;
-	$displaySearchResults[] = $displayResult;
-	//TODO: fix this
-	$result['url'] = $result['id'];
-}
-?>
-
-<div class="panel-group" id="accordion">
-<?php
-$counter=1;
-foreach($displaySearchResults as $result):?>
-  <div class="panel panel-default">
-    <div class="panel-heading container-fluid panel-heading-results">
-      <div class="col-xs-11">
-        <h3><a class="results-title" href="item?id=<?php print $result['url']?>"><?php print $result['title']?></a></h3>
-      </div>
-			<div class="col-xs-8 col-md-2 pull-left">
-				<?php
-				$imageList = getImagesForId($result['url']);
-				if (sizeof($imageList)>0):
-				?>
-				<a href="item?id=<?php print $result['url']?>"><img class="img-responsive" src="<?php print $imageList[0] ?>"></a>
-			  <?php endif; ?>
-			</div>
-			<div class="col-xs-12 col-md-10 pull-right">
-				<table>
-      <?php foreach ($briefDisplayFields as $field):
-				//check if key exists
-				if (!array_key_exists($field,$result)){
-					continue;
-				}
-				//check if blank
-				if (is_array($result[$field])){
-					$emptyVar = array_filter($result[$field]);//gotta love php 5.3
-					if (empty($emptyVar)) continue;
-				}
-				else if (trim($result[$field])==""){
-					continue;
-				}?>
-				<tr>
-        <td style="vertical-align: top; padding-right: 2em;">
-          <strong><?php
-		  print $solrFieldNames[$field]['field_title'];
-			if (is_array($result[$field]) && count($result[$field])>1){
-				print 's';
-			}
-		  ?>:</strong>
-		</td>
-		<td>
-		  <?php
-		  $value = $result[$field];
-		  if (is_array($value)){
-		    foreach ($value as $val){
-		  	  print $val.'<br>';
-		    }
-		  }
-		  else{
-		    print $value;
-		  }
-		  ?>
-		</td>
-</tr>
-      <?php endforeach;
-				$highlightArray = $searchHighlighting[$result['url']];
-				if (!empty($highlightArray)){
-					if (array_key_exists('text_t',$highlightArray)){
-						?>
-						<tr>
-							<td><strong><?php print $solrFieldNames['text_t']['field_title'];?>:</strong></td>
-							<td><?php print $highlightArray['text_t'][0];?></td>
-						</tr>
-						<?php
-					}
-					else if (array_key_exists('subject_heading',$highlightArray)){
-						?>
-						<tr>
-							<td><strong><?php print $solrFieldNames['subject_heading']['field_title'];?>:</strong></td>
-							<td><?php print $highlightArray['subject_heading'][0];?></td>
-						</tr>
-						<?php
-					}
-					else if (array_key_exists('notes',$highlightArray)){
-						?>
-						<tr>
-							<td><strong><?php print $solrFieldNames['notes']['field_title'];?>:</strong></td>
-							<td><?php print $highlightArray['notes'][0];?></td>
-						</tr>
-						<?php
-					}
-					else {
-						// get the first key of the highlight array
-						$keys = array_keys($highlightArray);
-						$hKey = array_shift($keys);
-
-						$condition = true;
-
-						//we need to check if we have already displayed this field
-						//if we have, then we skip
-						foreach($briefDisplayFields as $field){
-							if ($hKey == $field){
-								$condition=false;
-								break;
-							}
-						}
-						if ($condition):
-						?>
-						<tr>
-							<td><strong><?php print $solrFieldNames[$hKey]['field_title'];?>:</strong></td>
-							<td><?php print $highlightArray[$hKey][0];?></td>
-						</tr>
-						<?php
-						endif;
-					}
-				}
-				foreach ($highlightArray as $key => $value){
-					if (in_array($key,$briefDisplayFields)) continue;
-					if (!isset($solrFieldNames[$key])) continue;
-					$displayResult[$key] = $value[0];
-				}
-			?>
-
-
-		</table>
-		</div>
-  </div>
-</div>
-<?php
-$counter++;
-endforeach;?>
-</div><!-- #accordion -->
-</div> <!-- search-results-column -->
 
 <?php
 
