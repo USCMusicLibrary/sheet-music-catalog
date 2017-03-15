@@ -12,11 +12,17 @@ require "functions.php";
 <?php
 
 
+
+$queryArray = array(
+	array('all','AND','*')
+);
+$counter=0;
+
 require 'browse-results.php';
 
 
 ?></div> <!-- container-fluid -->
-<?php
+<?php 
 
 require "footer.php";
 

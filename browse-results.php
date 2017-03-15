@@ -1,16 +1,20 @@
 <?php
+/* search-results.php
+ * this field performs a search based on parameters in the $_GET request in index.php
+ * called by: index.php
+ */
 
 //is the search full-text?
-$searchQuery['isFullText'] = true;
+$searchQuery['isFullText'] = (isset($_GET['full-text-search'])) ? $_GET['full-text-search'] : false;
 
 $searchQuery['queryArray'] = $queryArray;
 
-// start and rows don't matter here because all we really want are the facets
-$searchQuery['start'] = 0;
+$searchQuery['start'] = (isset($_GET['start'])) ? $_GET['start'] : 0;
+
 $searchQuery['rows'] = 20;
 
-$searchQuery['fq'] = $fq;
-$searchQuery['fq_field'] = $fqField;
+$searchQuery['fq'] = (isset($_GET['fq'])) ? $_GET['fq']: array();
+$searchQuery['fq_field'] = (isset($_GET['fq_field'])) ? $_GET['fq_field']: array();
 
 try{
 $solrResponse = getResultsFromSolr($searchQuery); //this is where the magic happens
@@ -20,6 +24,7 @@ catch (Exception $e) {
 	//TODO: email admin to inform that solr is down
 	die();
 }
+//var_dump ($solrResponse);
 $searchResponse = $solrResponse['response'];
 
 $searchFacetCounts = $solrResponse['facet_counts'];
@@ -48,7 +53,7 @@ $newFqField = array();
 foreach ($oldFqField as $fqField){
 	if ($fqField!='years'){
 		$newFqField[] = $fqField;
-		$newFq = $oldFq[$counter++];
+		$newFq[] = $oldFq[$counter++];
 	}
 }
 
@@ -77,10 +82,11 @@ var rMaxYear = <?php print $rMaxYear; ?>;
 var currentQuery = <?php print '"'.$currentQuery.'"'; ?>;
 </script>
 <div class="row">
-<?php /*
-The following displays the facets column
-*/?><div class="col-xs-12">
-		<div class="col-xs-12"><h4>PARAMETER GOES HERE</h4>
+<?php
+/*
+ * The following displays the facets column
+ */?><div class="col-xs-12 col-md-3">
+		<div class="col-xs-12"><h4>Facets:</h4>
 			<div class="panel-group" id="accordion">
   <?php
   $counter=1;
@@ -121,26 +127,32 @@ The following displays the facets column
   <div class="panel panel-default">
     <div class="panel-heading">
       <h4 class="panel-title">
-        <a data-toggle="collapse" href="#collapse7">
-        Date range</a>
+        <span class="accordion-toggle accordion-opened">
+        Date range&nbsp;</span>
       </h4>
     </div>
-    <div id="collapse7" class="panel-collapse collapse in">
+    <div id="collapsez" class="panel-collapse collapse in">
       <div class="panel-body">
         <p>
-  <input type="text" id="amount" readonly style="border:0; color:#f6931f; font-weight:bold;">
-</p>
-<div id="slider-range"></div>
+         <input type="text" id="amount" readonly style="border:0; color:#f6931f; font-weight:bold;">
+        </p>
+        <div id="slider-range"></div>
       </div>
     </div>
   </div>
 
 </div>
 		</div>
-	</div>
-	<div class="col-xs-9" id="search-results-column">
+
+</div><!-- facets column-->
+<?php
+/*
+ * The following displays the search results
+ */?>
+<div class="col-xs-12 col-md-9" id="search-results-column">
 <?php
 
+//build breadcrumbs at the top of search results
 foreach ($facetFields as $facetField => $facetTitle):
 
 			$currentFacet = $facetField;
@@ -166,8 +178,6 @@ foreach ($facetFields as $facetField => $facetTitle):
 <?php
 endforeach;
 print '<br><br>'; //to separate breadcrumbs from search results
-
-
 
 $displaySearchResults = array();
 
@@ -208,7 +218,7 @@ foreach($displaySearchResults as $result):?>
       <div class="col-xs-11">
         <h3><a class="results-title" href="item?id=<?php print $result['url']?>"><?php print $result['title']?></a></h3>
       </div>
-			<div class="col-xs-2 pull-left">
+			<div class="col-xs-8 col-md-2 pull-left">
 				<?php
 				$imageList = getImagesForId($result['url']);
 				if (sizeof($imageList)>0):
@@ -216,9 +226,13 @@ foreach($displaySearchResults as $result):?>
 				<a href="item?id=<?php print $result['url']?>"><img class="img-responsive" src="<?php print $imageList[0] ?>"></a>
 			  <?php endif; ?>
 			</div>
-			<div class="col-xs-10 pull-right">
+			<div class="col-xs-12 col-md-10 pull-right">
 				<table>
       <?php foreach ($briefDisplayFields as $field):
+				//check if key exists
+				if (!array_key_exists($field,$result)){
+					continue;
+				}
 				//check if blank
 				if (is_array($result[$field])){
 					$emptyVar = array_filter($result[$field]);//gotta love php 5.3
@@ -269,7 +283,38 @@ foreach($displaySearchResults as $result):?>
 						</tr>
 						<?php
 					}
-					else {}
+					else if (array_key_exists('notes',$highlightArray)){
+						?>
+						<tr>
+							<td><strong><?php print $solrFieldNames['notes']['field_title'];?>:</strong></td>
+							<td><?php print $highlightArray['notes'][0];?></td>
+						</tr>
+						<?php
+					}
+					else {
+						// get the first key of the highlight array
+						$keys = array_keys($highlightArray);
+						$hKey = array_shift($keys);
+
+						$condition = true;
+
+						//we need to check if we have already displayed this field
+						//if we have, then we skip
+						foreach($briefDisplayFields as $field){
+							if ($hKey == $field){
+								$condition=false;
+								break;
+							}
+						}
+						if ($condition):
+						?>
+						<tr>
+							<td><strong><?php print $solrFieldNames[$hKey]['field_title'];?>:</strong></td>
+							<td><?php print $highlightArray[$hKey][0];?></td>
+						</tr>
+						<?php
+						endif;
+					}
 				}
 				foreach ($highlightArray as $key => $value){
 					if (in_array($key,$briefDisplayFields)) continue;
