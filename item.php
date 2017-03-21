@@ -82,8 +82,13 @@ $queryString = 'id:'.$_GET['id'];
 		  else{
 		    print $value;
 		  }
-		  if ($field=="has_image" && $result[$field]=="Print only"){
-				print "&nbsp;&nbsp;<a href=\"http://library.sc.edu/p/Music/About\">Contact us for access</a>";
+		  if ($field=="has_image"){
+				if ($result[$field]=="Print only"){
+					print "&nbsp;&nbsp;<a href=\"http://library.sc.edu/p/Music/About\">Contact us for access</a>";
+				}
+				else {
+					print "<a target=\"_blank\" href=\"viewpdf?id=".$result["id"]."\">View as pdf</a>";
+				}
 			}
 			?>
 			
