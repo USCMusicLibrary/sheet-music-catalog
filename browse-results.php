@@ -17,7 +17,7 @@ $searchQuery['fq'] = (isset($_GET['fq'])) ? $_GET['fq']: array();
 $searchQuery['fq_field'] = (isset($_GET['fq_field'])) ? $_GET['fq_field']: array();
 
 try{
-$solrResponse = getResultsFromSolr($searchQuery); //this is where the magic happens
+$solrResponse = getBrowseResultsFromSolr($searchQuery); //this is where the magic happens
 }
 catch (Exception $e) {
 	print '<h1 class="text-danger text-center">'.$e->getMessage().'</h1>';
@@ -72,7 +72,7 @@ $searchResults = $searchResponse['docs'];
 
 
 //prints next/previous buttons and total results count
-printResultsNavigation($searchResponse['start'],$searchResponse['numFound'],$searchQuery['rows']);
+//printResultsNavigation($searchResponse['start'],$searchResponse['numFound'],$searchQuery['rows']);
 ?>
 <script>
 var minYear = <?php print $minYear; ?>;
@@ -91,7 +91,7 @@ var currentQuery = <?php print '"'.$currentQuery.'"'; ?>;
   <?php
   $counter=1;
   foreach ($facetFields as $facetField => $facetTitle):?>
-  <div class="panel panel-default">
+  <div class="panel panel-default col-xs-6">
     <div class="panel-heading">
       <h4 class="panel-title">
         <a class="accordion-toggle<?php print in_array($facetField,$searchQuery['fq_field'])? ' accordion-opened':'';?>" data-toggle="collapse" href="#collapse<?php print $counter;?>"><?php print $facetTitle?>&nbsp;</a>
@@ -159,4 +159,4 @@ function printResultsNavigation($start,$numFound,$rows){
 
 ?>
 </div> <!-- row -->
-<?php printResultsNavigation($searchResponse['start'],$searchResponse['numFound'],$searchQuery['rows']);?>
+<?php //printResultsNavigation($searchResponse['start'],$searchResponse['numFound'],$searchQuery['rows']);?>

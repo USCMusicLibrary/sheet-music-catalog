@@ -20,20 +20,22 @@ $images = getImagesForId($id);
 
 $imageString = "";
 foreach ($images as $image){
-    $imageString = $imageString." ".$image;
+    $imageString = $imageString." ".getcwd()."\\".$image;
 }
 
 $output;
-$execString = "convert ".$imageString." tmppdf.pdf";
-//print $execString;
-//die();
-exec($execString,$output);
+//$execString="cd 2>&1";
+$execString = "\"C:\Program Files\ImageMagick-7.0.5-Q16\magick.exe\" ".$imageString." tmppdf.pdf 2>&1";
 
-$file = file_get_contents($fileContents);
+exec($execString,$output);
+print_r( $output);
+//print getcwd();
+die();
+//$file = file_get_contents($fileContents);
 
 header("Content-Type: application/pdf");
 
-print $fileContents;
+readfile("tmppdf.pdf");
 
 
 

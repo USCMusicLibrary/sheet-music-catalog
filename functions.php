@@ -502,6 +502,34 @@ function getResultsFromSolr($query){
 
 }
 
+function getBrowseResultsFromSolr($query){
+  $queryString = buildSolrQuery($query)."&facet.limit=-1";
+
+
+  $ch = curl_init();
+  curl_setopt_array($ch, array(
+      CURLOPT_RETURNTRANSFER => 1,
+      CURLOPT_URL => $queryString,
+  ));
+
+  $jsonResponse = curl_exec($ch);
+  if (curl_error($ch)){
+    throw new Exception('Unable to connect to search engine.');
+  }
+  //$jsonResponse = file_get_contents($queryString);
+
+  print $queryString;
+
+  if ($jsonResponse === false) return false;
+
+  $responseArray = json_decode($jsonResponse,true);
+
+  $searchResults = $responseArray/*["response"]*/;
+
+
+  return $searchResults;
+}
+
 
 /*
  * function buildSolrQuery

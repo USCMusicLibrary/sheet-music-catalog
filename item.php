@@ -87,7 +87,7 @@ $queryString = 'id:'.$_GET['id'];
 					print "&nbsp;&nbsp;<a href=\"http://library.sc.edu/p/Music/About\">Contact us for access</a>";
 				}
 				else {
-					print "<a target=\"_blank\" href=\"viewpdf?id=".$result["id"]."\">View as pdf</a>";
+					print "&nbsp;<a target=\"_blank\" href=\"viewpdf?id=".$result["id"]."\">View as pdf</a>";
 				}
 			}
 			?>
