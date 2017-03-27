@@ -11,7 +11,8 @@ if (isset($_POST["username"], $_POST["password1"], $_POST["password2"], $_POST["
   require_once "adminFunctions.php";
   $dialog = register($_POST["username"], $_POST["password1"], $_POST["password2"], $_POST["email"]);
   if (strcmp($dialog, "Success") === 0) {
-    header("Location: users");
+    $_SESSION['logged-in']=true;
+    header("Location: index");
   }
 }
 

@@ -1,6 +1,7 @@
 <?php
 /**
  */
+session_start();
 
 $dialog = isset($_GET["dialog"]) ? $_GET["dialog"] : "";
 
@@ -12,7 +13,9 @@ if (isset($_POST["username"], $_POST["password"])) {
   $dialog = login($_POST["username"], $_POST["password"]);
 
   if ($dialog == "Success") {
-    header("Location: account");
+    $_SESSION['logged-in']=true;
+    header("Location: index");
+    die();
   }
 }
 

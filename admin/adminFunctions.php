@@ -5,6 +5,7 @@
  */
 // Assure that the config file is imported prior.
 require_once "../config.php";
+require_once "../db-config.php";
 
 // Assure error reporting is on.
 error_reporting(E_ALL);
