@@ -3,7 +3,6 @@ CREATE TABLE records (
   id int(11) NOT NULL AUTO_INCREMENT,
   mid int(11),
   title text,
-  publisher varchar(255),
   call_number varchar(255),
   series varchar(255),
   larger_work varchar(255),
@@ -62,6 +61,13 @@ CREATE TABLE names (
   uri varchar(100),
   nameUpdate varchar(255),
   problem_note varchar(255),
+  PRIMARY KEY (id)
+);
+
+CREATE TABLE publishers (
+  id int(11) NOT NULL AUTO_INCREMENT,
+  record_id int(11) NOT NULL,
+  publisher varchar(255),
   PRIMARY KEY (id)
 );
 

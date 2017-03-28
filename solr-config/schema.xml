@@ -164,7 +164,7 @@
    <!-- <copyField source="years"    dest="years_text"/> -->
 
    <!-- Publisher -->   
-   <field name="publisher" type="text_general" indexed="true" stored="true" required="false" multiValued="false" />
+   <field name="publisher" type="text_general" indexed="true" stored="true" required="false" multiValued="true" />
    <field name="publisher_facet"  type="string" indexed="true"  stored="true" multiValued="true"/>
    <copyField source="publisher"    dest="publisher_facet"/>
    <!-- Publisher Location -->

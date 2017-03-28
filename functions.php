@@ -97,7 +97,7 @@ function importExcelTabFile(){
 'editor' => $parseURIData($fields[2]),
 'photographer' => $parseURIData($fields[3]),
 'illustrator' => $parseURIData($fields[4]),
-'publisher' => $fields[13],
+'publisher' => explode('|',$fields[13]),
 'publisher_location' => explode('|',$fields[14]),
 'years' =>  parseDate($fields[15]),//$fields[14],
 'years_text' => trim($fields[15]),
@@ -169,7 +169,7 @@ function insertDocDb($doc,$status){
   
   $mid = $doc['id'];
   $title = $doc['title'];
-  $publisher = $doc['publisher'];
+  //$publisher = $doc['publisher'];
   $call_number = $doc['call_number'];
   $series = $doc['series'];
   $larger_work = $doc['larger_work'];
@@ -179,10 +179,10 @@ function insertDocDb($doc,$status){
   $media_cataloguer =  array_key_exists('media_cataloguer',$doc)?$doc['media_cataloguer']:"";
   $reviewer = array_key_exists('reviewer',$doc)?$doc['reviewer']:"";
 
-  $statement = $mysqli->prepare("INSERT INTO records (mid,title,publisher,call_number,series,larger_work,collection_source,donor,scanning_technician,media_cataloguer,reviewer,status,date_created,date_modified)"
-                  ." VALUES (?,?,?,?,?,?,?,?,?,?,?,?,NOW(),NOW())");
+  $statement = $mysqli->prepare("INSERT INTO records (mid,title,call_number,series,larger_work,collection_source,donor,scanning_technician,media_cataloguer,reviewer,status,date_created,date_modified)"
+                  ." VALUES (?,?,?,?,?,?,?,?,?,?,?,NOW(),NOW())");
   //var_dump($doc);
-  $statement->bind_param("isssssssssss",$mid, 
+  $statement->bind_param("issssssssss",$mid, 
               $title, 
               $publisher, 
               $call_number, 
@@ -237,6 +237,13 @@ function insertDocDb($doc,$status){
     $statement = $mysqli->prepare("INSERT INTO languages (record_id,language)"
                   ." VALUES (?,?)");
     $statement->bind_param("is", $recordID,$language);
+  $statement->execute();
+    $statement->store_result();
+  }
+  foreach ($doc['publisher'] as $publisher){
+    $statement = $mysqli->prepare("INSERT INTO publishers (record_id,publisher)"
+                  ." VALUES (?,?)");
+    $statement->bind_param("is", $recordID,$publisher);
   $statement->execute();
     $statement->store_result();
   }
