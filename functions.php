@@ -184,7 +184,6 @@ function insertDocDb($doc,$status){
   //var_dump($doc);
   $statement->bind_param("issssssssss",$mid, 
               $title, 
-              $publisher, 
               $call_number, 
               $series, 
               $larger_work, 
