@@ -1,26 +1,37 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-"""This module performs automated updates of LCNAF and LCSH headings
-against database tables containing authorizedLabels with URIs.
+"""This module performs automated updates of authorized access points
+following vocabularies supported by services at id.loc.gov by checking
+heading recorded for a given id.loc.gov URI recorded in a local
+database table against the current value at id.loc.gov, then recording
+updated headings, deprecation information, or an error message for the
+URI to columns in the local database table.
 
-New supported vocabularies should be added to voc_dict following the pattern:
-vocabulary_name:[table_to_update, column_holding_authorizedLabel]
-where the vocabulary_name is the version appearing in the uris at id.loc.gov
- (e.g., "names" from "http://id.loc.gov/authorities/names/").
+The function "check_all" checks all headings with URIs for a change
+in form of heading. This should be run infrequently so as not to
+tax LC's system
 
----Database stuff---
-Local info (db name, a username & pwd for the script, etc.)
-need to be added to "Connection"
+The function "update" checks the id.loc.gov update rss feed for a
+given vocabulary for recent changes. This should be run frequently
+(no less than once per week; daily or nightly if possible)
 
-Make sure voc_dict reflects the tables and columns in your db (see note
-about new supported vocabularies above, too)
+Either may be applied via cmd line:
+authoritycheck.py [desired function name] [specified vocabulary]
 
-The name of the column that will contain the new form of label for updated records
-is expected to be the same as your column_holding_authorizedLabel + "Update"
-(e.g., if you have a table "contributors" where authorizedLabel values would
-be recorded in a column called "name", the update column would be "nameUpdate")
+If check_all encounters an error and fails prior to checking all
+headings, the last uri will be recorded to a file:
+check_all' + [vocabulary name] + '_Error.txt
+To pick up where check_all left off, call check_uri with the uri:
+authoritycheck.py check_all [specified vocabulary] [last uri]
 
+Database connection information should be recorded in a dbconfig.py
+file located in the same directory as the authoritycheck.py file.
+
+Supported vocabularies may be added in voc_dict following the pattern:
+vocabulary_name:[table_to_update, column_holding_headings]
+where the vocabulary_name is the version appearing in the uris at
+id.loc.gov (e.g., "names" from "http://id.loc.gov/authorities/names/")
 """
 
 import pymysql, feedparser, socket, re, os
@@ -31,7 +42,8 @@ from urllib.request import urlopen
 from sys import argv
 
 voc_dict = {"names":["names", "name"],
-            "subjects":["subject_headings", "subject_heading"]}
+            "subjects":["subject_headings", "subject_heading"]
+            }
 
 socket.setdefaulttimeout(10)
 #feedparser will hang without this
@@ -44,9 +56,6 @@ execfile('dbconfig.py')
 
 def robotscheck():
     """Function sets request delay to value from robots.txt"""
-    #Hopefully LC doesn't change any of the other requirements drastically,
-    #but we may want to add a check for updates to this file in case
-    #they shake things up later on
 
     try:
         robots = urlopen('http://id.loc.gov/robots.txt')
@@ -72,8 +81,9 @@ def robotscheck():
 
 def update(vocabulary):
     """Checks the update feed for a specified vocabulary at id.loc.gov,
-identifies headings in our db that need updating; adds update values
-to our local db; these will be applied later after approval."""
+    identifies headings in our db that need updating; adds update
+    values to our local db; these will be applied pending approval.
+    """
 
     date = datetime.date(datetime.now())
     today_date = str(date)
@@ -82,6 +92,7 @@ to our local db; these will be applied later after approval."""
 
     def on_error(date, url):
         """records last entry successfully parsed before updatecheck failure"""
+        
         with open("lc_update_" + vocabulary + "Error.txt", "a+", encoding="utf-8") as f:
             f.write(str(datetime.now()) + "\t" + url + "\t".join(updates[-1]) + "\n")
 
@@ -260,7 +271,7 @@ to our local db; these will be applied later after approval."""
             for uri, name in updateUniques.items():
 
                 with Connection.cursor() as cursor:
-                    sql = "UPDATE `" + tableName + "` SET `" + labelColumn + "Update` =%s WHERE (`uri` = %s) AND (`" + labelColumn + "` != %s)"
+                    sql = "UPDATE `" + tableName + "` SET `" + labelColumn + "Update` = %s WHERE (`uri` = %s) AND (`" + labelColumn + "` != %s)"
                     #Sets nameUpdate to current name from id.loc if uri matches & names don't
                     cursor.execute(sql, (name, uri, name))
 
@@ -274,10 +285,15 @@ to our local db; these will be applied later after approval."""
     else:
         print("Vocabulary not found. Supported vocabularies: '" + "' or '".join(voc_dict.keys()) + "'")
 
-def check_all(vocabulary):
-    """Checks all headings for which we have an id.loc.gov uri against the api
-in order to get the current authorizedLabel.
-Records update value to be applied pending approval"""
+def check_all(vocabulary, pickup_uri=None):
+    """Checks all headings for which we have an id.loc.gov uri against
+    the api to get the current authorizedLabel.
+    Records update value to be applied pending approval.
+
+    In case the script fails before the complete list of URIs has been
+    checked, the URI last processed is recorded via on_failure, with a
+    message indicating the nature of the error encountered.
+    """
 
     date = datetime.date(datetime.now())
     today_date = str(date)
@@ -297,7 +313,6 @@ Records update value to be applied pending approval"""
         name_dict = {}
 
         with Connection.cursor() as cursor:
-            #Remember to remove this limit and offset (or consider breaking this out & processing the list in chunks)
             sql_select = "SELECT `uri` FROM `" + tableName + "`"
 
             try:
@@ -308,9 +323,18 @@ Records update value to be applied pending approval"""
                 print("There was a problem retrieving uris from our database")
                 raise e
 
+            if pickup_uri is not None:
+                #test uri: http://id.loc.gov/authorities/names/no2012028627
+                print("Looking for pickup uri: " + pickup_uri + "...")
+                for i, r in enumerate(results):
+                    url = r['uri']
+                    if url == pickup_uri:
+                        print("found")
+                        results = results[i:]
+                        break
+    
             for r in results:
                 url = r['uri']
-
                 if url == "" or url == None:
                     pass
 
@@ -344,7 +368,7 @@ Records update value to be applied pending approval"""
                             raise
 
                     except Exception as e:
-                        print("We encountered an error while requesting header data from id.loc.gov")
+                        print("We encountered an error while requesting header data from id")
                         print("Writing uri for last record checked to vocab's error file")
                         on_failure(url, "Unspecified issue retrieving data from id.loc.gov")
                         raise e
@@ -359,15 +383,15 @@ Records update value to be applied pending approval"""
                             print(res.status)
                             print(res.reason)
                             if res.getheader('X-Uri', default = None) != None:
-                                sql_update = "UPDATE `" + tableName + "` SET `note` ='::ERROR:: uri has been deprecated at id.loc.gov; check for replacement', `hasProblem` =1 WHERE `uri` = %s"
+                                sql_update = "UPDATE `" + tableName + "` SET `problem_note` = '::ERROR:: uri has been deprecated at id.loc.gov; check for replacement' WHERE `uri` = %s"
                             else:
-                                sql_update = "UPDATE `" + tableName + "` SET `note` ='::ERROR:: There is a problem with this URI--typo, maybe?', `hasProblem` =1 WHERE `uri` = %s"
+                                sql_update = "UPDATE `" + tableName + "` SET `problem_note` = '::ERROR:: id.loc.gov service failed to retrieve record--check URI for typo' WHERE `uri` = %s"
                             cursor.execute(sql_update, url)
                         else:
                             
                             if name == None or name == '':
                                 #for deleted records
-                                sql_update = "UPDATE `" + tableName + "` SET `note` ='::ERROR:: No name found', hasProblem = 1 WHERE `uri` = %s"
+                                sql_update = "UPDATE `" + tableName + "` SET `problem_note` ='::ERROR:: No name found' WHERE `uri` = %s"
                                 cursor.execute(sql_update, url)
     
                             else:
@@ -375,14 +399,13 @@ Records update value to be applied pending approval"""
                                 sql_update = "UPDATE `" + tableName + "` SET `"+labelColumn+"Update` = %s WHERE `uri` = %s AND " + labelColumn + " != %s"
                                 cursor.execute(sql_update, (name, url, name))
                                                           
-                        finally:
-                            sleep(int(naptime))
+                        sleep(int(naptime))
 
 
-            sql = "SELECT name, uri, nameUpdate, note, hasProblem FROM "+tableName+" WHERE nameUpdate != NULL OR hasProblem = 1"
+            sql = "SELECT name, uri, nameUpdate, problem_note FROM " + tableName + " WHERE nameUpdate IS NOT NULL OR problem_note IS NOT NULL"
             cursor.execute(sql)
             results = cursor.fetchall()
-            print(results)
+            print(len(results))
 
         with open("last_full_update_" + vocabulary + ".txt", "w", encoding='utf-8') as f:
             f.write(today_date)
@@ -402,13 +425,16 @@ Records update value to be applied pending approval"""
 
 if __name__ == "__main__":
     print(len(argv), argv)
-    if len(argv) == 3:
+    if len(argv) in (3, 4):
         function = argv[1]
         vocabulary = argv[2]
-        print("function: " + function, "vocab: " + vocabulary)
         if function == "update":
             update(vocabulary)
         elif function == "check_all":
-            check_all(vocabulary)
+            if len(argv) == 4:
+                url = argv[3]
+                check_all(vocabulary, url)
+            else:
+                check_all(vocabulary)
     else:
-        print("Requires a function name and vocabulary. Supported vocabularies: '" + "' or '".join(voc_dict.keys()) + "'")
+        print("Requires a function name (i.e. 'check_all' or 'update') and vocabulary. May include optional 3rd parameter for uri if using check_all. Supported vocabularies: '" + "' or '".join(voc_dict.keys()) + "'")

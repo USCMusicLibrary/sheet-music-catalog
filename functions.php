@@ -254,28 +254,34 @@ function insertDocDb($doc,$status){
 function addVocabularies($doc){
     global $mysqli;
     global $contribtypes;
-global $other_heading_types;
+    global $other_heading_types;
     $contributor_headings = array_keys($contribtypes);
     $headingtypes = array_merge($contributor_headings, $other_heading_types);
+    $recordID = $doc["id"];
+
     foreach ( $headingtypes as $htype) {
-      if (!array_key_exists($htype,$doc)) continue;
+      if (!array_key_exists($htype,$doc)){ 
+          continue;
+      }
             foreach($doc[$htype] as $heading){
-            $label = $heading[0];
+            $label = trim($heading[0]);
             $uri = $heading[1];
-            if($htype == 'subject_heading'){
-                    $table = 'subject_headings';
-                    $labelfield = 'subject_heading';
-                    $crosstable = 'has_subject';
-                    $crossID = 'subject_id';
+            if($htype == "subject_heading"){
+                    $table = "subject_headings";
+                    $labelfield = "subject_heading";
+                    $crosstable = "has_subject";
+                    $crossID = "subject_id";
                     #Any additional supported vocabularies will follow as else ifs here
             }
             else{
-                    $table = 'names';
+                    $table = "names";
                     $roleID = $contribtypes[$htype];
-                    $labelfield = 'name';
-                    $crosstable = 'contributors';
-                    $crossID = 'contributor_id';
+                    $labelfield = "name";
+                    $crosstable = "contributors";
+                    $crossID = "contributor_id";
             }
+
+            //--updating $table to add label/uri entry if needed--
             $query = "SELECT id, uri FROM ".$table." WHERE ".$labelfield." = ? LIMIT 1";
             $statement = $mysqli->prepare($query);
             //print $query.'<br>';
@@ -292,23 +298,30 @@ global $other_heading_types;
                     $statement->bind_param('s', $label);
                     $statement->execute();
                     $statement->store_result();
-                    $statement->bind_result($resultID, $localUri);
+                    $statement->bind_result($localID, $localUri);
                     if ($statement->fetch()) {
-                      $localID = $resultID;
-                      //if we have a match then we have to
-                      //check if uris are different or if new one is blank
-                      //then write problem note
-                      if ($uri != $localUri || trim($uri) =="") {
-                            #for typos, etc.; there is probably a better way of handling this
-                            $query = "UPDATE ".$table." SET problem_note = ? WHERE id = ?";
+                      if (($uri != $localUri) && (trim($uri) !="")) {
+                          //check if current URI is different than uri already in table, and not null/blank
+                          if(trim($localUri) !== ""){ //as long as localUri isn't null/blank, add error message
+                              $newURI = "Some records had uri: ".$uri;
+                              $likeURI = '"%'.$newURI.'%"';
+                              $query = "UPDATE ".$table." SET problem_note = "
+                                      ."CONCAT_WS('--', COALESCE(problem_note, ''), ?) WHERE id = ? "
+                                      ."AND COALESCE(problem_note, '') NOT LIKE ?";
+                              $params = [&$newURI, &$localID, &$likeURI];
+                              $type = "sis";
+                          } else { //if blank/null, update to $uri value
+                              $query = "UPDATE ".$table." SET uri = ? WHERE id = ?";
+                              $params = [&$uri, &$localID];
+                              $type = "si";
+                          }
                             $statement = $mysqli->prepare($query);
                             if (!$statement){
                                     print "Differing URI prepare statement failed";
                                     print_r( $statement->error_list) ;
                             }
                             else{
-                              $newURI = "Diff:".$uri;
-                              $statement->bind_param('si', $newURI, $localID);
+                              call_user_func_array(array($statement, "bind_param"), array_merge(array($type), $params));
                               $statement->execute();
                               $statement->store_result();
                               //$localID = $statement->insert_id;
@@ -316,7 +329,7 @@ global $other_heading_types;
                         }
                     }
                     else {
-                      //if no match then we just insert into table
+                      //if no matching label in table, insert label & uri
                         $statement = $mysqli->prepare("INSERT INTO ".$table." (".$labelfield.", uri) VALUES(?,?)");
                         $statement->bind_param('ss', $label, $uri);
                         $statement->execute();
@@ -324,7 +337,8 @@ global $other_heading_types;
                         $localID = $statement->insert_id;
                     }
                 }
-                #Update crosstable
+
+                //--Updating $crosstable--
                 print("\n\t".$htype  . ': ' . $label ." (LOCAL ID: " . $localID. ') ; URI: ' . $uri . ' </br>');
                 if ($crosstable == 'contributors'){
                     $sql = "INSERT INTO ".$crosstable." (record_id,".$crossID.",role_id) VALUES (?,?,?)";
