@@ -137,6 +137,7 @@ truncate table languages;
 truncate table names;
 truncate table notes;
 truncate table publisher_locations;
+truncate table publishers;
 truncate table records;
 truncate table roles;
 truncate table subject_headings;

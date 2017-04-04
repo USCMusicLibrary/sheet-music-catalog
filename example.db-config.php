@@ -15,3 +15,5 @@ $mysqli = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_BASE);
 if ($mysqli->connect_error || $mysqli->connect_errno) {
   exit("<h1 class='text-danger'>Database Connection Error (" . $mysqli->connect_errno . "): " . $mysqli->connect_error . "</h1>");
 }
+
+$mysqli->set_charset("utf8");
