@@ -362,6 +362,32 @@ function addVocabularies($doc){
             }
 }
 
+
+function deleteRecord($dbID){
+  deleteFromTable('records','id',$dbID);
+  deleteFromTable('alternative_titles','record_id',$dbID);
+  deleteFromTable('years','record_id',$dbID);
+  deleteFromTable('notes','record_id',$dbID);
+  deleteFromTable('contributors','record_id',$dbID);
+  deleteFromTable('publishers','record_id',$dbID);
+  deleteFromTable('publisher_locations','record_id',$dbID);
+  deleteFromTable('texts','record_id',$dbID);
+  deleteFromTable('languages','record_id',$dbID);
+  deleteFromTable('has_subject','record_id',$dbID);
+  //deleteFromTable('hidden_subject_headings','record_id',$dbID);
+}
+
+function deleteFromTable($table,$idColumn,$id){
+  global $mysqli;
+  $query = "DELETE FROM $table WHERE $idColumn=?";
+  print $query."<br>";
+  $statement = $mysqli->prepare($query);
+  print $mysqli->error;
+  $statement->bind_param("i",$id);
+  $statement->execute();
+  $statement->store_result();
+}
+
 //print("</br>");
 
 //TODO: Please add error checking!!!
@@ -759,5 +785,7 @@ function isLoggedIn(){
 function isSuper(){
   return ($_SESSION['usertype']='super') ? true : false;
 }
+
+
 
 ?>

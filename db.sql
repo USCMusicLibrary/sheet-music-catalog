@@ -1,4 +1,6 @@
 /* main table for records*/
+/* TODO: refactor media_cataloguer to int type to refer to 
+id in users table */
 CREATE TABLE records (
   id int(11) NOT NULL AUTO_INCREMENT,
   mid int(11),

@@ -1,15 +1,16 @@
 <?php
-//index for admin part
+//edit page
+session_start();
 require "../header.php";
 
 
-require "../functions.php";
+require_once "../functions.php";
 
-$statement = $mysqli->prepare("SELECT title,publisher,call_number,series,larger_work,collection_source,donor,scanning_technician,media_cataloguer,reviewer FROM records WHERE id=? LIMIT 1");
+$statement = $mysqli->prepare("SELECT id,title,publisher,call_number,series,larger_work,collection_source,donor,scanning_technician,media_cataloguer,reviewer FROM records WHERE id=? LIMIT 1");
 $statement->bind_param("i",$_GET['id']);
 $statement->execute();
 $statement->store_result();
-$statement->bind_result($title, $publisher, $call_number, $series, $larger_work, 	$collection_source, $donor, $scanning_technician, $media_cataloguer, $reviewer);
+$statement->bind_result($id, $title, $publisher, $call_number, $series, $larger_work, 	$collection_source, $donor, $scanning_technician, $media_cataloguer, $reviewer);
 $statement->fetch();
 
 
@@ -77,6 +78,9 @@ $statement->fetch();
             <input class="clickedit" type="text" />
         </p>
 
+      </div>
+      <div class="col-xs-8 col-xs-offset-2">
+        <a href="delete?id=<?php print $id; ?>" class="btn btn-lg btn-danger">Delete record</a>
       </div>
   </div>
 </div> <!-- container-fluid -->

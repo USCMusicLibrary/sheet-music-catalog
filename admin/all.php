@@ -1,9 +1,10 @@
 <?php
-//index for admin part
+//view all pending records
+session_start();
 require "../header.php";
 
 
-require "../functions.php";
+require_once "../functions.php";
 
 //select 20 records for now (for testing)
 $statement = $mysqli->prepare("SELECT id,title,publisher,call_number,series,larger_work,collection_source,donor,scanning_technician,media_cataloguer,reviewer FROM records WHERE status='pending'");
