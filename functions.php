@@ -245,11 +245,9 @@ function insertDocDb($doc,$status){
     $statement->bind_param("is", $recordID,$publisher);
   $statement->execute();
     $statement->store_result();
-
-    return $recordID;
   }
   
-
+return $recordID;
 
     }
 

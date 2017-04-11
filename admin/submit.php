@@ -62,7 +62,8 @@ foreach ($headingtypes as $htype){
 <?php print_r ($document);?>
 </pre>
 <?php
-    insertDocDb($document,'pending');
+    $recordID = insertDocDb($document,'pending');
+    addVocabularies($document,$recordID);
       ?>
 
       </div>

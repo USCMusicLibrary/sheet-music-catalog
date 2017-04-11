@@ -93,7 +93,7 @@ require_once "../functions.php";
             <label for="publisher" class="control-label">Publisher(s)</label>
           </div>
           <div class="col-xs-10 col-xs-offset-2">
-            <input type="text" class="form-control" name="publisher[]" id="publisher">
+            <input type="text" class="form-control" name="publisher[]" id="pub">
           </div>
           <div class="col-xs-10 col-xs-offset-2"><button id="btn-add-publisher" class="btn btn-danger">Add another publisher</button></div>
         </div>
