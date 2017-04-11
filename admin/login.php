@@ -14,6 +14,7 @@ if (isset($_POST["username"], $_POST["password"])) {
 
   if ($dialog == "Success") {
     $_SESSION['logged-in']=true;
+    $_SESSION['user']=$_POST['username'];
     header("Location: index");
     die();
   }

@@ -1,5 +1,6 @@
 <?php
 require_once "config.php";
+require_once "functions.php";
 error_reporting(E_ALL);
 ini_set("display_errors", true);
 ini_set("display_startup_errors", true);
@@ -73,6 +74,7 @@ ini_set("display_startup_errors", true);
           <ul class="nav navbar-nav">
             <li class="active"><a href="index">Search</a></li>
             <li><a href="browse">Browse</a></li>
+            <?php if (isLoggedIn()):?><li><a href="logout">Log out</a></li><?php endif;?>
           </ul>
         </div><!--/.nav-collapse -->
       </div>

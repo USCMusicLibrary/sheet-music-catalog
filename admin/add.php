@@ -1,9 +1,17 @@
 <?php
-//index for admin part
+//add record page
+
+session_start();
+if (!$_SESSION['logged-in']){
+    header("Location: login");
+    die();
+}
+
+
 require "../header.php";
 
 
-require "../functions.php";
+require_once "../functions.php";
 
 ?>
 <div class="container-fluid">

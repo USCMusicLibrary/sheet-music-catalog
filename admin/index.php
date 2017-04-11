@@ -9,7 +9,7 @@ if (!$_SESSION['logged-in']){
 require "../header.php";
 
 
-require "../functions.php";
+require_once "../functions.php";
 
 
 

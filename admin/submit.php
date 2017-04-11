@@ -1,9 +1,10 @@
 <?php
-//index for admin part
+//submission
+session_start();
 require "../header.php";
 
 
-require "../functions.php";
+require_once "../functions.php";
 
 require_once "../db-config.php";
 

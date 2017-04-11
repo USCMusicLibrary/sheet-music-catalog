@@ -750,4 +750,14 @@ function idHasImage($id){
   else return true;
 }
 
+
+
+function isLoggedIn(){
+  return $_SESSION['logged-in'];
+}
+
+function isSuper(){
+  return ($_SESSION['usertype']='super') ? true : false;
+}
+
 ?>
