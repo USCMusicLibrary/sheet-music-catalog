@@ -56,6 +56,18 @@ CREATE TABLE roles (
   relatorcode varchar(3),
   PRIMARY KEY (id)
 );
+/* populate roles table
+*/
+INSERT INTO roles (id,role,relatorcode) values
+  (0,'composer','cmp'),
+  (1,'lyricist','lyr'),
+  (2,'arranger','arr'),
+  (3,'illustrator','ill'),
+  (4,'editor','edt'),
+  (5,'photographer','pht'),
+  (6,'other','oth')
+;
+
 
 CREATE TABLE names (
   id int(11) NOT NULL AUTO_INCREMENT,

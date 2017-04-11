@@ -124,6 +124,19 @@ $("#btn-add-language").click(function(e){
     formGroup.toggleClass("collapse");
 });
 
+$("#btn-add-publisher").click(function(e){
+    e.preventDefault();
+    console.log("add publisher");
+    var formGroup = $(this).parent().prev().clone();
+    formGroup.find("input").val("");
+    formGroup.toggleClass("collapse");
+    formGroup.insertBefore($(this).parent());
+    formGroup.show('fast', function() {
+            console.log("show");
+        });
+    formGroup.toggleClass("collapse");
+});
+
 $("#btn-add-pub-loc").click(function(e){
     e.preventDefault();
     console.log("add publisher location");

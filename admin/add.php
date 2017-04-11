@@ -18,7 +18,7 @@ require_once "../functions.php";
   <div class="row">
       <div class="col-xs-8 col-xs-offset-2">
         <h2>Submission form</h2>
-        <form class="form-horizontal" action="submit" method="POST">
+        <form class="form-horizontal" action="submit" method="POST" id="recordForm" name="recordForm">
         <div class="form-group">
           <div class="col-xs-2">
             <label for="title" class="control-label">Title</label>
@@ -90,11 +90,12 @@ require_once "../functions.php";
 
         <div class="form-group">
           <div class="col-xs-2">
-            <label for="publisher" class="control-label">Publisher</label>
+            <label for="alt-title" class="control-label">Publisher(s)</label>
           </div>
-          <div class="col-xs-10">
-            <input type="text" class="form-control" name="publisher" id="publisher">
+          <div class="col-xs-10 col-xs-offset-2">
+            <input type="text" class="form-control" name="publisher[]" id="publisher">
           </div>
+          <div class="col-xs-10 col-xs-offset-2"><button id="btn-add-publisher" class="btn btn-danger">Add another publisher</button></div>
         </div>
 
         <div class="form-group">
@@ -148,7 +149,7 @@ require_once "../functions.php";
 
         <div class="form-group">
           <div class="col-xs-2">
-            <label for="subject_heading" class="control-label">Subject Headings(s)</label>
+            <label for="subject_heading" class="control-label">Subject Heading(s)</label>
           </div>
           <div class="col-xs-10" id="subject-headings-list"></div>
 
