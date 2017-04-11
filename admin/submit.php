@@ -16,36 +16,12 @@ require_once "../db-config.php";
       <pre>
       <?php print_r ($_POST);?>
       </pre>
-
-      <?php foreach ($_POST as $key => $val):
-      continue;?>
-        <p>
-          <strong><?php print $key;?>: </strong>
-          <?php 
-            if (is_array($val)){
-                foreach ($val as $value){
-                    if (trim($value)=="") continue;
-                    print '<br>'.$value;
-                }
-            }
-            else print $val;
-          ?>
-        </p>
-      <?php endforeach;
+<?php 
 
       $document = array (
         'id' => 0,
 'title' => $_POST['title'],
 'alternative_title' => $_POST['alt-title'],
-'composer' => $_POST['composer'],
-//'composer_uri' => $fields[4],
-'lyricist' => $_POST['lyricist'],
-//'lyricist_uri' => $fields[6],
-'arranger' => $_POST['arranger'],
-//'arranger_uri' => $fields[8],
-'editor' => $_POST['editor'],
-'photographer' => $_POST['photographer'],
-'illustrator' =>$_POST['illustrator'],
 'publisher' => $_POST['publisher'],
 'publisher_location' => $_POST['publisher_location'],
 'years' =>  [1234],
@@ -54,24 +30,38 @@ require_once "../db-config.php";
 'text_t' => $_POST['text-t'],
 'notes' => $_POST['note'],
 'donor' => $_POST['donor'],
-//'Distributor' => $fields[19],
-//'subject_heading' =>  array_filter(explode( '|',trim($fields[20]))),
-'subject_heading' => [],
 'call_number' => $_POST['call_number'],
-//'PlateNumber' => $fields[23],
 'series' => $_POST['series'],
 'collection_source' =>$_POST['collection'],
 'larger_work' => $_POST['larger-work']
-//'has_image' => (idHasImage($fields[1]))?"Online score" : "Print only"
-//'Keywords' => $fields[27],
-//'Original_Notes' => $fields[28],
-//'zImagePath' => $fields[29],
-//'MidiPath' => $fields[30],
-//'zNumberOfPages' => $fields[31],
-//'TitleSearchHits' => $fields[32],
-//'Incomplete' => $fields[33]
     );
 
+$contributor_headings = array_keys($contribtypes);
+$headingtypes = array_merge($contributor_headings, $other_heading_types);
+
+foreach ($headingtypes as $htype){
+  $document[$htype] = array();
+  if (isset($_POST[$htype])){
+    foreach ($_POST[$htype] as $heading){
+      if (trim($heading)=="") continue;
+      $document[$htype][] = array($heading,"");
+    }
+  }
+}
+/*
+    'composer' => isset($_POST['composer']) ? array($_POST['composer'],'') : [] ,
+'lyricist' => $_POST['lyricist'],
+'arranger' => $_POST['arranger'],
+'editor' => $_POST['editor'],
+'photographer' => $_POST['photographer'],
+'illustrator' =>$_POST['illustrator'],
+'subject_heading' => [],
+*/
+?>
+<pre>
+<?php print_r ($document);?>
+</pre>
+<?php
     insertDocDb($document,'pending');
       ?>
 

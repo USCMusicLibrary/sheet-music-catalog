@@ -90,7 +90,7 @@ require_once "../functions.php";
 
         <div class="form-group">
           <div class="col-xs-2">
-            <label for="alt-title" class="control-label">Publisher(s)</label>
+            <label for="publisher" class="control-label">Publisher(s)</label>
           </div>
           <div class="col-xs-10 col-xs-offset-2">
             <input type="text" class="form-control" name="publisher[]" id="publisher">

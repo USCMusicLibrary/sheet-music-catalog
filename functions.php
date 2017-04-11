@@ -154,10 +154,10 @@ function importExcelTabFile(){
     indexDocument($solrDocument);
 
     //send unmodified document to database
-    insertDocDb($document,'approved');
+    $recordID = insertDocDb($document,'approved');
 
     //add addVocabularies
-    addVocabularies($document);
+    addVocabularies($document, $recordID);
 
     flush();
   }
@@ -245,19 +245,21 @@ function insertDocDb($doc,$status){
     $statement->bind_param("is", $recordID,$publisher);
   $statement->execute();
     $statement->store_result();
+
+    return $recordID;
   }
   
 
 
     }
 
-function addVocabularies($doc){
+function addVocabularies($doc,$insertID){
     global $mysqli;
     global $contribtypes;
     global $other_heading_types;
     $contributor_headings = array_keys($contribtypes);
     $headingtypes = array_merge($contributor_headings, $other_heading_types);
-    $recordID = $doc["id"];
+    $recordID = $insertID;
 
     foreach ( $headingtypes as $htype) {
       if (!array_key_exists($htype,$doc)){ 
