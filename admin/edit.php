@@ -13,7 +13,31 @@ $statement->store_result();
 $statement->bind_result($id, $title, $publisher, $call_number, $series, $larger_work, 	$collection_source, $donor, $scanning_technician, $media_cataloguer, $reviewer);
 $statement->fetch();
 
+$fields = array(
+  'alternative_title'=> ['alternative_titles','alternative_title'],
+  'notes'=>['notes','note'],
+  'text_t'=>['texts','text_t'],
+  'publisher_location'=>['publisher_locations','publisher_location'],
+  'publisher'=>['publishers','publisher'],
+  'language'=>['languages','language']
+);
 
+$displayArray = array();
+
+foreach($fields as $field=>$values){
+  //var_dump($values);
+  $query = "SELECT $values[1] FROM $values[0] WHERE record_id=?";
+  $statement = $mysqli->prepare($query);
+  $statement->bind_param("i",$id);
+  $statement->execute();
+  $statement->store_result();
+  $statement->bind_result($value);
+  while ($statement->fetch()){
+    if (trim($value)=="") continue;
+    $displayArray[$solrFieldNames[$field]['field_title']][] = $value; 
+  }
+}
+ //var_dump($displayArray);
 ?>
 <div class="container-fluid">
   <div class="row">
@@ -78,6 +102,16 @@ $statement->fetch();
             <input class="clickedit" type="text" />
         </p>
 
+        <?php foreach ($displayArray as $key=>$values):?>
+        <p>
+          <strong><?php print $key;?>: </strong>
+            <?php foreach ($values as $val): ?>
+            <br>
+            <span class="text-primary"><?php print $val;?></span>
+            <input class="clickedit" type="text" />
+            <?php endforeach;?>
+        </p>
+        <?php endforeach;?>
       </div>
       <div class="col-xs-8 col-xs-offset-2">
         <a href="delete?id=<?php print $id; ?>" class="btn btn-lg btn-danger">Delete record</a>
