@@ -1,11 +1,12 @@
 <?php
+session_start();
 
 require "header.php";?>
 <!--<pre>-->
 <?php
 
 
-require "functions.php";
+require_once "functions.php";
 
 global $solrUrl;
 global $solrResultsHighlightTag;
@@ -46,6 +47,17 @@ $queryString = 'id:'.$_GET['id'];
 <!--</pre>-->
 <div class="container-fluid">
 	<div class="row">
+	    <div class="col-xs-4 col-xs-ofset-8">
+			<?php 
+			if (isLoggedIn()){
+				if (isSuper()){
+					?>
+					<a href="admin/edit?id=<?php print $_GET['id'];?>">Edit</a>
+					<?php
+				}
+			}
+			?>
+			</div>
       <div class="col-xs-12 col-md-8 col-md-offset-2">
         <h2><?php print $result['title'];?></h2>
       </div>

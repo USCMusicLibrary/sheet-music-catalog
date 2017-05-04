@@ -1,9 +1,9 @@
 <?php
-
+session_start();
 require "header.php";
 
 
-require "functions.php";
+require_once "functions.php";
 
 ?>
 <div class="container-fluid">

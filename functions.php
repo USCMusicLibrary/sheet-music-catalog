@@ -779,7 +779,13 @@ function idHasImage($id){
 
 
 function isLoggedIn(){
-  return $_SESSION['logged-in'];
+  if (isset($_SESSION['logged-in'])){
+    return $_SESSION['logged-in'];
+  }
+  else {
+    $_SESSION['logged-in'] = false;
+    return false;
+  }
 }
 
 function isSuper(){
