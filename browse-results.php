@@ -86,7 +86,7 @@ var currentQuery = <?php print '"'.$currentQuery.'"'; ?>;
 /*
  * The following displays the facets column
  */?><div class="col-xs-12 col-md-12">
-		<div class="col-xs-12"><h4>Facets:</h4>
+		<div class="col-xs-12"><h4>Browse by:</h4>
 			<div class="panel-group" id="accordion">
   <?php
   $counter=1;
@@ -100,6 +100,8 @@ var currentQuery = <?php print '"'.$currentQuery.'"'; ?>;
     <div id="collapse<?php print $counter;?>" class="panel-collapse collapse<?php print in_array($facetField,$searchQuery['fq_field'])? ' in':'';?>">
       <div class="panel-body">
       	<?php
+
+				//TODO: need to get rid of breadcrumb links in browse section
         $currentFacet = $facetField;
       	$facets = $searchFacetCounts['facet_fields'][$currentFacet];
 				//sort($facets);
