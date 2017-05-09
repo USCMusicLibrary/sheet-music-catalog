@@ -6,7 +6,7 @@ require "../header.php";
 require "../functions.php";
 
 //select 20 records for now (for testing)
-$statement = $mysqli->prepare("SELECT mid,title,publisher,call_number,series,larger_work,collection_source,donor,scanning_technician,media_cataloguer,reviewer,status FROM records WHERE status='pending'LIMIT 20");
+$statement = $mysqli->prepare("SELECT mid,title,publisher,call_number,series,larger_work,collection_source,donor,scanning_technician,media_cataloguer,reviewer,status FROM records WHERE status='pending'");
 $statement->execute();
 $statement->store_result();
 $statement->bind_result($mid, $title, $publisher, $call_number, $series, $larger_work, 	$collection_source, $donor, $scanning_technician, $media_cataloguer, $reviewer, $status);
