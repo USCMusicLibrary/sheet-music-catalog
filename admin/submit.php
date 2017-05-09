@@ -33,7 +33,9 @@ require_once "../db-config.php";
 'call_number' => $_POST['call_number'],
 'series' => $_POST['series'],
 'collection_source' =>$_POST['collection'],
-'larger_work' => $_POST['larger-work']
+'larger_work' => $_POST['larger-work'],
+'scanning_technician' => $_POST['scanning-tech'],
+'admin_notes' => $_POST['msg']
     );
 
 $contributor_headings = array_keys($contribtypes);

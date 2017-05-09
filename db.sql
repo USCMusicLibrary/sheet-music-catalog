@@ -1,6 +1,4 @@
 /* main table for records*/
-/* TODO: refactor media_cataloguer to int type to refer to 
-id in users table */
 CREATE TABLE records (
   id int(11) NOT NULL AUTO_INCREMENT,
   mid int(11),
@@ -14,6 +12,7 @@ CREATE TABLE records (
   media_cataloguer_id int(11),
   reviewer_id int(11),
   status varchar(255),
+  admin_notes varchar(255),
   date_created datetime,
   date_modified datetime,
   PRIMARY KEY (id)

@@ -113,7 +113,8 @@ function importExcelTabFile(){
 'series' => $fields[21],
 'collection_source' => $fields[22],
 'larger_work' => $fields[23],
-'has_image' => (idHasImage($fields[1]))?"Online score" : "Print only"
+'has_image' => (idHasImage($fields[1]))?"Online score" : "Print only",
+'scanning_technician' => ''
 //'Keywords' => $fields[27],
 //'Original_Notes' => $fields[28],
 //'zImagePath' => $fields[29],
@@ -175,14 +176,14 @@ function insertDocDb($doc,$status){
   $larger_work = $doc['larger_work'];
   $collection_source = $doc['collection_source'];
   $donor = $doc['donor'];
-  $scanning_technician = NULL;
+  $scanning_technician = $doc['scanning_technician'];
   $media_cataloguer =  NULL;
   $reviewer = NULL;
 
   $statement = $mysqli->prepare("INSERT INTO records (mid,title,call_number,series,larger_work,collection_source,donor,scanning_technician,media_cataloguer_id,reviewer_id,status,date_created,date_modified)"
                   ." VALUES (?,?,?,?,?,?,?,?,?,?,?,NOW(),NOW())");
   //var_dump($doc);
-  $statement->bind_param("issssssiiis",$mid, 
+  $statement->bind_param("isssssssiis",$mid, 
               $title, 
               $call_number, 
               $series, 
