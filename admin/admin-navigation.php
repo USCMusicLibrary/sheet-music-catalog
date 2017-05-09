@@ -6,8 +6,18 @@
         <div id="navbar" class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
             <li><a href="<?php print $ROOTURL;?>admin/index">Start</a></li>
-            <li><a href="<?php print $ROOTURL;?>admin/all">All</a></li>
-            <?php if (isLoggedIn()):?><li><a href="logout">Log out</a></li><?php endif;?>
+            <li><a href="<?php print $ROOTURL;?>admin/account">Account (<?php print $_SESSION['username'];?>)</a></li>
+            <li><a href="<?php print $ROOTURL;?>admin/all">View own submissions</a></li>
+            <li><a href="<?php print $ROOTURL;?>admin/pending">Pending</a></li>
+            <li><a href="<?php print $ROOTURL;?>admin/approved">Approved</a></li>
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Headings<span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                  <li><a href="#">Names</a></li>
+                  <li><a href="#">Contributors</a></li>
+                </ul>
+              </li>
+            <li><a href="<?php print $ROOTURL;?>admin/users">Users</a></li>
           </ul>
         </div><!--/.nav-collapse -->
       </div>

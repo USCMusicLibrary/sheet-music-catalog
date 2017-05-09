@@ -50,14 +50,7 @@ require "../header.php";
    
 <!-- debug -->
   <div>
-    <h2 class="text-danger">Debugging</h2>
-    <ul>
-    <?php 
-    foreach (scandir(getcwd()) as $page):?>
-      <li><a href="<?php print $page;?>"><?php print $page;?></a></li>
-    <?php endforeach;
-    ?>
-    </ul>
+    <h2 class="text-primary"><a href="register">Click here to register</a></h2>
   </div>
       <div class="col-xs-6 center-block">
         <form class="form-horizontal" action="login" method="POST">

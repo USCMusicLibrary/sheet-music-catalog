@@ -93,6 +93,7 @@ function register($username, $password1, $password2, $email/*, $captcha*/) {
  * @param {String} $passwrod
  */
 function login($username, $password) {
+  session_unset();
   global $mysqli;
   $username = $mysqli->real_escape_string($username);
 
@@ -110,7 +111,7 @@ function login($username, $password) {
       $_SESSION["username"]  = $username;
       $_SESSION["logged-in"] = true;
       $_SESSION["user_role"] = $role;
-
+ 
       return "Success";
     } else {
       return "Incorrect username and password combination.";

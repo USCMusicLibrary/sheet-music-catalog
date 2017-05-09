@@ -1,15 +1,19 @@
 <?php
 //index for admin part
 session_start();
-if (!$_SESSION['logged-in']){
+require_once "../functions.php";
+
+if (!isLoggedIn()){
     header("Location: login");
     die();
 }
 
 require "../header.php";
 
+require "admin-navigation.php";
 
-require_once "../functions.php";
+
+
 
 
 

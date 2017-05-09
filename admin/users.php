@@ -1,16 +1,22 @@
 <?php
 /**
  */
-
-
-
 //TODO: add some error checking
 
-$title = "Login";
-$loginRequired = false;
+$title = "Users";
+session_start();
 
 require "../db-config.php";
+require_once "../functions.php";
 require "../header.php";
+
+
+require "admin-navigation.php";
+
+if (!isLoggedIn() || !isSuper() ){
+  print "<h1 class=\"text-danger\">Unauthorized</h1>";
+  die();
+}
 ?>
 
 <div class="container">
@@ -20,14 +26,7 @@ require "../header.php";
   <div class="row">
 <!-- debug -->
   <div>
-    <h2 class="text-danger">Debugging</h2>
-    <ul>
-    <?php 
-    foreach (scandir(getcwd()) as $page):?>
-      <li><a href="<?php print $page;?>"><?php print $page;?></a></li>
-    <?php endforeach;
-    ?>
-    </ul>
+    
   </div>
       <div class="col-xs-6 center-block">
         <table class="table table-striped table-hover">

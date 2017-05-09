@@ -789,7 +789,7 @@ function isLoggedIn(){
 }
 
 function isSuper(){
-  return ($_SESSION['user_role']='super') ? true : false;
+  return ($_SESSION['user_role']=='super') ? true : false;
 }
 
 
