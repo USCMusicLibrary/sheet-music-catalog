@@ -1,6 +1,6 @@
 <?php 
 
-require "functions.php";
+require_once "functions.php";
 
 $id;
 if (!isset($_GET['id'])){

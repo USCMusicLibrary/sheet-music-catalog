@@ -5,11 +5,11 @@
 */
 
 global $solrCoreName;
-$solrCoreName = "sheet-music-catalog";
+$solrCoreName = "sheet-music-catalog1";
 
 global $ROOTURL;
 //$ROOTURL = "http://localhost/catalog/";
-$ROOTURL = "http://129.252.210.237/catalog/";
+$ROOTURL = "http://localhost/smc/";
 
 global $solrUrl;
 $solrUrl = 'http://localhost:8983/solr/'.$solrCoreName.'/';
