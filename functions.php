@@ -151,13 +151,13 @@ function importExcelTabFile(){
       $solrDocument['subject_heading'] = $newSubjects;
     }
     //send modified doc to solr
-    indexDocument($solrDocument);
+    //indexDocument($solrDocument);
 
     //send unmodified document to database
     $recordID = insertDocDb($document,'approved');
 
     //add addVocabularies
-    addVocabularies($document, $recordID);
+    //addVocabularies($document, $recordID);
 
     flush();
   }
@@ -179,7 +179,7 @@ function insertDocDb($doc,$status){
   $media_cataloguer =  NULL;
   $reviewer = NULL;
 
-  $statement = $mysqli->prepare("INSERT INTO records (mid,title,call_number,series,larger_work,collection_source,donor,scanning_technician_id,media_cataloguer_id,reviewer_id,status,date_created,date_modified)"
+  $statement = $mysqli->prepare("INSERT INTO records (mid,title,call_number,series,larger_work,collection_source,donor,scanning_technician,media_cataloguer_id,reviewer_id,status,date_created,date_modified)"
                   ." VALUES (?,?,?,?,?,?,?,?,?,?,?,NOW(),NOW())");
   //var_dump($doc);
   $statement->bind_param("issssssiiis",$mid, 

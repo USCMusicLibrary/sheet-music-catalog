@@ -17,7 +17,7 @@ require "admin-navigation.php";
   <div class="row">
     <div class="col-xs-12">
       <a class="btn btn-lg btn-default" href="account">Account</a>
-      <a class="btn btn-lg btn-default">Add records</a>
+      <a class="btn btn-lg btn-default" href="add">Add records</a>
       <a class="btn btn-lg btn-default">Review records</a>
     </div>
   </div>
