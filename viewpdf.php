@@ -4,28 +4,30 @@ require "functions.php";
 
 $id;
 if (!isset($_GET['id'])){
-    printError();
-    die();
+    //printError();
+    //die();
 }
 else {
     $id=$_GET['id'];
 }
 //print "isset";
 if (!idHasImage($id)){
-    printError();
-    die();
+    //printError();
+    //die();
 }
 
 $images = getImagesForId($id);
 
 $imageString = "";
 foreach ($images as $image){
-    $imageString = $imageString." ".getcwd()."\\".$image;
+    $imageString = $imageString." ".getcwd()."/".$image;
 }
 
+print $imageString;
+die();
 $output;
 //$execString="cd 2>&1";
-$execString = "\"C:\Program Files\ImageMagick-7.0.5-Q16\magick.exe\" ".$imageString." tmppdf.pdf 2>&1";
+$execString = "convert ".$imageString." tmppdf.pdf";
 
 exec($execString,$output);
 print_r( $output);
