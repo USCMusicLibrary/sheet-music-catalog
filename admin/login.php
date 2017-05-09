@@ -47,11 +47,6 @@ require "../header.php";
   </div>
 
   <div class="row">
-   
-<!-- debug -->
-  <div>
-    <h2 class="text-primary"><a href="register">Click here to register</a></h2>
-  </div>
       <div class="col-xs-6 center-block">
         <form class="form-horizontal" action="login" method="POST">
           <fieldset>
@@ -80,6 +75,10 @@ require "../header.php";
       </form>
 
     </div>
+
+    <div>
+    <h2 class="text-primary"><a href="register">Click here to register</a></h2>
+  </div>
 
   </div>
 </div>

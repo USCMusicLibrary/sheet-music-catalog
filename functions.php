@@ -175,14 +175,14 @@ function insertDocDb($doc,$status){
   $larger_work = $doc['larger_work'];
   $collection_source = $doc['collection_source'];
   $donor = $doc['donor'];
-  $scanning_technician = array_key_exists('scanning_technician',$doc)?$doc['scanning_technician']:"";
-  $media_cataloguer =  array_key_exists('media_cataloguer',$doc)?$doc['media_cataloguer']:"";
-  $reviewer = array_key_exists('reviewer',$doc)?$doc['reviewer']:"";
+  $scanning_technician = NULL;
+  $media_cataloguer =  NULL;
+  $reviewer = NULL;
 
-  $statement = $mysqli->prepare("INSERT INTO records (mid,title,call_number,series,larger_work,collection_source,donor,scanning_technician,media_cataloguer,reviewer,status,date_created,date_modified)"
+  $statement = $mysqli->prepare("INSERT INTO records (mid,title,call_number,series,larger_work,collection_source,donor,scanning_technician_id,media_cataloguer_id,reviewer_id,status,date_created,date_modified)"
                   ." VALUES (?,?,?,?,?,?,?,?,?,?,?,NOW(),NOW())");
   //var_dump($doc);
-  $statement->bind_param("issssssssss",$mid, 
+  $statement->bind_param("issssssiiis",$mid, 
               $title, 
               $call_number, 
               $series, 

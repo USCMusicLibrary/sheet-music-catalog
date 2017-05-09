@@ -1,15 +1,17 @@
 <?php
 //index for admin part
+session_start();
 require "../header.php";
 
 
-require "../functions.php";
+require_once "../functions.php";
 
-//select 20 records for now (for testing)
-$statement = $mysqli->prepare("SELECT mid,title,publisher,call_number,series,larger_work,collection_source,donor,scanning_technician,media_cataloguer,reviewer,status FROM records WHERE status='pending'");
+require "admin-navigation.php";
+
+$statement = $mysqli->prepare("SELECT id, mid,title,call_number,series,larger_work,collection_source,donor,scanning_technician_id,media_cataloguer_id,reviewer_id,status FROM records WHERE status='pending'");
 $statement->execute();
 $statement->store_result();
-$statement->bind_result($mid, $title, $publisher, $call_number, $series, $larger_work, 	$collection_source, $donor, $scanning_technician, $media_cataloguer, $reviewer, $status);
+$statement->bind_result($id, $mid, $title, $call_number, $series, $larger_work, 	$collection_source, $donor, $scanning_technician, $media_cataloguer, $reviewer, $status);
 
 
 

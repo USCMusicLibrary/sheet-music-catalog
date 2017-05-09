@@ -12,11 +12,6 @@ require "../header.php";
 
 require "admin-navigation.php";
 
-
-
-
-
-
 ?>
 <div class="container-fluid">
   <div class="row">
