@@ -180,6 +180,7 @@ function insertDocDb($doc,$status){
   global $mysqli;
   
   $mid = $doc['id'];
+  $id = $mid;
   $title = $doc['title'];
   //$publisher = $doc['publisher'];
   $call_number = $doc['call_number'];
@@ -193,10 +194,10 @@ function insertDocDb($doc,$status){
   $admin_notes = $doc['admin_notes'];
 
 
-  $statement = $mysqli->prepare("INSERT INTO records (mid,title,call_number,series,larger_work,collection_source,donor,scanning_technician,media_cataloguer_id,reviewer_id,admin_notes,status,date_created,date_modified)"
-                  ." VALUES (?,?,?,?,?,?,?,?,?,?,?,?,NOW(),NOW())");
+  $statement = $mysqli->prepare("INSERT INTO records (id,mid,title,call_number,series,larger_work,collection_source,donor,scanning_technician,media_cataloguer_id,reviewer_id,admin_notes,status,date_created,date_modified)"
+                  ." VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,NOW(),NOW())");
   //var_dump($doc);
-  $statement->bind_param("isssssssiiss",$mid, 
+  $statement->bind_param("iisssssssiiss",$id, $mid, 
               $title, 
               $call_number, 
               $series, 
