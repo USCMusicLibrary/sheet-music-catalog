@@ -114,7 +114,10 @@ function importExcelTabFile(){
 'collection_source' => $fields[22],
 'larger_work' => $fields[23],
 'has_image' => (idHasImage($fields[1]))?"Online score" : "Print only",
-'scanning_technician' => ''
+'scanning_technician' => '',
+'media_cataloguer_id' => NULL,
+'reviewer_id' => NULL,
+'admin_notes' => ''
 //'Keywords' => $fields[27],
 //'Original_Notes' => $fields[28],
 //'zImagePath' => $fields[29],
@@ -151,14 +154,22 @@ function importExcelTabFile(){
       }
       $solrDocument['subject_heading'] = $newSubjects;
     }
+    $solrDoc = array();
+    global $solrFieldNames;
+    foreach ($solrDocument as $key => $val){
+      if (array_key_exists($key,$solrFieldNames)){
+        $solrDoc[$key] = $val;
+      }
+    }
+
     //send modified doc to solr
-    //indexDocument($solrDocument);
+    indexDocument($solrDoc);
 
     //send unmodified document to database
     $recordID = insertDocDb($document,'approved');
 
     //add addVocabularies
-    //addVocabularies($document, $recordID);
+    addVocabularies($document, $recordID);
 
     flush();
   }
@@ -177,13 +188,15 @@ function insertDocDb($doc,$status){
   $collection_source = $doc['collection_source'];
   $donor = $doc['donor'];
   $scanning_technician = $doc['scanning_technician'];
-  $media_cataloguer =  NULL;
-  $reviewer = NULL;
+  $media_cataloguer =  $doc['media_cataloguer_id'];
+  $reviewer = $doc['reviewer_id'];
+  $admin_notes = $doc['admin_notes'];
 
-  $statement = $mysqli->prepare("INSERT INTO records (mid,title,call_number,series,larger_work,collection_source,donor,scanning_technician,media_cataloguer_id,reviewer_id,status,date_created,date_modified)"
-                  ." VALUES (?,?,?,?,?,?,?,?,?,?,?,NOW(),NOW())");
+
+  $statement = $mysqli->prepare("INSERT INTO records (mid,title,call_number,series,larger_work,collection_source,donor,scanning_technician,media_cataloguer_id,reviewer_id,admin_notes,status,date_created,date_modified)"
+                  ." VALUES (?,?,?,?,?,?,?,?,?,?,?,?,NOW(),NOW())");
   //var_dump($doc);
-  $statement->bind_param("isssssssiis",$mid, 
+  $statement->bind_param("isssssssiiss",$mid, 
               $title, 
               $call_number, 
               $series, 
@@ -193,6 +206,7 @@ function insertDocDb($doc,$status){
               $scanning_technician, 
               $media_cataloguer, 
               $reviewer,
+              $admin_notes,
               $status);
   $statement->execute();
   $statement->store_result();
