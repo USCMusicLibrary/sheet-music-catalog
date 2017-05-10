@@ -6,6 +6,9 @@ require "../header.php";
 
 require_once "../functions.php";
 
+require "admin-navigation.php";
+
+
 $statement = $mysqli->prepare("SELECT id,title,publisher,call_number,series,larger_work,collection_source,donor,scanning_technician,media_cataloguer,reviewer FROM records WHERE id=? LIMIT 1");
 $statement->bind_param("i",$_GET['id']);
 $statement->execute();

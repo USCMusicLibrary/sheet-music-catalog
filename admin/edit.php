@@ -6,11 +6,14 @@ require "../header.php";
 
 require_once "../functions.php";
 
-$statement = $mysqli->prepare("SELECT id,title,publisher,call_number,series,larger_work,collection_source,donor,scanning_technician,media_cataloguer,reviewer FROM records WHERE id=? LIMIT 1");
+require "admin-navigation.php";
+
+
+$statement = $mysqli->prepare("SELECT id,title,call_number,series,larger_work,collection_source,donor,scanning_technician,media_cataloguer_id,reviewer_id FROM records WHERE id=? LIMIT 1");
 $statement->bind_param("i",$_GET['id']);
 $statement->execute();
 $statement->store_result();
-$statement->bind_result($id, $title, $publisher, $call_number, $series, $larger_work, 	$collection_source, $donor, $scanning_technician, $media_cataloguer, $reviewer);
+$statement->bind_result($id, $title, $call_number, $series, $larger_work, 	$collection_source, $donor, $scanning_technician, $media_cataloguer, $reviewer);
 $statement->fetch();
 
 $fields = array(
@@ -50,7 +53,7 @@ foreach($fields as $field=>$values){
 
         <p>
           <strong>Publisher: </strong><br>
-            <span class="text-primary"><?php print $publisher;?></span>
+            <span class="text-primary">TODO: add publisher</span>
             <input class="clickedit" type="text" />
         </p>
 

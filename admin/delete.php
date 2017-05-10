@@ -11,6 +11,9 @@ require "../header.php";
 
 require_once "../functions.php";
 
+require "admin-navigation.php";
+
+
 //TODO: check user permissions before deleting record
 deleteRecord($_GET['id']);
 

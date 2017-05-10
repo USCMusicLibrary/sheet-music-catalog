@@ -35,7 +35,9 @@ require_once "../db-config.php";
 'collection_source' =>$_POST['collection'],
 'larger_work' => $_POST['larger-work'],
 'scanning_technician' => $_POST['scanning-tech'],
-'admin_notes' => $_POST['msg']
+'admin_notes' => $_POST['msg'],
+'media_cataloguer_id' => $_SESSION['user_id'],
+'reviewer_id' => $_SESSION['user_id']
     );
 
 $contributor_headings = array_keys($contribtypes);

@@ -25,12 +25,10 @@ $statement->bind_result($id, $mid, $title, $call_number, $series, $larger_work, 
             <tr>
               <th>ID</th>
               <th>Title</th>
-              <th>Composer</th>
 <th>Call Number</th>
 <th>Series</th>
 <th>Larger Work</th>
 <th>Collection Source</th>
-<th>Donor</th>
 <!--<th>Scanning Technician</th>
 <th>Media Cataloguer</th>
 <th>Reviewer</th>-->
@@ -43,12 +41,10 @@ $statement->bind_result($id, $mid, $title, $call_number, $series, $larger_work, 
               <tr>
  <th><?php print $mid;?></th>
 <th><?php print $title;?></th>
-<th><?php print $publisher;?></th>
 <th><?php print $call_number;?></th>
 <th><?php print $series;?></th>
 <th><?php print $larger_work;?></th>
 <th><?php print $collection_source;?></th>
-<th><?php print $donor;?></th>
 <!--<th><?php //print $scanning_technician;?></th>
 <th><?php //print $media_cataloguer;?></th>
 <th><?php // print $reviewer;?></th>-->
