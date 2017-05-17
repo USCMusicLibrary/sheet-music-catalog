@@ -40,8 +40,8 @@ if (!isLoggedIn() || !isSuper() ){
 
           while($statement->fetch()):?>
             <tr><td><?php print $user;?></td><td><?php print $email;?></td><td><?php print $role;?></td>
-            <td><a href="modifyUser?id=<?php print $userid."&to=".($role=='super')?'contributor':'super';?>" class="btn btn-primary">Change status</a></td>
-            <td><a href="deleteUser?id=<?php print $userid;?>" class="btn btn-danger">Change status</a></td>
+            <td><a href="modifyUser?id=<?php print $userid;?>&to=<?php  print ($role=='super')?'contributor':'super';?>" class="btn btn-primary">Change status</a></td>
+            <td><a href="deleteUser?id=<?php print $userid;?>" class="btn btn-danger">Delete user</a></td>
             </tr>
           <?php endwhile;
         ?>
