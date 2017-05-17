@@ -72,7 +72,7 @@ ini_set("display_startup_errors", true);
         </div>
         <div id="navbar" class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
-            <li class="active"><a href="index">Search</a></li>
+            <li class="active"><a href="index">Search</a></li> 
             <!--<li><a href="browse">Browse</a></li>-->
             <?php if (isLoggedIn()):?><li><a href="logout">Log out</a></li><?php endif;?>
           </ul>

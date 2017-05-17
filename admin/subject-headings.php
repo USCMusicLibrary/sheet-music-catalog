@@ -27,11 +27,22 @@ $statement->bind_result($name, $uri);
   <div class="row">
       <div class="col-xs-8 col-xs-offset-2">
         <h1 class="text-primary">Subject headings list</h1>
+        <table>
+        <tr><th>Heading</th><th>URI</th><th></th></tr>
         <?php
 while ($statement->fetch()):
 ?>
-<p><?php print $name;?></p>
-<?php endwhile; ?>
+<tr>
+<td><?php print $name;?></td>
+<td><?php print $uri;?></td>
+<?php 
+if (isSuper()):?>
+<td><a href="#" class="btn btn-danger">Edit</a></td>
+<?php else:
+  print "<td></td>";
+endif;
+endwhile; ?>
+</table>
       </div>
   </div>
 </div> <!-- container-fluid -->

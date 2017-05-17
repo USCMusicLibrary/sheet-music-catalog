@@ -13,8 +13,8 @@
             <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Headings<span class="caret"></span></a>
                 <ul class="dropdown-menu">
-                  <li><a href="#">Names</a></li>
-                  <li><a href="#">Contributors</a></li>
+                  <li><a href="names-list">Names</a></li>
+                  <li><a href="subject-headings">Subjects</a></li>
                 </ul>
               </li>
             <li><a href="<?php print $ROOTURL;?>admin/users">Users</a></li>
