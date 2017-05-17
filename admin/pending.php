@@ -6,6 +6,8 @@ require "../header.php";
 
 require_once "../functions.php";
 
+require_once "adminFunctions.php";
+
 require "admin-navigation.php";
 
 $statement = $mysqli->prepare("SELECT id, mid,title,call_number,series,larger_work,collection_source,donor,scanning_technician,media_cataloguer_id,reviewer_id,status FROM records WHERE status='pending'");
@@ -30,10 +32,10 @@ $statement->bind_result($id, $mid, $title, $call_number, $series, $larger_work, 
 <th>Larger Work</th>
 <th>Collection Source</th>
 <th>Donor</th>
-<!--<th>Scanning Technician</th>
 <th>Media Cataloguer</th>
+<!--<th>Scanning Technician</th>
 <th>Reviewer</th>-->
-              <th></th>
+              <th>Status</th>
             </tr>
           </thead>
           <tbody>
@@ -46,9 +48,9 @@ $statement->bind_result($id, $mid, $title, $call_number, $series, $larger_work, 
 <th><?php print $larger_work;?></th>
 <th><?php print $collection_source;?></th>
 <th><?php print $donor;?></th>
+<th><?php print getUsernameFromID($media_cataloguer);?></th>
 <th><?php print $status;?></th>
 <!--<th><?php print $scanning_technician;?></th>
-<th><?php print $media_cataloguer;?></th>
 <th><?php print $reviewer;?></th>-->
                 <th><a href="edit?id=<?php print $id;?>" class="btn btn-danger">Edit</a></th>
               </tr>

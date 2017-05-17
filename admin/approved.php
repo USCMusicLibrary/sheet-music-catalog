@@ -8,7 +8,7 @@ require_once "../functions.php";
 
 require "admin-navigation.php";
 
-$statement = $mysqli->prepare("SELECT id, mid,title,call_number,series,larger_work,collection_source,donor,scanning_technician,media_cataloguer_id,reviewer_id,status FROM records WHERE status='approved'");
+$statement = $mysqli->prepare("SELECT id, mid,title,call_number,series,larger_work,collection_source,donor,scanning_technician,media_cataloguer_id,reviewer_id,status FROM records WHERE status='approved' ORDER BY date_modified DESC");
 $statement->execute();
 $statement->store_result();
 $statement->bind_result($id, $mid, $title, $call_number, $series, $larger_work, 	$collection_source, $donor, $scanning_technician, $media_cataloguer, $reviewer, $status);

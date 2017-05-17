@@ -44,6 +44,11 @@ foreach($fields as $field=>$values){
 ?>
 <div class="container-fluid">
   <div class="row">
+    <?php if (isSuper()):?>
+      <div class="col-xs-3 col-xs-offset-9">
+        <a href="approve?id=<?php print $id;?>" class="btn btn-success">Approve</a>
+      </div>
+    <?php endif;?>
       <div class="col-xs-8 col-xs-offset-2">
         <p>
           <strong>Title: </strong><br>

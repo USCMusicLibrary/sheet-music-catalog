@@ -8,10 +8,11 @@ require_once "../functions.php";
 
 require "admin-navigation.php";
 
-$statement = $mysqli->prepare("SELECT id, mid,title,call_number,series,larger_work,collection_source,donor,scanning_technician,media_cataloguer_id,reviewer_id FROM records WHERE status='pending'");
+$statement = $mysqli->prepare("SELECT id, mid,title,call_number,series,larger_work,collection_source,donor,scanning_technician,media_cataloguer_id,reviewer_id,status FROM records WHERE media_cataloguer_id=?");
+$statement->bind_param("i",$_SESSION['user_id']);
 $statement->execute();
 $statement->store_result();
-$statement->bind_result($id, $mid, $title, $call_number, $series, $larger_work, $collection_source, $donor, $scanning_technician, $media_cataloguer, $reviewer);
+$statement->bind_result($id, $mid, $title, $call_number, $series, $larger_work, $collection_source, $donor, $scanning_technician, $media_cataloguer, $reviewer, $status);
 
 
 
@@ -29,6 +30,7 @@ $statement->bind_result($id, $mid, $title, $call_number, $series, $larger_work, 
 <th>Series</th>
 <th>Larger Work</th>
 <th>Collection Source</th>
+<th>Status</th>
 <!--<th>Scanning Technician</th>
 <th>Media Cataloguer</th>
 <th>Reviewer</th>-->
@@ -45,6 +47,8 @@ $statement->bind_result($id, $mid, $title, $call_number, $series, $larger_work, 
 <th><?php print $series;?></th>
 <th><?php print $larger_work;?></th>
 <th><?php print $collection_source;?></th>
+<th><?php print $status;?></th>
+
 <!--<th><?php //print $scanning_technician;?></th>
 <th><?php //print $media_cataloguer;?></th>
 <th><?php // print $reviewer;?></th>-->

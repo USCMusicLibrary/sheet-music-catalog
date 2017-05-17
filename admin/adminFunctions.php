@@ -86,6 +86,8 @@ function register($username, $password1, $password2, $email/*, $captcha*/) {
   } // if (strcmp($password1, $password2) === 0)
 } // function register($username, $password1, $password2, $email, $captcha)
 
+
+
 /**
  * Logs a user in.
  *
@@ -303,3 +305,22 @@ function updatePassword($oldPassword, $newPassword) {
 function getHeaders($email) {
   return "From: " . $email . "\r\nReply-To: " . $email . "\r\nX-Mailer: PHP/" . phpversion() . "\r\n" . "MIME-Version: 1.0\r\nContent-Type: text/html; charset=UTF-8";
 } // function getHeaders($email)
+
+
+
+//getUsernameFromID
+function getUsernameFromId($id){
+  global $mysqli;
+
+  $statement = $mysqli->prepare("SELECT username FROM users where id=? LIMIT 1");
+  $statement->bind_param("i",$id);
+  $statement->execute();
+  $statement->store_result();
+  $statement->bind_result($username);
+  if ($statement->fetch()){
+    return $username;
+  }
+  else {
+    return "";
+  }
+}
