@@ -642,8 +642,8 @@ function buildSolrQuery($query){
     .'select?'.$queryString.'&start='.$query['start'].'&rows='.$query['rows']
     .'&wt=json&hl=true&hl.simple.pre='.urlencode('<'.$solrResultsHighlightTag.'>')
     .'&hl.simple.post='.urlencode('</'.$solrResultsHighlightTag.'>')
-    .'&hl.fl=*&facet=true';
-
+    .'&hl.fl=*&facet=true&debugQuery=on';
+print $queryString;
 global $facetFields;
 foreach ($facetFields as $key=>$val){
   $queryString = $queryString.'&facet.field='.$key;
@@ -684,15 +684,19 @@ function buildQueryForContributors($query){
  * @return {string}: a solr query that will search all fields for $query
  */
 function buildQueryForAllFields($query){
+  $query = preg_replace('/".*?"(*SKIP)(*FAIL)| (AND|OR|NOT) (*SKIP)(*FAIL)| +(?!$)/', ' AND ', $query);
   $queryString = '';
   global $searchFields;
   foreach ($searchFields as $field){
     $queryString = $queryString.$field.':('.urlencode($query);
-    if ($field =="title"){
+    if($field == "exact_words"){
+        $queryString = $queryString.')^6%0A';
+    }
+    else if ($field =="title"){
       $queryString = $queryString.')^4%0A';
     }
     else if ($field =="composer"){
-      $queryString = $queryString.')^3%0A';
+      $queryString = $queryString.')^3';
     }
     else if ($field =="text_t"){
       $queryString = $queryString.')^2%0A';

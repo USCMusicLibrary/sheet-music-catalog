@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+﻿<?xml version="1.0" encoding="UTF-8" ?>
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
  contributor license agreements.  See the NOTICE file distributed with
@@ -123,54 +123,66 @@
    
    <!-- Title -->
    <field name="title" type="text_en_splitting" indexed="true" stored="true" required="true" multiValued="false" />
+   <copyField source="title" dest="exact_words" />
    
    <!-- composer -->
    <field name="composer" type="text_en_splitting" indexed="true" stored="true" required="false" multiValued="true" />
    <field name="composer_facet"  type="string" indexed="true"  stored="true" multiValued="true"/>
    <copyField source="composer"    dest="composer_facet"/>
+   <copyField source="composer" dest="exact_words" />
    
    <!-- lyricist -->
    <field name="lyricist" type="text_en_splitting" indexed="true" stored="true" required="false" multiValued="true" />
    <field name="lyricist_facet"  type="string" indexed="true"  stored="true" multiValued="true"/>
    <copyField source="lyricist"    dest="lyricist_facet"/>
-   
+   <copyField source="lyricist" dest="exact_words" />
+
    <!-- arranger -->
    <field name="arranger" type="text_en_splitting" indexed="true" stored="true" required="false" multiValued="true" />
    <field name="arranger_facet"  type="string" indexed="true"  stored="true" multiValued="true"/>
    <copyField source="arranger"    dest="arranger_facet"/>
+   <copyField source="arranger" dest="exact_words" />
    
    <!-- illustrator -->
    <field name="illustrator" type="text_en_splitting" indexed="true" stored="true" required="false" multiValued="true" />
    <field name="illustrator_facet"  type="string" indexed="true"  stored="true" multiValued="true"/>
    <copyField source="illustrator"    dest="illustrator_facet"/>
+   <copyField source="illustrator" dest="exact_words" />
    
    <!-- photographer -->
    <field name="photographer" type="text_en_splitting" indexed="true" stored="true" required="false" multiValued="true" />
    <field name="photographer_facet"  type="string" indexed="true"  stored="true" multiValued="true"/>
    <copyField source="photographer"    dest="photographer_facet"/>
+   <copyField source="photographer" dest="exact_words" />
    
    <!-- editor -->
    <field name="editor" type="text_en_splitting" indexed="true" stored="true" required="false" multiValued="true" />
    <field name="editor_facet"  type="string" indexed="true"  stored="true" multiValued="true"/>
-   <copyField source="illustrator"    dest="illustrator_facet"/>
+   <copyField source="editor"    dest="editor_facet"/>
+   <copyField source="editor" dest="exact_words" />
    
    <!-- other_contributor -->
    <field name="other_contributor" type="text_en_splitting" indexed="true" stored="true" required="false" multiValued="true" />
    <field name="other_contributor_facet"  type="string" indexed="true"  stored="true" multiValued="true"/>
    <copyField source="other_contributor"    dest="other_contributor_facet"/>
+   <copyField source="other_contributor" dest="exact_words" />
 
    <field name="years" type="int" indexed="true" stored="true" multiValued="true"/>
    <field name="years_text" type="string" indexed="true" stored="true" multiValued="true"/>
    <!-- <copyField source="years"    dest="years_text"/> -->
+   <!-- <copyField source="years_text" dest="exact_words" /> -->
 
    <!-- Publisher -->   
    <field name="publisher" type="text_general" indexed="true" stored="true" required="false" multiValued="true" />
    <field name="publisher_facet"  type="string" indexed="true"  stored="true" multiValued="true"/>
    <copyField source="publisher"    dest="publisher_facet"/>
+   <copyField source="publisher" dest="exact_words" />
+
    <!-- Publisher Location -->
    <field name="publisher_location" type="text_general" indexed="true" stored="true" required="true" multiValued="true" />
    <field name="publisher_location_facet"  type="string" indexed="true"  stored="true" multiValued="true"/>
    <copyField source="publisher_location"    dest="publisher_location_facet"/>
+   <copyField source="publisher_location" dest="exact_words" />
    
    <!-- hasImage -->
    <field name="has_image" type="string" indexed="true" stored="true" required="true" multiValued="false" />
@@ -180,9 +192,14 @@
    <!-- Alternative Title(s) -->
    <!-- TODO: finalize text field type decisions -->
    <field name="alternative_title" type="text_en_splitting" indexed="true" stored="true" required="false" multiValued="true" />
+   <copyField source="alternative_title" dest="exact_words" />
    
    <!-- Full Text -->
    <field name="text_t" type="text_en" indexed="true" stored="true" required="false" multiValued="true" />
+   <copyField source="text_t" dest="exact_words" />
+   
+   <!-- for exact matching; use text_general if pluralization isn't a problem -->
+   <field name="exact_words" type="text_en_splitting_tight" indexed="true" stored="true" required="false" multiValued="true" />
    
    <!-- Source/Shelfmark -->
    <field name="call_number" type="text_general" indexed="true" stored="true" required="false" multiValued="false" />
@@ -191,24 +208,31 @@
    <field name="subject_heading" type="text_en_splitting" indexed="true" stored="true" required="false" multiValued="true" />
    <field name="subject_heading_facet"  type="string" indexed="true"  stored="true" multiValued="true"/>
    <copyField source="subject_heading"    dest="subject_heading_facet"/>
+   <copyField source="subject_heading" dest="exact_words" />
    
    <!-- Series -->
    <field name="series" type="text_general" indexed="true" stored="true" required="false" multiValued="false" />
+   <copyField source="series" dest="exact_words" />
    
    <!-- Larger Work -->
    <field name="larger_work" type="text_general" indexed="true" stored="true" required="false" multiValued="false" />
+   <copyField source="larger_work" dest="exact_words" />
    
    <!-- Donor -->
    <field name="donor" type="text_general" indexed="true" stored="true" required="false" multiValued="false" />
+   <copyField source="donor" dest="exact_words" />
    
    <!-- Language -->
    <field name="language" type="string" indexed="true" stored="true" required="false" multiValued="true" />
+   <copyField source="language" dest="exact_words" />
    
    <!-- Notes -->
    <field name="notes" type="text_en" indexed="true" stored="true" required="false" multiValued="true" />
+   <copyField source="notes" dest="exact_words" />
    
    <!-- collection_source-->
    <field name="collection_source" type="text_en" indexed="true" stored="true" required="false" multiValued="false" />
+   <copyField source="collection_source" dest="exact_words" />
    
    
    
@@ -528,6 +552,7 @@
       </analyzer>
     </fieldType>
 
+
     <!-- Less flexible matching, but less false matches.  Probably not ideal for product names,
          but may be good for SKUs.  Can insert dashes in the wrong place and still match. -->
     <fieldType name="text_en_splitting_tight" class="solr.TextField" positionIncrementGap="100" autoGeneratePhraseQueries="true">
@@ -650,5 +675,5 @@
                              refreshInterval: Number of minutes between each rates fetch (default: 1440, min: 60)
    -->
     <fieldType name="currency" class="solr.CurrencyField" precisionStep="8" defaultCurrency="USD" currencyConfig="currency.xml" />
-
+   
 </schema>
