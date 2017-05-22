@@ -551,7 +551,9 @@ function getResultsFromSolr($query){
   }
   //$jsonResponse = file_get_contents($queryString);
 
-  //print $queryString;
+  if (DEBUGGING) {
+    print $queryString;
+  }
 
   if ($jsonResponse === false) return false;
 
@@ -580,7 +582,9 @@ function getBrowseResultsFromSolr($query){
   }
   //$jsonResponse = file_get_contents($queryString);
 
-  print $queryString;
+  if (DEBUGGING) {
+    print $queryString;
+  }
 
   if ($jsonResponse === false) return false;
 

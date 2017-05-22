@@ -4,12 +4,18 @@
  config file for global values
 */
 
+if ($_SERVER['SERVER_NAME']=='localhost'){
+	define ("DEBUGGING",true);
+}
+else {
+	define ("DEBUGGING",false);
+}
+
 global $solrCoreName;
-$solrCoreName = "sheet-music-catalog1";
+$solrCoreName = "sheet-music-catalog";
 
 global $ROOTURL;
-//$ROOTURL = "http://localhost/catalog/";
-$ROOTURL = "http://localhost/smc/";
+$ROOTURL = "http://localhost/catalog/";
 
 global $solrUrl;
 $solrUrl = 'http://localhost:8983/solr/'.$solrCoreName.'/';
