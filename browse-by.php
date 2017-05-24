@@ -139,14 +139,14 @@ endif;
 				 <script>
 				 var browseFacet = '<?php print $browseFacet;?>';
 				 </script>
-            <input id="nameInput" class="form-control awesomplete pull-right" placeholder="Type a name" list="names-list" name="contributor[]"></input>
+            <?php if($browseFacetTitle!=""):?><input id="nameInput" class="form-control awesomplete pull-right" placeholder="Type a name" list="names-list" name="contributor[]"></input>
               <datalist id="names-list">
     <?php 
     foreach ($namesList as $name => $num):
     if (trim($name)=="") continue;?>
 		<option value="<?php print $name; ?>"><?php print $name; ?></option>
     <?php endforeach;?>
-</datalist>
+</datalist><?php endif;?>
        </div>
 		</div>
 	</div>
