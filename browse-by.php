@@ -84,19 +84,19 @@ for($i=0; $i<sizeof($facets); $i++){
     continue;
 	}
 	else {
-		$namesList[] = $facets[$i];
+		$namesList[$facets[$i]] = $facets[$i+1];
 		$i++;
 	}
 }
 
-natcasesort($namesList);
+//natcasesort($namesList);
 
 if (DEBUGGING){
 	//var_dump($namesList);
 }
 
 $azArray = array();
-foreach ($namesList as $name){
+foreach ($namesList as $name => $num){
 	if (trim($name)=='') continue;
 
 	$currentLetter = strtoupper(mb_substr($name,0,1));
@@ -106,9 +106,12 @@ foreach ($namesList as $name){
 	}
 
 	//add name to letter array
-	$azArray[$currentLetter][] = $name;
+	$azArray[$currentLetter][$name] = $num;
 }
 
+if (DEBUGGING){
+	//var_dump($azArray);
+}
 uksort($azArray,"strnatcasecmp");
 
 endif;
@@ -133,10 +136,13 @@ endif;
 			</div>
 			 <div class="col-xs-3 pull-right">
 	       <span></span>
+				 <script>
+				 var browseFacet = '<?php print $browseFacet;?>';
+				 </script>
             <input id="nameInput" class="form-control awesomplete pull-right" placeholder="Type a name" list="names-list" name="contributor[]"></input>
               <datalist id="names-list">
     <?php 
-    foreach ($namesList as $name):
+    foreach ($namesList as $name => $num):
     if (trim($name)=="") continue;?>
 		<option value="<?php print $name; ?>"><?php print $name; ?></option>
     <?php endforeach;?>
@@ -155,8 +161,8 @@ endif;
 				foreach($arrays as $nameArray):
 				?>
 					<div class="col-xs-12 col-md-4">
-					<?php foreach ($nameArray as $name):?>
-						<p><a href="<?php print $ROOTURL;?>index?op%5B0%5D=AND&q%5B0%5D=%2A&f%5B0%5D=all&form_submitted=&start=0&fq[]=%22<?php print urlencode($name);?>%22&fq_field[]=composer_facet"><?php print $name;?></a></p>
+					<?php foreach ($nameArray as $name => $num):?>
+						<p><a href="<?php print $ROOTURL;?>index?op%5B0%5D=AND&q%5B0%5D=%2A&f%5B0%5D=all&form_submitted=&start=0&fq[]=%22<?php print urlencode($name);?>%22&fq_field[]=<?php print $browseFacet; ?>"><?php print $name;?> <strong>(<?php print $num;?>)</strong></a></p>
 					<?php endforeach;?>
 					</div>
 				<?php

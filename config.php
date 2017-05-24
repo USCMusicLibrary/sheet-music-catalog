@@ -26,6 +26,8 @@ $solrResultsHighlightTag = "mark";//bootstrap highlight <mark></mark>
 global $lastError;
 $lastError = '';
 
+mb_internal_encoding("UTF-8");
+
 
 global $solrFieldNames;
 $solrFieldNames = array(
