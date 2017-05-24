@@ -69,7 +69,13 @@ $jsonResponse;
 
 $searchResults = $searchResponse['docs'];
 
-$browseFacet = "composer_facet";
+$browseFacetTitle = isset($_GET['by'])? $_GET['by'] : '';
+
+if ($browseFacetTitle==''):
+	$azArray = array();
+	$namesList = array();
+else:
+$browseFacet = array_search($browseFacetTitle,$facetFields);
 $namesList = array();
 $facets = $searchFacetCounts['facet_fields'][$browseFacet];
 for($i=0; $i<sizeof($facets); $i++){
@@ -86,7 +92,7 @@ for($i=0; $i<sizeof($facets); $i++){
 natcasesort($namesList);
 
 if (DEBUGGING){
-	var_dump($namesList);
+	//var_dump($namesList);
 }
 
 $azArray = array();
@@ -105,23 +111,57 @@ foreach ($namesList as $name){
 
 uksort($azArray,"strnatcasecmp");
 
+endif;
 ?>
 <div class="container-fluid">
 	<div class="row">
 		<div class="col-xs-12">
-			<div class="col-xs-12">
-				<?php 
-				foreach (array_keys($azArray) as $key):?>
-					<a href="#<?php print $key;?>"><?php print $key;?></a>&nbsp;
-				<?php
-				endforeach;
-				?>
-			</div>
+			<?php foreach ($facetFields as $facetField => $facetTitle):?>
+				<div class="col-xs-6 col-md-3" style="padding-bottom:1em;"><a class="btn btn-lg col-xs-12<?php print ($facetTitle==$browseFacetTitle)? ' btn-primary' : ' btn-default' ;?>" href="browse?by=<?php print urlencode ($facetTitle);?>"><?php print $facetTitle;?><hr></a></div>
+			<?php endforeach;?>
 		</div>
 	</div>
 	<div class="row">
 		<div class="col-xs-12">
-
+			<div class="col-xs-8">
+				<?php 
+				foreach (array_keys($azArray) as $key):?>
+					<big><strong><a href="#<?php print $key;?>"><?php print $key;?></a>&nbsp;</strong></big>
+				<?php
+				endforeach;
+				?>
+			</div>
+			 <div class="col-xs-3 pull-right">
+	       <span></span>
+            <input id="nameInput" class="form-control awesomplete pull-right" placeholder="Type a name" list="names-list" name="contributor[]"></input>
+              <datalist id="names-list">
+    <?php 
+    foreach ($namesList as $name):
+    if (trim($name)=="") continue;?>
+		<option value="<?php print $name; ?>"><?php print $name; ?></option>
+    <?php endforeach;?>
+</datalist>
+       </div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-xs-12">
+			<?php foreach($azArray as $letter => $names):?>
+				<div class="clearfix"></div>
+				<h1 id="<?php print $letter;?>"><?php print $letter;?></h1>
+				<?php 
+				$chunkSize = floor(sizeof($names) / 3) + 1;
+				$arrays = array_chunk($names,$chunkSize,true);
+				foreach($arrays as $nameArray):
+				?>
+					<div class="col-xs-12 col-md-4">
+					<?php foreach ($nameArray as $name):?>
+						<p><a href="<?php print $ROOTURL;?>index?op%5B0%5D=AND&q%5B0%5D=%2A&f%5B0%5D=all&form_submitted=&start=0&fq[]=%22<?php print urlencode($name);?>%22&fq_field[]=composer_facet"><?php print $name;?></a></p>
+					<?php endforeach;?>
+					</div>
+				<?php
+				endforeach;?>
+			<?php endforeach;?>
 		</div>
 	</div>
 </div> <!-- container-fluid -->
