@@ -85,7 +85,8 @@ var currentQuery = <?php print '"'.$currentQuery.'"'; ?>;
 <?php
 /*
  * The following displays the facets column
- */?><div class="col-xs-12 col-md-12">
+ */
+ ?><div class="col-xs-12 col-md-12">
 		<div class="col-xs-12"><h4>Browse by:</h4>
 			<div class="panel-group" id="accordion">
   <?php
