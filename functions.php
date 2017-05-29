@@ -647,7 +647,9 @@ function buildSolrQuery($query){
     .'&wt=json&hl=true&hl.simple.pre='.urlencode('<'.$solrResultsHighlightTag.'>')
     .'&hl.simple.post='.urlencode('</'.$solrResultsHighlightTag.'>')
     .'&hl.fl=*&facet=true&debugQuery=on';
+if (DEBUGGING) {
 print $queryString;
+}
 global $facetFields;
 foreach ($facetFields as $key=>$val){
   $queryString = $queryString.'&facet.field='.$key;
