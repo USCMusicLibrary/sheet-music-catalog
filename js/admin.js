@@ -37,6 +37,7 @@ $("#btn-insert-contributor").click(function(e){
     );
     $("#contributorModal").modal('hide');
     insertContributor(cType,cName,$(this).parent());
+    $("#contributor_insert").val("");
 
 });
 
