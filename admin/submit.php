@@ -18,14 +18,24 @@ require_once "../db-config.php";
       </pre>
 <?php 
 
+$years = array();
+$yearStart = intval($_POST['year_start']);
+$yearEnd = intval($_POST['year_end']);
+
+//TODO: check that dates make sense
+while ($yearStart<=$yearEnd){
+  $years[] = $yearStart++;
+}
+
+
       $document = array (
         'id' => 0,
 'title' => $_POST['title'],
 'alternative_title' => $_POST['alt-title'],
 'publisher' => $_POST['publisher'],
 'publisher_location' => $_POST['publisher_location'],
-'years' =>  [1234],
-'years_text' => "1234",
+'years' =>  $years,
+'years_text' => $yearStart."-".$yearEnd,
 'language' => $_POST['language'],
 'text_t' => $_POST['text-t'],
 'notes' => $_POST['note'],

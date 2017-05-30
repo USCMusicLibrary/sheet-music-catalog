@@ -15,10 +15,10 @@ require_once "../functions.php";
 
 require_once "../db-config.php";
 
-$statement = $mysqli->prepare("SELECT subject_heading,uri FROM subject_headings ORDER BY subject_heading");
+$statement = $mysqli->prepare("SELECT id,subject_heading,uri FROM subject_headings ORDER BY subject_heading");
 $statement->execute();
 $statement->store_result();
-$statement->bind_result($name, $uri);
+$statement->bind_result($id, $heading, $uri);
 
 
 
@@ -37,7 +37,7 @@ while ($statement->fetch()):
 <td><?php print $uri;?></td>
 <?php 
 if (isSuper()):?>
-<td><a href="#" class="btn btn-danger">Edit</a></td>
+<td><a href="edit-heading?id=<?php print $id;?>&type=name" class="btn btn-danger">Edit</a></td>
 <?php else:
   print "<td></td>";
 endif;
