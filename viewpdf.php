@@ -23,21 +23,23 @@ foreach ($images as $image){
     $imageString = $imageString." ".getcwd()."/".$image;
 }
 
-print $imageString;
-die();
+//die();
 $output;
 //$execString="cd 2>&1";
-$execString = "convert ".$imageString." tmppdf.pdf";
+$execString = "convert ".$imageString." ".getcwd()."/tmppdf/tmppdf.pdf";
 
-exec($execString,$output);
-print_r( $output);
+$execString = "#/bin/bash\n".$execString."\necho \"DONE!\"";
+file_put_contents("tmppdf/pdf.sh", $execString);
+
+exec("tmppdf/pdf.sh",$output);
+//print_r( $output);
 //print getcwd();
-die();
+//die();
 //$file = file_get_contents($fileContents);
 
 header("Content-Type: application/pdf");
 
-readfile("tmppdf.pdf");
+readfile("tmppdf/tmppdf.pdf");
 
 
 
