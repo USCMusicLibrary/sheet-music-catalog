@@ -134,3 +134,11 @@ $('#carouselModal').on('shown.bs.modal', function() {
     $("#musicCarousel").carousel(carouselIndex);
 });
  
+
+window.addEventListener("awesomplete-selectcomplete", function(e){
+  // User made a selection from dropdown. 
+  // This is fired before the selection is applied
+  var name = $("#nameInput").val();
+  window.location = "index?op%5B0%5D=AND&q%5B0%5D=%2A&f%5B0%5D=all&form_submitted=&start=0&fq[]=%22"+name+"%22&fq_field[]="+browseFacet;
+  //alert(e.text);
+}, false);

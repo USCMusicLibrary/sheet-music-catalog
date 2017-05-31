@@ -18,7 +18,7 @@ $queryArray = array(
 );
 $counter=0;
 
-require 'browse-results.php';
+require 'browse-by.php';
 
 
 ?></div> <!-- container-fluid -->
