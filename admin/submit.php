@@ -23,9 +23,14 @@ $yearStart = intval($_POST['year_start']);
 $yearEnd = intval($_POST['year_end']);
 
 //TODO: check that dates make sense
-while ($yearStart<=$yearEnd){
-  $years[] = $yearStart++;
+/*if ($yearEnd==0) {
+  $years[0]
 }
+else {*/
+  while ($yearStart<=$yearEnd){
+    $years[] = $yearStart++;
+  }
+//}
 
 
       $document = array (
