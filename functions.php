@@ -217,6 +217,7 @@ function insertDocDb($doc,$status){
   $recordID = $mysqli->insert_id;
 
   foreach ($doc['alternative_title'] as $alternative_title){
+    if (trim($alternative_title)=="") continue;
     $statement = $mysqli->prepare("INSERT INTO alternative_titles (record_id,alternative_title)"
                   ." VALUES (?,?)");
     $statement->bind_param("is", $recordID,$alternative_title);
@@ -225,6 +226,7 @@ function insertDocDb($doc,$status){
   }
 
   foreach ($doc['notes'] as $note){
+    if (trim($note)=="") continue;
     $statement = $mysqli->prepare("INSERT INTO notes (record_id,note)"
                   ." VALUES (?,?)");
     $statement->bind_param("is", $recordID,$note);
@@ -233,6 +235,7 @@ function insertDocDb($doc,$status){
   }
 
   foreach ($doc['text_t'] as $text){
+    if (trim($text)=="") continue;
     $statement = $mysqli->prepare("INSERT INTO texts (record_id,text_t)"
                   ." VALUES (?,?)");
     $statement->bind_param("is", $recordID,$text);
@@ -241,6 +244,7 @@ function insertDocDb($doc,$status){
   }
 
   foreach ($doc['publisher_location'] as $publisher_location){
+    if (trim($publisher_location)=="") continue;
     $statement = $mysqli->prepare("INSERT INTO publisher_locations (record_id,publisher_location)"
                   ." VALUES (?,?)");
     $statement->bind_param("is", $recordID,$publisher_location);
@@ -249,6 +253,7 @@ function insertDocDb($doc,$status){
   }
 
   foreach ($doc['language'] as $language){
+    if (trim($language)=="") continue;
     $statement = $mysqli->prepare("INSERT INTO languages (record_id,language)"
                   ." VALUES (?,?)");
     $statement->bind_param("is", $recordID,$language);
@@ -256,6 +261,7 @@ function insertDocDb($doc,$status){
     $statement->store_result();
   }
   foreach ($doc['publisher'] as $publisher){
+    if (trim($publisher)=="") continue;
     $statement = $mysqli->prepare("INSERT INTO publishers (record_id,publisher)"
                   ." VALUES (?,?)");
     $statement->bind_param("is", $recordID,$publisher);
@@ -266,6 +272,17 @@ function insertDocDb($doc,$status){
 return $recordID;
 
     }
+
+function insertIntoSubTable($table,$values,$recordID,$columnName){
+  $query = "INSERT INTO $table (record_id,$columnName) VALUES (?,?)";
+  foreach ($values as $value){
+    if (trim($value)=="") continue; //skip if empty
+    $statement = $mysqli->prepare($query);
+    $statement->bind_param("is", $recordID,$value);
+    $statement->execute();
+    $statement->store_result();
+  }
+}
 
 function addVocabularies($doc,$insertID){
     global $mysqli;
