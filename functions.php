@@ -269,6 +269,14 @@ function insertDocDb($doc,$status){
     $statement->store_result();
   }
   
+  $startYear = $doc['years'][0];
+  $endYear = end($doc['years']);
+  $statement = $mysqli->prepare("INSERT INTO years (record_id,start_year,end_year)"
+                  ." VALUES (?,?,?)");
+    $statement->bind_param("iii", $recordID,$startYear,$endYear);
+  $statement->execute();
+    $statement->store_result();
+
 return $recordID;
 
     }
@@ -427,7 +435,7 @@ function deleteFromTable($table,$idColumn,$id){
 function parseDate($dateString){
   $parts = explode('-',$dateString);
   if (sizeof($parts)==1) {
-    return (int)$parts[0];
+    return array((int)$parts[0]);
   }
   else if (sizeof($parts)==2){
     $years = array();
