@@ -27,6 +27,7 @@ $yearEnd = intval($_POST['year_end']);
   $years[0]
 }
 else {*/
+  $newYearStart = $yearStart;
   while ($yearStart<=$yearEnd){
     $years[] = $yearStart++;
   }
@@ -40,7 +41,7 @@ else {*/
 'publisher' => $_POST['publisher'],
 'publisher_location' => $_POST['publisher_location'],
 'years' =>  $years,
-'years_text' => $yearStart."-".$yearEnd,
+'years_text' => $newYearStart."-".$yearEnd,
 'language' => $_POST['language'],
 'text_t' => $_POST['text-t'],
 'notes' => $_POST['note'],
