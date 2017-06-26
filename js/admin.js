@@ -1,4 +1,4 @@
-var contributorsObject = [];
+//var contributorsObject = [];
 var subjectHeadingsObject = [];
 
 $(document).ready(function (e){
@@ -24,20 +24,16 @@ $("#btn-insert-contributor").click(function(e){
     var cName = $("#contributor_insert").val();
     var cType = $("#contributor_type_insert").val();
     contributor = [cType,cName];
-    contributorsObject.push(contributor);
+    contributorsObject = contributor;
     //console.log(contributorsObject);
     //return;
-    $.post(
-        "contributors-div",
-        {data:contributorsObject},
-        function( data ) {
-            $("#contributors-list").replaceWith( data );
-        },
-        "html"
-    );
+    var html = "<div><span>"+cType+": <b><input type=\"text\" value=\""+cName+"\" readonly name=\""+cType.toLowerCase()+"[]\"></b></span><button class=\"btn btn-default btn-sm btn-rm-contributor\">x</button></div>";
+
     $("#contributorModal").modal('hide');
-    insertContributor(cType,cName,$(this).parent());
+    //insertContributor(cType,cName,$(this).parent());
     $("#contributor_insert").val("");
+
+    $("#contributors-list").append(html);
 
 });
 
@@ -52,17 +48,15 @@ $("#btn-insert-heading").click(function(e){
     console.log("insert heading");
     var cName = $("#heading_insert").val();
 
-    contributor = ["Subject Heading",cName];
-    subjectHeadingsObject.push(contributor);
-    $.post(
-        "headings-div",
-        {data:subjectHeadingsObject},
-        function( data ) {
-            $("#subject-headings-list").replaceWith( data );
-        },
-        "html"
-    );
+    //contributor = ["Subject Heading",cName];
+    //subjectHeadingsObject.push(contributor);
+
+    var html = "<div><span>Subject heading: <b><input type=\"text\" value=\""+cName+"\" readonly name=\"subject_heading[]\"></b></span><button class=\"btn btn-default btn-sm btn-rm-contributor\">x</button></div>";
+
     $("#headingsModal").modal('hide');
+    $("#heading_insert").val("");
+
+    $("#subject-headings-list").append(html);
 });
 
 $(document).on("click",".btn-rm-contributor",function(e){
@@ -202,7 +196,7 @@ $("#btn-add-pub-loc").click(function(e){
 $("#btn-add-heading").click(function(e){
 
     e.preventDefault();
-    console.log("add language");
+    console.log("add heading");
     var formGroup = $(this).parent().prev().clone();
     formGroup.find("input").val("");
     formGroup.toggleClass("collapse");
