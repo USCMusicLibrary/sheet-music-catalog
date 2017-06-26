@@ -57,12 +57,6 @@ foreach($fields as $field=>$values){
         </p>
 
         <p>
-          <strong>Publisher: </strong><br>
-            <span class="text-primary">TODO: add publisher</span>
-            <input class="clickedit" type="text" />
-        </p>
-
-        <p>
           <strong>Call Number: </strong><br>
             <span class="text-primary"><?php print $call_number;?></span>
             <input class="clickedit" type="text" />

@@ -46,6 +46,7 @@ else {*/
 'text_t' => $_POST['text-t'],
 'notes' => $_POST['note'],
 'donor' => $_POST['donor'],
+//CALL NUMBER FIX
 'call_number' => $_POST['call_number'],
 'series' => $_POST['series'],
 'collection_source' =>$_POST['collection'],
