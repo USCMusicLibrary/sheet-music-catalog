@@ -844,5 +844,29 @@ function isSuper(){
 }
 
 
+function isInCart($id){
+  $items = json_decode(file_get_contents("data/shoppingCart.json"),true);
+  if (in_array($id,$items)){
+    return true;
+  }
+  else return false;
+}
+
+function addToCart($id){
+  $items = json_decode(file_get_contents("data/shoppingCart.json"),true);
+  $items[] = $id;
+  $jsonItems = json_encode($items);
+  file_put_contents("data/shoppingCart.json",$jsonItems);
+}
+
+function removeFromCart($id){
+  $items = json_decode(file_get_contents("data/shoppingCart.json"),true);
+  if(($key = array_search($id, $items)) !== false) {
+    unset($items[$key]);
+  }
+  $jsonItems = json_encode($items);
+  file_put_contents("data/shoppingCart.json",$jsonItems);
+}
+
 
 ?>
