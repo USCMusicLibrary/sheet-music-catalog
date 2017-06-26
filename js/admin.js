@@ -178,6 +178,8 @@ $("#btn-add-publisher").click(function(e){
     pubCounter++;
 });
 
+var publocCounter = 1;
+
 $("#btn-add-pub-loc").click(function(e){
     e.preventDefault();
     console.log("add publisher location");

@@ -174,7 +174,7 @@ require_once "../functions.php";
                       <div class="col-xs-2">
                         <button id="btn-insert-heading" class="btn btn-danger btn-sm">Add to record</button>
                       </div>
-                    </div>
+                    </div> 
 
                   </div>
                   <div class="modal-footer" style="margin-top:2em;">
