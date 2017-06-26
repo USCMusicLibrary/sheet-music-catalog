@@ -131,6 +131,7 @@ function login($username, $password) {
  */
 function sendPasswordReset($username) {
   global $mysqli;
+  global $ROOTURL;
   $unique = uniqid(uniqid(uniqid("", true), true), true);
 
   $statement = $mysqli->prepare("UPDATE users SET request_time = NOW(), password_uid = ? WHERE username = ?");
@@ -140,12 +141,12 @@ function sendPasswordReset($username) {
   $statement = $mysqli->prepare("SELECT email FROM users WHERE username = ?");
   $statement->bind_param("s", $username);
   $statement->execute();
-  $statement->store_result();
+  $statement->store_result(); 
   $statement->bind_result($email);
 
   // Send the email only if the username exists.
   if ($statement->fetch()) {
-    $reset = ROOT_FOLDER . "reset?id=" . $unique;
+    $reset = $ROOTURL."/admin/reset?id=" . $unique;
 
     $message  = "Hello " . $username . ",<br><br>";
     $message .= "<p>You've recently requested to reset your password.</p>";
@@ -153,7 +154,7 @@ function sendPasswordReset($username) {
     $message .= "<p>Otherwise, please <a href='" . $reset . "'>visit this link</a> to reset your password.</p><br>";
     $message .= "<p>" . $reset . "</p>";
 
-    mail($email, "Password Reset", $message, getHeaders("library@sc.edu"));
+    return mail($email, "Password Reset", $message, getHeaders("library@sc.edu"));
   }
 
   return "Password reset has been sent.";

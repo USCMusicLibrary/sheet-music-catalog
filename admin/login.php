@@ -66,7 +66,7 @@ require "../header.php";
 
             <section class="form-group">
               <div class="col-xs-12">
-                <a href="login?forgot" class="pull-left" style="display: block; margin-top: 10px;">Forget your username or password?</a>
+                <a href="forgotPassword" class="pull-left" style="display: block; margin-top: 10px;">Forget your username or password?</a>
                 <button type="submit" class="btn btn-primary pull-right">Login</button>
               </div>
             </section>
