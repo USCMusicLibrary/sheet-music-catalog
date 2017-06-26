@@ -8,6 +8,8 @@ require "header.php";?>
 
 require_once "functions.php";
 
+//require_once "admin/adminFunctions.php";
+
 global $solrUrl;
 global $solrResultsHighlightTag;
 
@@ -52,7 +54,12 @@ $queryString = 'id:'.$_GET['id'];
 			if (isLoggedIn()){
 				if (isSuper()){
 					?>
-					<a href="admin/edit?id=<?php print $_GET['id'];?>">Edit</a>
+					<a href="admin/edit?id=<?php print $_GET['id'];?>">Edit</a><br>
+					<?php if (isInCart($_GET['id'])):?>
+  					<a href="export?id=<?php print $_GET['id'];?>&a=rm">Remove from export</a>
+					<?php else:?>
+  					<a href="export?id=<?php print $_GET['id'];?>&a=add">Add to export</a>
+					<?php endif;?>
 					<?php
 				}
 			}

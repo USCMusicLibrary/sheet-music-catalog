@@ -194,9 +194,9 @@ foreach ($searchResults as $result){
 		if (!isset($result[$field])) continue;//TODO: fix this
 		$displayResult[$field] = isset($highlightArray[$field]) ? $highlightArray[$field][0] : $result[$field];
 	}
-
+                  
 	global $solrFieldNames;
-
+                  
 	foreach ($highlightArray as $key => $value){
 		if (in_array($key,$briefDisplayFields)) continue;
 		if (!isset($solrFieldNames[$key])) continue;
@@ -297,14 +297,23 @@ foreach($displaySearchResults as $result):?>
 						$hKey = array_shift($keys);
 
 						$condition = true;
-
+                                                                                                            
+                                                                                                            if ($hKey == "exact_words"){
+                                                                                                                #can't highlight this field; move on to the next
+                                                                                                                if ($keys !=[]){
+                                                                                                                    $hKey = array_shift($keys);
+                                                                                                                } else {
+                                                                                                                    $condition = false;
+                                                                                                                }
+                                                                                                            }
+                                                
 						//we need to check if we have already displayed this field
 						//if we have, then we skip
 						foreach($briefDisplayFields as $field){
 							if ($hKey == $field){
 								$condition=false;
-								break;
-							}
+								break;						
+						}
 						}
 						if ($condition):
 						?>

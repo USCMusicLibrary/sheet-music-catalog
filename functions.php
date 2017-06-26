@@ -217,6 +217,7 @@ function insertDocDb($doc,$status){
   $recordID = $mysqli->insert_id;
 
   foreach ($doc['alternative_title'] as $alternative_title){
+    if (trim($alternative_title)=="") continue;
     $statement = $mysqli->prepare("INSERT INTO alternative_titles (record_id,alternative_title)"
                   ." VALUES (?,?)");
     $statement->bind_param("is", $recordID,$alternative_title);
@@ -225,6 +226,7 @@ function insertDocDb($doc,$status){
   }
 
   foreach ($doc['notes'] as $note){
+    if (trim($note)=="") continue;
     $statement = $mysqli->prepare("INSERT INTO notes (record_id,note)"
                   ." VALUES (?,?)");
     $statement->bind_param("is", $recordID,$note);
@@ -233,6 +235,7 @@ function insertDocDb($doc,$status){
   }
 
   foreach ($doc['text_t'] as $text){
+    if (trim($text)=="") continue;
     $statement = $mysqli->prepare("INSERT INTO texts (record_id,text_t)"
                   ." VALUES (?,?)");
     $statement->bind_param("is", $recordID,$text);
@@ -241,6 +244,7 @@ function insertDocDb($doc,$status){
   }
 
   foreach ($doc['publisher_location'] as $publisher_location){
+    if (trim($publisher_location)=="") continue;
     $statement = $mysqli->prepare("INSERT INTO publisher_locations (record_id,publisher_location)"
                   ." VALUES (?,?)");
     $statement->bind_param("is", $recordID,$publisher_location);
@@ -249,6 +253,7 @@ function insertDocDb($doc,$status){
   }
 
   foreach ($doc['language'] as $language){
+    if (trim($language)=="") continue;
     $statement = $mysqli->prepare("INSERT INTO languages (record_id,language)"
                   ." VALUES (?,?)");
     $statement->bind_param("is", $recordID,$language);
@@ -256,6 +261,7 @@ function insertDocDb($doc,$status){
     $statement->store_result();
   }
   foreach ($doc['publisher'] as $publisher){
+    if (trim($publisher)=="") continue;
     $statement = $mysqli->prepare("INSERT INTO publishers (record_id,publisher)"
                   ." VALUES (?,?)");
     $statement->bind_param("is", $recordID,$publisher);
@@ -263,9 +269,28 @@ function insertDocDb($doc,$status){
     $statement->store_result();
   }
   
+  $startYear = $doc['years'][0];
+  $endYear = end($doc['years']);
+  $statement = $mysqli->prepare("INSERT INTO years (record_id,start_year,end_year)"
+                  ." VALUES (?,?,?)");
+    $statement->bind_param("iii", $recordID,$startYear,$endYear);
+  $statement->execute();
+    $statement->store_result();
+
 return $recordID;
 
     }
+
+function insertIntoSubTable($table,$values,$recordID,$columnName){
+  $query = "INSERT INTO $table (record_id,$columnName) VALUES (?,?)";
+  foreach ($values as $value){
+    if (trim($value)=="") continue; //skip if empty
+    $statement = $mysqli->prepare($query);
+    $statement->bind_param("is", $recordID,$value);
+    $statement->execute();
+    $statement->store_result();
+  }
+}
 
 function addVocabularies($doc,$insertID){
     global $mysqli;
@@ -410,7 +435,7 @@ function deleteFromTable($table,$idColumn,$id){
 function parseDate($dateString){
   $parts = explode('-',$dateString);
   if (sizeof($parts)==1) {
-    return (int)$parts[0];
+    return array((int)$parts[0]);
   }
   else if (sizeof($parts)==2){
     $years = array();
@@ -646,8 +671,10 @@ function buildSolrQuery($query){
     .'select?'.$queryString.'&start='.$query['start'].'&rows='.$query['rows']
     .'&wt=json&hl=true&hl.simple.pre='.urlencode('<'.$solrResultsHighlightTag.'>')
     .'&hl.simple.post='.urlencode('</'.$solrResultsHighlightTag.'>')
-    .'&hl.fl=*&facet=true';
-
+    .'&hl.fl=*&facet=true&debugQuery=on';
+if (DEBUGGING) {
+print $queryString;
+}
 global $facetFields;
 foreach ($facetFields as $key=>$val){
   $queryString = $queryString.'&facet.field='.$key;
@@ -688,15 +715,19 @@ function buildQueryForContributors($query){
  * @return {string}: a solr query that will search all fields for $query
  */
 function buildQueryForAllFields($query){
+  $query = preg_replace('/".*?"(*SKIP)(*FAIL)| (AND|OR|NOT) (*SKIP)(*FAIL)| +(?!$)/', ' AND ', $query);
   $queryString = '';
   global $searchFields;
   foreach ($searchFields as $field){
     $queryString = $queryString.$field.':('.urlencode($query);
-    if ($field =="title"){
+    if($field == "exact_words"){
+        $queryString = $queryString.')^6%0A';
+    }
+    else if ($field =="title"){
       $queryString = $queryString.')^4%0A';
     }
     else if ($field =="composer"){
-      $queryString = $queryString.')^3%0A';
+      $queryString = $queryString.')^3';
     }
     else if ($field =="text_t"){
       $queryString = $queryString.')^2%0A';
@@ -812,6 +843,30 @@ function isSuper(){
   return ($_SESSION['user_role']=='super') ? true : false;
 }
 
+
+function isInCart($id){
+  $items = json_decode(file_get_contents("data/shoppingCart.json"),true);
+  if (in_array($id,$items)){
+    return true;
+  }
+  else return false;
+}
+
+function addToCart($id){
+  $items = json_decode(file_get_contents("data/shoppingCart.json"),true);
+  $items[] = $id;
+  $jsonItems = json_encode($items);
+  file_put_contents("data/shoppingCart.json",$jsonItems);
+}
+
+function removeFromCart($id){
+  $items = json_decode(file_get_contents("data/shoppingCart.json"),true);
+  if(($key = array_search($id, $items)) !== false) {
+    unset($items[$key]);
+  }
+  $jsonItems = json_encode($items);
+  file_put_contents("data/shoppingCart.json",$jsonItems);
+}
 
 
 ?>

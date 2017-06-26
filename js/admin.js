@@ -37,6 +37,7 @@ $("#btn-insert-contributor").click(function(e){
     );
     $("#contributorModal").modal('hide');
     insertContributor(cType,cName,$(this).parent());
+    $("#contributor_insert").val("");
 
 });
 
@@ -66,13 +67,46 @@ $("#btn-insert-heading").click(function(e){
 
 $(document).on("click",".btn-rm-contributor",function(e){
     e.preventDefault();
+    $(this).parent().remove();
+});
+$(document).on("click",".btn-rm-alt-title",function(e){
+    e.preventDefault();
+    $(this).parent().remove();
+    altTitleCounter--;
+});
+$(document).on("click",".btn-rm-note",function(e){
+    e.preventDefault();
+    $(this).parent().remove();
+    noteCounter--;
+});
+$(document).on("click",".btn-rm-text",function(e){
+    e.preventDefault();
+    $(this).parent().remove();
+    textCounter--;
+});
+$(document).on("click",".btn-rm-pub",function(e){
+    e.preventDefault();
+    $(this).parent().remove();
+    pubCounter--;
+});
+$(document).on("click",".btn-rm-publoc",function(e){
+    e.preventDefault();
+    $(this).parent().remove();
+    publocCounter--;
+});
+$(document).on("click",".btn-rm-lang",function(e){
+    e.preventDefault();
+    $(this).parent().remove();
+    langCounter--;
 });
 
+var altTitleCounter = 1;
 $("#btn-add-alt-title").click(function(e){
 
     e.preventDefault();
     console.log("add alt title");
     var formGroup = $(this).parent().prev().clone();
+    if (altTitleCounter ==1)$("<button class=\"btn btn-default btn-sm btn-rm-alt-title\">x</button>").insertAfter(formGroup.find("input"));
     formGroup.find("input").val("");
     formGroup.toggleClass("collapse");
     formGroup.insertBefore($(this).parent());
@@ -80,13 +114,16 @@ $("#btn-add-alt-title").click(function(e){
             console.log("show");
         });
     formGroup.toggleClass("collapse");
+    altTitleCounter++;
 });
 
+var noteCounter = 1;
 $("#btn-add-note").click(function(e){
 
     e.preventDefault();
     console.log("add note");
     var formGroup = $(this).parent().prev().clone();
+    if (noteCounter ==1)$("<button class=\"btn btn-default btn-sm btn-rm-note\">x</button>").insertAfter(formGroup.find("input"));
     formGroup.find("input").val("");
     formGroup.toggleClass("collapse");
     formGroup.insertBefore($(this).parent());
@@ -94,13 +131,16 @@ $("#btn-add-note").click(function(e){
             console.log("show");
         });
     formGroup.toggleClass("collapse");
+    noteCounter++;
 });
 
+var textCounter = 1;
 $("#btn-add-text").click(function(e){
 
     e.preventDefault();
     console.log("add text");
     var formGroup = $(this).parent().prev().clone();
+    if (textCounter ==1)$("<button class=\"btn btn-default btn-sm btn-rm-text\">x</button>").insertAfter(formGroup.find("textarea"));
     formGroup.find("textarea").val("");
     formGroup.toggleClass("collapse");
     formGroup.insertBefore($(this).parent());
@@ -108,13 +148,16 @@ $("#btn-add-text").click(function(e){
             console.log("show");
         });
     formGroup.toggleClass("collapse");
+    textCounter++;
 });
 
+var langCounter = 1;
 $("#btn-add-language").click(function(e){
 
     e.preventDefault();
     console.log("add language");
     var formGroup = $(this).parent().prev().clone();
+    if (langCounter ==1)$("<button class=\"btn btn-default btn-sm btn-rm-lang\">x</button>").insertAfter(formGroup.find("input"));
     formGroup.find("textarea").val("");
     formGroup.toggleClass("collapse");
     formGroup.insertBefore($(this).parent());
@@ -122,12 +165,15 @@ $("#btn-add-language").click(function(e){
             console.log("show");
         });
     formGroup.toggleClass("collapse");
+    langCounter++;
 });
 
+var pubCounter = 1;
 $("#btn-add-publisher").click(function(e){
     e.preventDefault();
     console.log("add publisher");
     var formGroup = $(this).parent().prev().clone();
+    if (pubCounter ==1)$("<button class=\"btn btn-default btn-sm btn-rm-note\">x</button>").insertAfter(formGroup.find("input"));
     formGroup.find("input").val("");
     formGroup.toggleClass("collapse");
     formGroup.insertBefore($(this).parent());
@@ -135,12 +181,14 @@ $("#btn-add-publisher").click(function(e){
             console.log("show");
         });
     formGroup.toggleClass("collapse");
+    pubCounter++;
 });
 
 $("#btn-add-pub-loc").click(function(e){
     e.preventDefault();
     console.log("add publisher location");
     var formGroup = $(this).parent().prev().clone();
+    if (publocCounter ==1)$("<button class=\"btn btn-default btn-sm btn-rm-publoc\">x</button>").insertAfter(formGroup.find("input"));
     formGroup.find("input").val("");
     formGroup.toggleClass("collapse");
     formGroup.insertBefore($(this).parent());
@@ -148,6 +196,7 @@ $("#btn-add-pub-loc").click(function(e){
             console.log("show");
         });
     formGroup.toggleClass("collapse");
+    publocCounter++;
 });
 
 $("#btn-add-heading").click(function(e){
@@ -204,3 +253,7 @@ $('#daterange').daterangepicker({
 }, function(start, end, label) {
   console.log("New date range selected: ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD') + ' (predefined range: ' + label + ')");
 });
+
+
+//functions for editing records
+$(".clickedit")
