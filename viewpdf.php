@@ -23,16 +23,16 @@ foreach ($images as $image){
     $imageString = $imageString." ".getcwd()."/".$image;
 }
 
-print $imageString;
-die();
+//print $imageString;
+//die();
 $output;
 //$execString="cd 2>&1";
 $execString = "convert ".$imageString." tmppdf.pdf";
 
 exec($execString,$output);
-print_r( $output);
+//print_r( $output);
 //print getcwd();
-die();
+//die();
 //$file = file_get_contents($fileContents);
 
 header("Content-Type: application/pdf");

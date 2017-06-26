@@ -12,10 +12,10 @@ else {
 }
 
 global $solrCoreName;
-$solrCoreName = "sheet-music-catalog";
+$solrCoreName = "sheet-music-catalog1";
 
 global $ROOTURL;
-$ROOTURL = "http://localhost/catalog/";
+$ROOTURL = "http://localhost/smc/";
 
 global $solrUrl;
 $solrUrl = 'http://localhost:8983/solr/'.$solrCoreName.'/';
@@ -100,7 +100,7 @@ $solrFieldNames = array(
 "collection_source" => array("field_title" => "Collection Source",
 	"display" => "full"
 ),
-"has_image" => array("field_title" => "Online score",
+"has_image" => array("field_title" => "Availability",
 	"display" => "full"
 )
 );
