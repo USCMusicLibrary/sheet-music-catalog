@@ -146,7 +146,7 @@ function sendPasswordReset($username) {
 
   // Send the email only if the username exists.
   if ($statement->fetch()) {
-    $reset = $ROOTURL."/admin/reset?id=" . $unique;
+    $reset = $ROOTURL."admin/reset?id=" . $unique;
 
     $message  = "Hello " . $username . ",<br><br>";
     $message .= "<p>You've recently requested to reset your password.</p>";

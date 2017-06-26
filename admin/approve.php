@@ -13,7 +13,7 @@ $statement = $mysqli->prepare("UPDATE records SET status='approved' WHERE id=?")
 $statement->bind_param("i",$_GET['id']);
 $statement->execute();
 $statement->store_result();
-
+/*
 $statement = $mysqli->prepare("SELECT id,title,call_number,series,larger_work,collection_source,donor,scanning_technician,media_cataloguer_id,reviewer_id FROM records WHERE id=? LIMIT 1");
 $statement->bind_param("i",$_GET['id']);
 $statement->execute();
@@ -90,7 +90,7 @@ $solrDocument = $document = array (
 //'Incomplete' => $fields[33]
     );
 
-
+*/
 
 ?>
 <div class="container-fluid">
