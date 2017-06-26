@@ -21,6 +21,43 @@ $statement->store_result();
 $statement->bind_result($id, $title, $call_number, $series, $larger_work, 	$collection_source, $donor, $scanning_technician, $media_cataloguer, $reviewer, $admin_notes);
 $statement->fetch();
 
+$statement = $mysqli->prepare("SELECT contributor_id,role_id FROM contributors WHERE record_id=?");
+$statement->bind_param("i",$_GET['id']);
+$statement->execute();
+$statement->store_result();
+$statement->bind_result($contributorId, $roleId);
+
+$contributors = array();
+while ($statement->fetch()){
+  $statement2 = $mysqli->prepare("SELECT name FROM names WHERE id=? LIMIT 1");
+  $statement2->bind_param("i",$contributorId);
+  $statement2->execute();
+  $statement2->store_result();
+  $statement2->bind_result($cName);
+  if ($statement2->fetch()){
+    $contributors[] = array(array_search($roleId,$contribtypes),$cName);
+  }
+}
+
+$statement = $mysqli->prepare("SELECT subject_id FROM has_subject WHERE record_id=?");
+$statement->bind_param("i",$_GET['id']);
+$statement->execute();
+$statement->store_result();
+$statement->bind_result($subjectId);
+
+$headings = array();
+while ($statement->fetch()){
+  $statement2 = $mysqli->prepare("SELECT subject_heading FROM subject_headings WHERE id=? LIMIT 1");
+  $statement2->bind_param("i",$subjectId);
+  $statement2->execute();
+  $statement2->store_result();
+  $statement2->bind_result($cName);
+  if ($statement2->fetch()){
+    $headings[] = $cName;
+  }
+}
+
+
 //var_dump($admin_notes);
 
 $fields = array(
@@ -53,7 +90,7 @@ var_dump($displayArray);
   <div class="row">
       <div class="col-xs-8 col-xs-offset-2">
         <h2>Submission form</h2>
-        <form class="form-horizontal" action="submit" method="POST" id="recordForm" name="recordForm">
+        <form class="form-horizontal" action="" method="POST" id="recordForm" name="recordForm">
         <div class="form-group">
           <div class="col-xs-2">
             <label for="title" class="control-label">Title</label>
@@ -89,7 +126,13 @@ var_dump($displayArray);
           <div class="col-xs-2">
             <label for="contributor_type" class="control-label">Contributor(s)</label>
           </div>
-          <div class="col-xs-10" id="contributors-list"></div>
+          <div class="col-xs-10" id="contributors-list">
+            <?php foreach ($contributors as $contributor):
+              $type = $contributor[0];
+              $name = $contributor[1];?>
+              <div><span><?php print $type;?>: <b><input type="text" value="<?php print $name;?>" readonly name="<?php print $type;?>[]"></b></span><button class="btn btn-default btn-sm btn-rm-contributor">x</button></div>
+            <?php endforeach;?>
+          </div>
 
           <!-- Modal -->
             <div id="contributorModal" class="modal fade" role="dialog">
@@ -270,7 +313,11 @@ var_dump($displayArray);
           <div class="col-xs-2">
             <label for="subject_heading" class="control-label">Subject Heading(s)</label>
           </div>
-          <div class="col-xs-10" id="subject-headings-list"></div>
+          <div class="col-xs-10" id="subject-headings-list">
+            <?php foreach ($headings as $heading):?>
+              <div><span>Subject heading: <b><input type="text" value="<?php print $heading?>" readonly name="subject_heading[]"></b></span><button class="btn btn-default btn-sm btn-rm-contributor">x</button></div>
+            <?php endforeach;?>
+          </div>
 
           <!-- Modal -->
             <div id="headingsModal" class="modal fade" role="dialog">
