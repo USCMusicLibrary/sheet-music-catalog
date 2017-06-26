@@ -35,7 +35,7 @@ else {*/
 
 
       $document = array (
-        'id' => 0,
+        'id' => $_POST['id'],
 'title' => $_POST['title'],
 'alternative_title' => $_POST['alt-title'],
 'publisher' => $_POST['publisher'],
@@ -53,7 +53,7 @@ else {*/
 'larger_work' => $_POST['larger-work'],
 'scanning_technician' => $_POST['scanning-tech'],
 'admin_notes' => $_POST['msg'],
-'media_cataloguer_id' => $_SESSION['user_id'],
+'media_cataloguer_id' => $_POST['cataloguer_id'],
 'reviewer_id' => $_SESSION['user_id']
     );
 
@@ -69,6 +69,11 @@ foreach ($headingtypes as $htype){
     }
   }
 }
+
+if (isset($_POST['editRecord'])){
+  deleteRecord($_POST['id']);
+}
+
 /*
     'composer' => isset($_POST['composer']) ? array($_POST['composer'],'') : [] ,
 'lyricist' => $_POST['lyricist'],
@@ -83,7 +88,12 @@ foreach ($headingtypes as $htype){
 <?php print_r ($document);?>
 </pre>
 <?php
-    $recordID = insertDocDb($document,'pending');
+    if (isset($_POST['date_created'])){
+      $recordID = insertDocDb($document,'pending', $_POST['date_created']);
+    }
+    else{
+      $recordID = insertDocDb($document,'pending');
+    }
     addVocabularies($document,$recordID);
       ?>
 

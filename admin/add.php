@@ -19,6 +19,10 @@ require_once "../functions.php";
       <div class="col-xs-8 col-xs-offset-2">
         <h2>Submission form</h2>
         <form class="form-horizontal" action="submit" method="POST" id="recordForm" name="recordForm">
+<input type="hidden" name="cataloguer_id" value="<?php print $_SESSION['user_id']?>">
+<input type="hidden" name="id" value="0">
+
+
         <div class="form-group">
           <div class="col-xs-2">
             <label for="title" class="control-label">Title</label>

@@ -176,7 +176,7 @@ function importExcelTabFile(){
 }
 
 
-function insertDocDb($doc,$status){
+function insertDocDb($doc,$status,$dateCreated=0){
   global $mysqli;
   
   $mid = $doc['id'];
@@ -192,10 +192,15 @@ function insertDocDb($doc,$status){
   $media_cataloguer =  $doc['media_cataloguer_id'];
   $reviewer = $doc['reviewer_id'];
   $admin_notes = $doc['admin_notes'];
-
-
-  $statement = $mysqli->prepare("INSERT INTO records (id,mid,title,call_number,series,larger_work,collection_source,donor,scanning_technician,media_cataloguer_id,reviewer_id,admin_notes,status,date_created,date_modified)"
+  
+  if($dateCreated==0){//new record
+    $statement = $mysqli->prepare("INSERT INTO records (id,mid,title,call_number,series,larger_work,collection_source,donor,scanning_technician,media_cataloguer_id,reviewer_id,admin_notes,status,date_created,date_modified)"
                   ." VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,NOW(),NOW())");
+  }
+  else {//update existing record
+    $statement = $mysqli->prepare("INSERT INTO records (id,mid,title,call_number,series,larger_work,collection_source,donor,scanning_technician,media_cataloguer_id,reviewer_id,admin_notes,status,date_created,date_modified)"
+                  ." VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,NOW())");
+  }
   //var_dump($doc);
   $statement->bind_param("iisssssssiiss",$id, $mid, 
               $title, 
@@ -208,7 +213,8 @@ function insertDocDb($doc,$status){
               $media_cataloguer, 
               $reviewer,
               $admin_notes,
-              $status);
+              $status,
+              $dateCreated);
   $statement->execute();
   $statement->store_result();
 

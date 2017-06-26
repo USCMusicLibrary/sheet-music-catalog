@@ -14,11 +14,11 @@ require "admin-navigation.php";
 
 require_once "../functions.php";
 
-$statement = $mysqli->prepare("SELECT id,title,call_number,series,larger_work,collection_source,donor,scanning_technician,media_cataloguer_id,reviewer_id, admin_notes FROM records WHERE id=? LIMIT 1");
+$statement = $mysqli->prepare("SELECT id,title,call_number,series,larger_work,collection_source,donor,scanning_technician,media_cataloguer_id,reviewer_id, admin_notes, date_created FROM records WHERE id=? LIMIT 1");
 $statement->bind_param("i",$_GET['id']);
 $statement->execute();
 $statement->store_result();
-$statement->bind_result($id, $title, $call_number, $series, $larger_work, 	$collection_source, $donor, $scanning_technician, $media_cataloguer, $reviewer, $admin_notes);
+$statement->bind_result($id, $title, $call_number, $series, $larger_work, 	$collection_source, $donor, $scanning_technician, $media_cataloguer, $reviewer, $admin_notes,$date_created);
 $statement->fetch();
 
 $statement = $mysqli->prepare("SELECT contributor_id,role_id FROM contributors WHERE record_id=?");
@@ -90,7 +90,13 @@ var_dump($displayArray);
   <div class="row">
       <div class="col-xs-8 col-xs-offset-2">
         <h2>Submission form</h2>
-        <form class="form-horizontal" action="" method="POST" id="recordForm" name="recordForm">
+        <form class="form-horizontal" action="submit" method="POST" id="recordForm" name="recordForm">
+<input type="hidden" name="cataloguer_id" value="<?php print $media_cataloguer;?>">
+<input type="hidden" name="id" value="0">
+<input type="hidden" name="editRecord" value="">
+<input type="hidden" name="date_created" value="<?php print $date_created;?>">
+
+
         <div class="form-group">
           <div class="col-xs-2">
             <label for="title" class="control-label">Title</label>
