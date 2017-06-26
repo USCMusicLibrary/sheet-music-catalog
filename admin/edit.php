@@ -84,15 +84,34 @@ foreach($fields as $field=>$values){
     $displayArray[$field][] = $value; 
   }
 }
-var_dump($displayArray);
+//var_dump($displayArray);
+
+$statement = $mysqli->prepare("SELECT start_year, end_year FROM years WHERE record_id=? LIMIT 1");
+$statement->bind_param("i",$_GET['id']);
+$statement->execute();
+$statement->store_result();
+$statement->bind_result($startYear,$endYear);
+$statement->fetch();
+
 ?>
 <div class="container-fluid">
   <div class="row">
+  <div class="col-xs-3 col-xs-offset-9">
+        <a href="delete?id=<?php print $id; ?>" class="btn btn-sm btn-danger">Delete record</a>
+      </div>
+      <div class="clearfix"></div>
+      <br>
+      <?php if (isSuper()):?>
+      <div class="col-xs-3 col-xs-offset-9">
+        <a href="approve?id=<?php print $id;?>" class="btn btn-md btn-success">Approve</a>
+      </div>
+    <?php endif;?>
       <div class="col-xs-8 col-xs-offset-2">
-        <h2>Submission form</h2>
+      
+        <h2>Update record</h2>
         <form class="form-horizontal" action="submit" method="POST" id="recordForm" name="recordForm">
 <input type="hidden" name="cataloguer_id" value="<?php print $media_cataloguer;?>">
-<input type="hidden" name="id" value="0">
+<input type="hidden" name="id" value="<?php print $_GET['id']?>">
 <input type="hidden" name="editRecord" value="">
 <input type="hidden" name="date_created" value="<?php print $date_created;?>">
 
@@ -235,8 +254,8 @@ var_dump($displayArray);
           </div>
           <div class="col-xs-10">
             <!--<input type="text" class="form-control" name="year" id="daterange">-->
-            <label for="year_start">Start Year</label><input type="text" class="form-control" name="year_start" id="date_start" required="">
-            <label for="year_end">End Year</label><input type="text" class="form-control" name="year_end" id="date_end">
+            <label for="year_start">Start Year</label><input type="text" class="form-control" name="year_start" id="date_start" required="" value="<?php print $startYear;?>">
+            <label for="year_end">End Year</label><input type="text" class="form-control" name="year_end" id="date_end" value="<?php print $endYear;?>">
           </div>
         </div>
 
@@ -432,7 +451,7 @@ var_dump($displayArray);
             
           </div>
           <div class="col-xs-10">
-            <input type="submit" class="form-control btn-success">
+            <input type="submit" class="form-control btn-success" value="Save">
           </div>
         </div>
 

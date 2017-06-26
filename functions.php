@@ -196,13 +196,23 @@ function insertDocDb($doc,$status,$dateCreated=0){
   if($dateCreated==0){//new record
     $statement = $mysqli->prepare("INSERT INTO records (id,mid,title,call_number,series,larger_work,collection_source,donor,scanning_technician,media_cataloguer_id,reviewer_id,admin_notes,status,date_created,date_modified)"
                   ." VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,NOW(),NOW())");
+      $statement->bind_param("iisssssssiiss",$id, $mid, 
+              $title, 
+              $call_number, 
+              $series, 
+              $larger_work, 
+              $collection_source, 
+              $donor, 
+              $scanning_technician, 
+              $media_cataloguer, 
+              $reviewer,
+              $admin_notes,
+              $status);
   }
   else {//update existing record
     $statement = $mysqli->prepare("INSERT INTO records (id,mid,title,call_number,series,larger_work,collection_source,donor,scanning_technician,media_cataloguer_id,reviewer_id,admin_notes,status,date_created,date_modified)"
                   ." VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,NOW())");
-  }
-  //var_dump($doc);
-  $statement->bind_param("iisssssssiiss",$id, $mid, 
+      $statement->bind_param("iisssssssiisss",$id, $mid, 
               $title, 
               $call_number, 
               $series, 
@@ -215,6 +225,10 @@ function insertDocDb($doc,$status,$dateCreated=0){
               $admin_notes,
               $status,
               $dateCreated);
+  }
+  //var_dump($doc);
+
+  
   $statement->execute();
   $statement->store_result();
 
