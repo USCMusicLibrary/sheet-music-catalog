@@ -27,7 +27,7 @@ foreach ($images as $image){
 //die();
 $output;
 //$execString="cd 2>&1";
-$execString = "convert ".$imageString." tmppdf.pdf";
+$execString = "convert ".$imageString." ".getcwd()."/tmppdf/tmppdf.pdf";
 
 exec($execString,$output);
 //print_r( $output);
@@ -37,7 +37,7 @@ exec($execString,$output);
 
 header("Content-Type: application/pdf");
 
-readfile("tmppdf.pdf");
+readfile("tmppdf/tmppdf.pdf");
 
 
 
