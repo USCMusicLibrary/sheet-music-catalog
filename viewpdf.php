@@ -19,17 +19,23 @@ if (!idHasImage($id)){
 $images = getImagesForId($id);
 
 $imageString = "";
+$counter = 1;
 foreach ($images as $image){
-    $imageString = $imageString." ".getcwd()."/".$image;
+    $newPath = getcwd()."/tmppdf/img/".$counter++.".jpg";
+    //print $newPath;
+    copy($image,$newPath);
 }
 
 //print $imageString;
 //die();
 $output;
 //$execString="cd 2>&1";
-$execString = "convert ".$imageString." ".getcwd()."/tmppdf/tmppdf.pdf";
+$execString = getcwd()."/tmppdf/pdf.sh";
 
-exec($execString,$output);
+print $execString;
+
+//die();
+shell_exec($execString);
 //print_r( $output);
 //print getcwd();
 //die();
