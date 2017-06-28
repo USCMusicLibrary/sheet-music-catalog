@@ -69,7 +69,19 @@ $jsonResponse;
 
 $searchResults = $searchResponse['docs'];
 
+if ($searchResponse['numFound']==0):?>
+<div class="container-fluid">
+  <div class="row">
+      <div class="col-xs-8 col-xs-offset-2">
+        <h1 class="text-primary">No results</h1>
+      </div>
+  </div>
+</div> <!-- container-fluid -->
+<?php
+require "footer.php";
+die();
 
+endif;
 
 //prints next/previous buttons and total results count
 printResultsNavigation($searchResponse['start'],$searchResponse['numFound'],$searchQuery['rows']);
