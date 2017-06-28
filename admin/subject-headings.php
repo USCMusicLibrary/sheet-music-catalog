@@ -33,11 +33,11 @@ $statement->bind_result($id, $heading, $uri);
 while ($statement->fetch()):
 ?>
 <tr>
-<td><?php print $name;?></td>
+<td><?php print $heading;?></td>
 <td><?php print $uri;?></td>
 <?php 
 if (isSuper()):?>
-<td><a href="edit-heading?id=<?php print $id;?>&type=name" class="btn btn-danger">Edit</a></td>
+<td><a href="edit-heading?id=<?php print $id;?>&type=subject_heading" class="btn btn-danger">Edit</a></td>
 <?php else:
   print "<td></td>";
 endif;
