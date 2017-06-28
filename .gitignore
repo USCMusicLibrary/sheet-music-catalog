@@ -3,3 +3,5 @@ authoritycheck/dbconfig.py
 db-config.php
 .vscode
 solr/*
+tmppdf/img/*
+tmppdf/tmppdf.pdf
