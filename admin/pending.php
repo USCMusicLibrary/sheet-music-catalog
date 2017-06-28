@@ -42,6 +42,8 @@ $statement->bind_result($id, $mid, $title, $call_number, $series, $larger_work, 
 <!--<th>Scanning Technician</th>
 <th>Reviewer</th>-->
               <th>Status</th>
+              <th></th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
@@ -56,9 +58,10 @@ $statement->bind_result($id, $mid, $title, $call_number, $series, $larger_work, 
 <th><?php print $donor;?></th>
 <th><?php print getUsernameFromID($media_cataloguer);?></th>
 <th><?php print $status;?></th>
-<!--<th><?php print $scanning_technician;?></th>
-<th><?php print $reviewer;?></th>-->
+<!--<th><?php //print $scanning_technician;?></th>
+<th><?php //print $reviewer;?></th>-->
                 <th><a href="edit?id=<?php print $id;?>" class="btn btn-danger">Edit</a></th>
+                <th><a href="duplicate?id=<?php print $id;?>" class="btn btn-danger">Duplicate</a></th>
               </tr>
             <?php endwhile;?>
           </tbody>

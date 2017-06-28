@@ -40,6 +40,7 @@ $statement->bind_result($id, $mid, $title, $call_number, $series, $larger_work, 
 <th>Media Cataloguer</th>
 <th>Reviewer</th>-->
               <th></th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
@@ -57,6 +58,7 @@ $statement->bind_result($id, $mid, $title, $call_number, $series, $larger_work, 
 <th><?php print $media_cataloguer;?></th>
 <th><?php print $reviewer;?></th>-->
                 <th><a href="edit?id=<?php print $id;?>" class="btn btn-danger">Edit</a></th>
+                <th><a href="duplicate?id=<?php print $id;?>" class="btn btn-danger">Duplicate</a></th>
               </tr>
             <?php endwhile;?>
           </tbody>
