@@ -152,7 +152,7 @@ $("#btn-add-language").click(function(e){
     console.log("add language");
     var formGroup = $(this).parent().prev().clone();
     if (langCounter ==1)$("<button class=\"btn btn-default btn-sm btn-rm-lang\">x</button>").insertAfter(formGroup.find("input"));
-    formGroup.find("textarea").val("");
+    formGroup.find("input").val("");
     formGroup.toggleClass("collapse");
     formGroup.insertBefore($(this).parent());
     formGroup.show('fast', function() {
