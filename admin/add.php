@@ -78,10 +78,14 @@ require_once "../functions.php";
                       <div class="col-xs-2">
                         <button id="btn-insert-contributor" class="btn btn-danger btn-sm">Add to record</button>
                       </div>
+                      <div class="col-xs-12">
+                        <a href="names-list" target="_blank">View list of names</a>
+                      </div>
+                      <div class="clearfix"></div>
                     </div>
 
                   </div>
-                  <div class="modal-footer" style="margin-top:2em;">
+                  <div class="modal-footer" style="margin-top:3em;">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                   </div>
                 </div>
@@ -178,10 +182,14 @@ require_once "../functions.php";
                       <div class="col-xs-2">
                         <button id="btn-insert-heading" class="btn btn-danger btn-sm">Add to record</button>
                       </div>
+                      <div class="col-xs-12">
+                        <a href="subject-headings" target="_blank">View list of subject headings</a>
+                      </div>
+                      <div class="clearfix"></div>
                     </div> 
 
                   </div>
-                  <div class="modal-footer" style="margin-top:2em;">
+                  <div class="modal-footer" style="margin-top:3em;">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                   </div>
                 </div>
