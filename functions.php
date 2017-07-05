@@ -903,6 +903,7 @@ function removeFromCart($id){
 
 
 function zipForCDM($files) {
+    var_dump($files);
     $zip = new ZipArchive;
     $filename = "smdb_cdmExport.zip";
     $opened = $zip->open($filename, ZipArchive::CREATE | ZipArchive::OVERWRITE);
@@ -938,6 +939,7 @@ function zipForCDM($files) {
 }
 
 function export_for_CDM($recordID_array) {
+    //var_dump(implode($recordID_array,","));
     /*
      * Export selected records for USC CONTENTdm instance in accordance with USC DigiCol schema
      */
@@ -968,8 +970,10 @@ function export_for_CDM($recordID_array) {
       LEFT JOIN users ON users.id = records.media_cataloguer_id
       WHERE records.id IN (' . implode($recordID_array, ",") . ')
       GROUP BY records.id, records.title, publishers.publisher, records.donor';
+      print $query;
     if ($result = $mysqli->query($query)) {
         while ($row = $result->fetch_assoc()) {
+            //var_dump($row);
             $dd = new DateTime($row["date_created"]); #Dates digital, etc. are based on the record creation date at the moment
             $imagepaths = getImagesForId($row["recid"]);
             $imagecount = count($imagepaths);
