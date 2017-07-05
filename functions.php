@@ -192,27 +192,20 @@ function insertDocDb($doc,$status,$dateCreated=0){
   $media_cataloguer =  $doc['media_cataloguer_id'];
   $reviewer = $doc['reviewer_id'];
   $admin_notes = $doc['admin_notes'];
+
+  if(is_array($doc['years'])){
+   $startyear = $doc['years'][0];
+   $endyear = array_pop($doc['years']);     
+  }
+  else {
+      $startyear = $doc['years'];
+      $endyear = $doc['years'];
+  }
   
   if($dateCreated==0){//new record
-    $statement = $mysqli->prepare("INSERT INTO records (id,mid,title,call_number,series,larger_work,collection_source,donor,scanning_technician,media_cataloguer_id,reviewer_id,admin_notes,status,date_created,date_modified)"
-                  ." VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,NOW(),NOW())");
-      $statement->bind_param("iisssssssiiss",$id, $mid, 
-              $title, 
-              $call_number, 
-              $series, 
-              $larger_work, 
-              $collection_source, 
-              $donor, 
-              $scanning_technician, 
-              $media_cataloguer, 
-              $reviewer,
-              $admin_notes,
-              $status);
-  }
-  else {//update existing record
-    $statement = $mysqli->prepare("INSERT INTO records (id,mid,title,call_number,series,larger_work,collection_source,donor,scanning_technician,media_cataloguer_id,reviewer_id,admin_notes,status,date_created,date_modified)"
-                  ." VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,NOW())");
-      $statement->bind_param("iisssssssiisss",$id, $mid, 
+    $statement = $mysqli->prepare("INSERT INTO records (id,mid,title,call_number,series,larger_work,collection_source,donor,scanning_technician,media_cataloguer_id,reviewer_id,admin_notes,status,date_created,date_modified,start_year, end_year)"
+                  ." VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,NOW(),NOW(),?,?)");
+      $statement->bind_param("iisssssssiissii",$id, $mid, 
               $title, 
               $call_number, 
               $series, 
@@ -224,7 +217,27 @@ function insertDocDb($doc,$status,$dateCreated=0){
               $reviewer,
               $admin_notes,
               $status,
-              $dateCreated);
+              $startyear,
+              $endyear);
+  }
+  else {//update existing record
+    $statement = $mysqli->prepare("INSERT INTO records (id,mid,title,call_number,series,larger_work,collection_source,donor,scanning_technician,media_cataloguer_id,reviewer_id,admin_notes,status,date_created,date_modified,start_year,end_year)"
+                  ." VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,NOW(),?,?)");
+      $statement->bind_param("iisssssssiisssii",$id, $mid, 
+              $title, 
+              $call_number, 
+              $series, 
+              $larger_work, 
+              $collection_source, 
+              $donor, 
+              $scanning_technician, 
+              $media_cataloguer, 
+              $reviewer,
+              $admin_notes,
+              $status,
+              $dateCreated,
+              $startyear,
+              $endyear);
   }
   //var_dump($doc);
 
@@ -289,13 +302,13 @@ function insertDocDb($doc,$status,$dateCreated=0){
     $statement->store_result();
   }
   
-  $startYear = $doc['years'][0];
+  /*$startYear = $doc['years'][0];
   $endYear = end($doc['years']);
   $statement = $mysqli->prepare("INSERT INTO years (record_id,start_year,end_year)"
                   ." VALUES (?,?,?)");
     $statement->bind_param("iii", $recordID,$startYear,$endYear);
   $statement->execute();
-    $statement->store_result();
+    $statement->store_result();*/
 
 return $recordID;
 
@@ -887,6 +900,219 @@ function removeFromCart($id){
   $jsonItems = json_encode($items);
   file_put_contents("data/shoppingCart.json",$jsonItems);
 }
+
+
+function zipForCDM($files) {
+    $zip = new ZipArchive;
+    $filename = "smdb_cdmExport.zip";
+    $opened = $zip->open($filename, ZipArchive::CREATE | ZipArchive::OVERWRITE);
+    if ($opened !== TRUE) {
+        die("Unable to open zip file for CDM export");
+    }
+    forEach (array_keys($files) AS $id) {
+        $cdmrecord = $files[$id];
+        $fd = fopen('php://temp/maxmemory:1048576', 'w');
+        if ($fd !== TRUE) {
+            die("Failed to create temporary file");
+        }
+        $headers = array_keys($cdmrecord);
+        fputcsv($fd, $headers, "\t");
+        $rlen = count($cdmrecord[$headers[0]]);
+        for ($i = 0; $i < $rlen; $i++) {
+            $line = array();
+            forEach ($headers AS $h) {
+                array_push($line, $cdmrecord[$h][$i]);
+            }
+            fputcsv($fd, $line, "\t");
+        }
+        rewind($fd);
+        $zip->addfromString($id . "/" . $id . '.txt', stream_get_contents($fd));
+        fclose($fd);
+    }
+
+    header('Content-Type: application/zip');
+    header('Content-disposition: attachment; filename=' . $filename);
+    header('Content-Length: ' . filesize($filename));
+    readfile($filename);
+    unlink($filename);
+}
+
+function export_for_CDM($recordID_array) {
+    /*
+     * Export selected records for USC CONTENTdm instance in accordance with USC DigiCol schema
+     */
+    $cdmbatch = array();
+    global $mysqli;
+    $query = 'SELECT records.id AS recid, GROUP_CONCAT(DISTINCT CONCAT_WS(" : ", names.name, roles.role) SEPARATOR " ; ") AS name,
+      records.title AS Title,  
+      records.call_number AS callno,
+      records.start_year AS date1, records.end_year AS date2, 
+      GROUP_CONCAT(DISTINCT alternative_titles.alternative_title SEPARATOR ";") AS alttitle,
+      GROUP_CONCAT(DISTINCT languages.language SEPARATOR ";") AS Language,
+      publishers.publisher AS Publisher, 
+      REPLACE(CONCAT_WS(". ", REPLACE(GROUP_CONCAT(DISTINCT notes.note SEPARATOR ". "), "..", ". "), 
+      REPLACE(GROUP_CONCAT(DISTINCT texts.text_t SEPARATOR ". "), "..", "."), NULLIF(records.series, ""), 
+      NULLIF(records.larger_work, "")), "..", ".") AS Note, GROUP_CONCAT(Distinct records.donor SEPARATOR "; ") AS Donor,
+      GROUP_CONCAT(DISTINCT subject_headings.subject_heading SEPARATOR "; ") AS Subjects, 
+      records.date_created AS "date_created",
+      records.collection_source AS "Source", records.scanning_technician AS "scanningtech", 
+      COALESCE(users.username) AS "metadatacataloger" FROM records 
+      INNER JOIN contributors ON contributors.record_id = records.id INNER JOIN roles ON contributors.role_id = roles.id INNER JOIN names ON names.id = contributors.contributor_id
+      LEFT JOIN alternative_titles ON records.id = alternative_titles.record_id 
+      LEFT JOIN publishers ON records.id = publishers.record_id
+      LEFT JOIN notes ON records.id = notes.record_id
+      LEFT JOIN texts ON records.id = texts.record_id
+      LEFT JOIN has_subject ON records.id = has_subject.record_id
+      LEFT JOIN subject_headings ON subject_headings.id = has_subject.subject_id
+      LEFT JOIN languages ON records.id = languages.record_id
+      LEFT JOIN users ON users.id = records.media_cataloguer_id
+      WHERE records.id IN (' . implode($recordID_array, ",") . ')
+      GROUP BY records.id, records.title, publishers.publisher, records.donor';
+    if ($result = $mysqli->query($query)) {
+        while ($row = $result->fetch_assoc()) {
+            $dd = new DateTime($row["date_created"]); #Dates digital, etc. are based on the record creation date at the moment
+            $imagepaths = getImagesForId($row["recid"]);
+            $imagecount = count($imagepaths);
+            /*
+             * $filename = $imagepaths[0];
+             * if (file_exists($filename)) {
+             *    $dd = date('c', filemtime($file));
+             *    $dd_ym = $dd_ym = date_format($dd, 'Y-m');
+             *    $rigtsyear = date_format($dd, 'Y');
+             *    $cdmrecord["Rights"] = 'Digital Copyright ' .$rightsyear. ', The University of South Carolina. All rights reserved. For more information contact the Music Library, 813 Assembly Street, Room 208, University of South Carolina, Columbia, SC 29208';
+             *     } else{
+             *        $cdmrecord["Rights"] = NULL;
+             *       }
+             */
+            $dd_ym = date_format($dd, 'Y-m');
+            $rightsyear = date_format($dd, 'Y');
+            $digitalcollection = "TEST COLLECTION";
+            $digispec = "TEST DIGITIZATION SPEC";
+            $contributing_inst = "University of South Carolina. Music Library";
+            $website = NULL;
+            $cdmrecord = array(
+                "Title" => array($row['Title']),
+                "Creator" => array(),
+                "Contributor 1" => array(),
+                "Contributor 2" => array(),
+                "Contributor 3" => array(),
+                "Contributor 4" => array(),
+                "Donor" => array($row["Donor"]),
+                "Date" => array(),
+                "Approximate Date" => array(),
+                "Source" => array($row["Source"]),
+                "Publisher" => array($row["Publisher"]),
+                "Subject" => array($row["Subjects"]),
+                "Digital Collection" => array($digitalcollection),
+                "Web Site" => array($website),
+                "Note" => array($row["Note"]),
+                "Contributing Institution" => array($contributing_inst),
+                "Rights" => array(), #year from date digital
+                "Type" => array("still image; text"),
+                "Format" => array("image/jpeg"),
+                "Media Type" => array("Sheet music"),
+                "Identifier" => array(""),
+                "Language" => array($row["Language"]),
+                "Digitization Specifications" => array($digispec), #supplied by user
+                "Date Digitized" => array($dd_ym),
+                "Scanning Technician" => array($row["scanningtech"]),
+                "Metadata Cataloger" => array($row["metadatacataloger"]),
+                "Filename" => array("")
+            );
+
+            //Determines creator & contributors 1-4, creates & appends parenthetical qualifier for role(s)
+            $possible_creators = array("composer", "lyricist", "arranger of music");
+            $contributors = array();
+            $creator = NULL;
+            $creator_relators = array();
+            $notenames = array();
+            $nameswithroles = $row["name"];
+            $nr_array = explode(' ; ', $nameswithroles);
+            foreach ($possible_creators as $pc) {
+                foreach ($nr_array as $nr) {
+                    $nar = explode(" : ", $nr);
+                    if ($nar[1] == $pc) {
+                        if ($creator == NULL) {
+                            //if this is the first creator candidate found, set creator
+                            $creator = $nar[0];
+                            array_push($creator_relators, $nar[1]);
+                        } elseif ($nar[0] == $creator) {
+                            //if this person is already creator, add the relator term
+                            array_push($creator_relators, $nar[1]);
+                        } elseif (in_array($nar[0], array_keys($contributors)) == False) {
+                            //if also not in contributors, check if we've filled the contributors slots
+                            if (count($contributors) < 4) {
+                                $contributors[$nar[0]] = array("relators" => array($nar[1]), "contribno" => count($contributors) + 1);
+                            } else {
+                                if (in_array($nar[0], array_keys($notenames))) {
+                                    array_push($notenames[$nar[0]], $nar[1]);
+                                } else {
+                                    $notenames[$nar[0]] = array($nar[1]);
+                                }
+                            }
+                        } else {  //$nar[0] is in $contributors          
+                            array_push($contributors[$nar[0]]["relators"], $nar[1]);
+                        }
+                    }
+                    $cdmrecord["Creator"] = array($creator . " (" . join(', ', $creator_relators) . ")");
+                    forEach (array_keys($contributors) as $contributor) {
+                        $name = $contributor;
+                        $num = $contributors[$contributor]["contribno"];
+                        $relators = "(" . join(", ", $contributors[$contributor]["relators"]) . ")";
+                        $cdmrecord["Contributor " . (string) $num] = array($name . " " . $relators);
+                    }
+                }
+            }
+
+            //Determine if single known date or approximate date range, format circa dates
+            if ($row['date1'] == $row['date2']) {
+                array_push($cdmrecord["Date"], $row['date1']);
+                array_push($cdmrecord["Approximate Date"], NULL);
+            } else {
+                array_push($cdmrecord["Date"], NULL);
+                array_push($cdmrecord["Approximate Date"], "circa " . $row["date1"] . "-" . $row["date2"]);
+            }
+
+            //array_push($cdmrecord["Alternative Title"], $row["alttitle"]);
+            
+            //Fill record array for tsv
+            $id_root = "smdb" . $row["recid"];
+
+            if ($imagecount != 0) {
+                for ($i = 0; $i < $imagecount; $i++) {
+                    forEach (array_keys($cdmrecord) AS $fld) {
+                        if ($fld == "Title") {
+                            array_push($cdmrecord["Title"], "Page " . strval($i + 1));
+                        } elseif ($fld == "Digital Collection") {
+                            array_push($cdmrecord["Digital Collection"], $digitalcollection);
+                        } elseif ($fld == "Identifier") {
+                            array_push($cdmrecord["Identifier"], $id_root . "_" . strval($i + 1)); 
+                        } elseif ($fld == "Filename") {
+                            $fn = $id_root . "_" . strval($i + 1) . ".jpg";
+                            if (in_array($fn, $cdmrecord["Filename"])) {
+                                
+                            } else {
+                                array_push($cdmrecord["Filename"], $fn);
+                            }
+                        } elseif ($fld == "Contributing Institution") {
+                            array_push($cdmrecord["Contributing Institution"], $contributing_inst);
+                        } else {
+                            if ($cdmrecord[$fld] === array()) {
+                                array_push($cdmrecord[$fld], NULL);
+                            }
+                            array_push($cdmrecord[$fld], NULL);
+                        }
+                    }
+                }
+            } else {
+                trigger_error("Record " . $row["recid"] . " has not been digitized");
+            }
+            $cdmbatch [$id_root] = $cdmrecord;
+        }
+    }
+    zipForCDM($cdmbatch);
+}
+
 
 
 ?>
