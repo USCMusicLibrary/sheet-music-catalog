@@ -904,9 +904,9 @@ function removeFromCart($id){
 
 
 function zipForCDM($files) {
-    var_dump($files);
     $zip = new ZipArchive;
-    $filename = "smdb_cdmExport.zip";
+    global $ROOTDIR;
+    $filename = $ROOTDIR."data/smdb_cdmExport.zip";
     $opened = $zip->open($filename, ZipArchive::CREATE | ZipArchive::OVERWRITE);
     if ($opened !== TRUE) {
         die("Unable to open zip file for CDM export");
@@ -914,7 +914,7 @@ function zipForCDM($files) {
     forEach (array_keys($files) AS $id) {
         $cdmrecord = $files[$id];
         $fd = fopen('php://temp/maxmemory:1048576', 'w');
-        if ($fd !== TRUE) {
+        if ($fd == false) {
             die("Failed to create temporary file");
         }
         $headers = array_keys($cdmrecord);
@@ -931,7 +931,7 @@ function zipForCDM($files) {
         $zip->addfromString($id . "/" . $id . '.txt', stream_get_contents($fd));
         fclose($fd);
     }
-
+//var_dump($zip);
     header('Content-Type: application/zip');
     header('Content-disposition: attachment; filename=' . $filename);
     header('Content-Length: ' . filesize($filename));
@@ -1129,7 +1129,7 @@ function export_for_CDM($recordID_array) {
             //concat names and roles into one string
             $nameString = "";
             foreach ($doc['contributors'] as $Rname){
-              $nameString = $Rname[1]." : ".$Rname[0]." ; ";
+              $nameString = $nameString.$Rname[1]." : ".$Rname[0]." ; ";
             }
 
 
@@ -1140,6 +1140,7 @@ function export_for_CDM($recordID_array) {
             $notenames = array();
             $nameswithroles = $nameString;//$row["name"];
             $nr_array = array_filter(explode(' ; ', $nameswithroles));
+            var_dump($nr_array);
             foreach ($possible_creators as $pc) {
                 foreach ($nr_array as $nr) {
                     $nar = explode(" : ", $nr);
@@ -1225,7 +1226,7 @@ function export_for_CDM($recordID_array) {
     print '<pre>';
     var_dump($cdmbatch);
     print '</pre>';        
-die();
+//die();
     zipForCDM($cdmbatch);
 }
 
