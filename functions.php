@@ -43,6 +43,9 @@ function importExcelTabFile(){
 
   $counter2=0;
 
+  $callNumbers = array();
+  $callNumberErrors = array();
+
   while ($line= $file->fgets()) {
 
     if ($counter++ == 0) {
@@ -130,6 +133,26 @@ function importExcelTabFile(){
 
     if ($document['id']=="") continue; //skip insert into db if empty
 
+
+    //call number insert into correct json file
+    print '<br>';
+    try{
+      preg_match('/^[\D\s]+/',$document['call_number'],$match);
+      if (!isset($match[0])) throw new Exception("Notice: Undefined offset: 0 in collection");
+      $collection = trim($match[0]);
+      $num;
+      preg_match('/[\d]+$/',$document['call_number'],$match);
+      if (!isset($match[0])) throw new Exception("Notice: Undefined offset: 0 in number");
+      $num = $match[0];
+    }
+    catch (Exception $e) {
+      print 'Call number error: '.  $e->getMessage()."  On call number: ". $document['call_number'].'<br>';
+      $callNumberErrors[$document['id']] = $document['call_number']; 
+      //die();
+    }
+    $callNumbers[$collection][] = $num;
+
+continue;
     //print_r($document);
 
     //we need to modify the $document object before we feed it to solr
@@ -173,6 +196,8 @@ function importExcelTabFile(){
 
     flush();
   }
+
+  var_dump($callNumbers);
 }
 
 
@@ -324,6 +349,30 @@ function insertIntoSubTable($table,$values,$recordID,$columnName){
     $statement->store_result();
   }
 }
+
+function getNewCallNumber($collection){
+  $filename = "data/cat-".$collection.".json";
+
+  $jsonCallNumbers = file_get_contents($filename);
+  $callNumbers = json_decode($jsonCallNumbers,true);
+  
+  sort($callNumbers);
+  $newNum = 0;
+  $i=1;
+
+  //this is very inefficient, but it gets the job done
+  //TODO: revise algorithm to make it take O(n) time instead.
+  // in_array() takes O(n) so the code below probably takes O(n^2)
+  // worst case scenario
+  while(in_array($i,$callNumbers)) $i++;
+  $newNum = $i;
+
+  $callNumbers[] = $newNum;
+  $jsonCallNumbers = json_encode($callNumbers);
+  file_put_contents($filename,$jsonCallNumbers);
+  return $newNum;
+}
+
 
 function addVocabularies($doc,$insertID){
     global $mysqli;
