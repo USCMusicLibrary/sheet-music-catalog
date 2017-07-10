@@ -1045,7 +1045,7 @@ global $contribtypes;
     "end_year"=>$end_year,
 
     "contributors"=>$contributors,
-    "subject_headings"=>$headings
+    "subject_heading"=>$headings
   );
 
   foreach ($displayArray as $key=>$value){
@@ -1097,7 +1097,7 @@ function export_for_CDM($recordID_array,$digitalcollection,$digispec,$contributi
                 "Approximate Date" => array(),
                 "Source" => array($doc["collection_source"]),
                 "Publisher" => array($concatFields($doc["publisher"])),
-                "Subject" => array($concatFields($doc["subject_headings"])),
+                "Subject" => array($concatFields($doc["subject_heading"])),
                 "Digital Collection" => array($digitalcollection),
                 "Web Site" => array($website),
                 "Note" => array(preg_replace('/\.\./','.',preg_replace('/;/','. ',$concatFields($doc["notes"])))),

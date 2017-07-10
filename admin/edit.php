@@ -14,11 +14,11 @@ require "admin-navigation.php";
 
 require_once "../functions.php";
 
-$statement = $mysqli->prepare("SELECT id,title,call_number,series,larger_work,collection_source,donor,scanning_technician,media_cataloguer_id,reviewer_id, admin_notes, date_created FROM records WHERE id=? LIMIT 1");
+$statement = $mysqli->prepare("SELECT id,title,call_number,series,larger_work,collection_source,donor,scanning_technician,media_cataloguer_id,reviewer_id, admin_notes, date_created,start_year,end_year FROM records WHERE id=? LIMIT 1");
 $statement->bind_param("i",$_GET['id']);
 $statement->execute();
 $statement->store_result();
-$statement->bind_result($id, $title, $call_number, $series, $larger_work, 	$collection_source, $donor, $scanning_technician, $media_cataloguer, $reviewer, $admin_notes,$date_created);
+$statement->bind_result($id, $title, $call_number, $series, $larger_work, 	$collection_source, $donor, $scanning_technician, $media_cataloguer, $reviewer, $admin_notes,$date_created,$startYear,$endYear);
 $statement->fetch();
 
 $statement = $mysqli->prepare("SELECT contributor_id,role_id FROM contributors WHERE record_id=?");
@@ -86,12 +86,12 @@ foreach($fields as $field=>$values){
 }
 //var_dump($displayArray);
 
-$statement = $mysqli->prepare("SELECT start_year, end_year FROM years WHERE record_id=? LIMIT 1");
+/*$statement = $mysqli->prepare("SELECT start_year, end_year FROM years WHERE record_id=? LIMIT 1");
 $statement->bind_param("i",$_GET['id']);
 $statement->execute();
 $statement->store_result();
 $statement->bind_result($startYear,$endYear);
-$statement->fetch();
+$statement->fetch();*/
 
 ?>
 <div class="container-fluid">
