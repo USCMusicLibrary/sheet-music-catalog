@@ -846,7 +846,8 @@ function getImagesForId($id){
   $counter=1;
   $fileList = array();
   //print 'sheet-music/'.$filePrefix.strval($counter++);
-  while(file_exists('sheet-music/'.$filePrefix.strval($counter).'.jpg')){
+  global $ROOTDIR;
+  while(file_exists($ROOTDIR.'sheet-music/'.$filePrefix.strval($counter).'.jpg')){
     $fileList[] = 'sheet-music/'.$filePrefix.strval($counter++).'.jpg';
   }
   return $fileList;
@@ -938,6 +939,120 @@ function zipForCDM($files) {
     unlink($filename);
 }
 
+function getDocFromDb($recordID){
+  global $mysqli;
+  $statement = $mysqli->prepare("SELECT id,title,call_number,series,larger_work,collection_source,donor,scanning_technician,media_cataloguer_id,reviewer_id, admin_notes, date_created,start_year,end_year FROM records WHERE id=? LIMIT 1");
+  $statement->bind_param("i",$recordID);
+  $statement->execute();
+  $statement->store_result();
+  $statement->bind_result($id, $title, $call_number, $series, $larger_work, 	$collection_source, $donor, $scanning_technician, $media_cataloguer_id, $reviewer_id, $admin_notes,$date_created,$start_year,$end_year);
+  if(!$statement->fetch()){
+    return false;
+  }
+
+  $statement = $mysqli->prepare("SELECT contributor_id,role_id FROM contributors WHERE record_id=?");
+  $statement->bind_param("i",$recordID);
+  $statement->execute();
+  $statement->store_result();
+  $statement->bind_result($contributorId, $roleId);
+
+global $contribtypes;
+  $contributors = array();
+  while ($statement->fetch()){
+    $statement2 = $mysqli->prepare("SELECT name FROM names WHERE id=? LIMIT 1");
+    $statement2->bind_param("i",$contributorId);
+    $statement2->execute();
+    $statement2->store_result();
+    $statement2->bind_result($cName);
+    if ($statement2->fetch()){
+      $contributors[] = array(array_search($roleId,$contribtypes),$cName);
+    }
+  }
+
+  $statement = $mysqli->prepare("SELECT subject_id FROM has_subject WHERE record_id=?");
+  $statement->bind_param("i",$recordID);
+  $statement->execute();
+  $statement->store_result();
+  $statement->bind_result($subjectId);
+
+  $headings = array();
+  while ($statement->fetch()){
+    $statement2 = $mysqli->prepare("SELECT subject_heading FROM subject_headings WHERE id=? LIMIT 1");
+    $statement2->bind_param("i",$subjectId);
+    $statement2->execute();
+    $statement2->store_result();
+    $statement2->bind_result($cName);
+    if ($statement2->fetch()){
+      $headings[] = $cName;
+    }
+  }
+
+
+  //var_dump($admin_notes);
+
+  $fields = array(
+    'alternative_title'=> ['alternative_titles','alternative_title'],
+    'notes'=>['notes','note'],
+    'text_t'=>['texts','text_t'],
+    'publisher_location'=>['publisher_locations','publisher_location'],
+    'publisher'=>['publishers','publisher'],
+    'language'=>['languages','language']
+  );
+
+  $displayArray = array();
+
+  foreach($fields as $field=>$values){
+    //var_dump($values);
+    $query = "SELECT $values[1] FROM $values[0] WHERE record_id=?";
+    $statement = $mysqli->prepare($query);
+    $statement->bind_param("i",$id);
+    $statement->execute();
+    $statement->store_result();
+    $statement->bind_result($value);
+    while ($statement->fetch()){
+      if (trim($value)=="") continue;
+      $displayArray[$field][] = $value; 
+    }
+  }
+
+  $statement = $mysqli->prepare("SELECT name FROM users WHERE id=? LIMIT 1");
+  $statement->bind_param("i",$media_cataloguer_id);
+  $statement->execute();
+  $statement->store_result();
+  $statement->bind_result($media_cataloguer);
+  $statement = $mysqli->prepare("SELECT name FROM users WHERE id=? LIMIT 1");
+  $statement->bind_param("i",$reviewer_id);
+  $statement->execute();
+  $statement->store_result();
+  $statement->bind_result($reviewer);
+  
+  $docID = (int)$id;
+  $document = array(
+    "id"=>$docID,
+    "title"=>$title,
+    "call_number"=>$call_number,
+    "series"=>$series,
+    "larger_work"=>$larger_work,
+    "collection_source"=>$collection_source,
+    "donor"=>$donor,
+    "scanning_technician"=>$scanning_technician,
+    "media_cataloguer"=>$media_cataloguer,
+    "reviewer"=>$reviewer,
+    "admin_notes"=>$admin_notes,
+    "date_created"=>$date_created,
+    "start_year"=>$start_year,
+    "end_year"=>$end_year,
+
+    "contributors"=>$contributors,
+    "subject_headings"=>$headings
+  );
+
+  foreach ($displayArray as $key=>$value){
+    $document[$key] = $value;
+  }
+  return $document;
+}
+
 function export_for_CDM($recordID_array) {
     //var_dump(implode($recordID_array,","));
     /*
@@ -945,37 +1060,14 @@ function export_for_CDM($recordID_array) {
      */
     $cdmbatch = array();
     global $mysqli;
-    $query = 'SELECT records.id AS recid, GROUP_CONCAT(DISTINCT CONCAT_WS(" : ", names.name, roles.role) SEPARATOR " ; ") AS name,
-      records.title AS Title,  
-      records.call_number AS callno,
-      records.start_year AS date1, records.end_year AS date2, 
-      GROUP_CONCAT(DISTINCT alternative_titles.alternative_title SEPARATOR ";") AS alttitle,
-      GROUP_CONCAT(DISTINCT languages.language SEPARATOR ";") AS Language,
-      publishers.publisher AS Publisher, 
-      REPLACE(CONCAT_WS(". ", REPLACE(GROUP_CONCAT(DISTINCT notes.note SEPARATOR ". "), "..", ". "), 
-      REPLACE(GROUP_CONCAT(DISTINCT texts.text_t SEPARATOR ". "), "..", "."), NULLIF(records.series, ""), 
-      NULLIF(records.larger_work, "")), "..", ".") AS Note, GROUP_CONCAT(Distinct records.donor SEPARATOR "; ") AS Donor,
-      GROUP_CONCAT(DISTINCT subject_headings.subject_heading SEPARATOR "; ") AS Subjects, 
-      records.date_created AS "date_created",
-      records.collection_source AS "Source", records.scanning_technician AS "scanningtech", 
-      COALESCE(users.username) AS "metadatacataloger" FROM records 
-      INNER JOIN contributors ON contributors.record_id = records.id INNER JOIN roles ON contributors.role_id = roles.id INNER JOIN names ON names.id = contributors.contributor_id
-      LEFT JOIN alternative_titles ON records.id = alternative_titles.record_id 
-      LEFT JOIN publishers ON records.id = publishers.record_id
-      LEFT JOIN notes ON records.id = notes.record_id
-      LEFT JOIN texts ON records.id = texts.record_id
-      LEFT JOIN has_subject ON records.id = has_subject.record_id
-      LEFT JOIN subject_headings ON subject_headings.id = has_subject.subject_id
-      LEFT JOIN languages ON records.id = languages.record_id
-      LEFT JOIN users ON users.id = records.media_cataloguer_id
-      WHERE records.id IN (' . implode($recordID_array, ",") . ')
-      GROUP BY records.id, records.title, publishers.publisher, records.donor';
-      print $query;
-    if ($result = $mysqli->query($query)) {
-        while ($row = $result->fetch_assoc()) {
-            //var_dump($row);
-            $dd = new DateTime($row["date_created"]); #Dates digital, etc. are based on the record creation date at the moment
-            $imagepaths = getImagesForId($row["recid"]);
+    $row = array();
+
+    foreach ($recordID_array as $recordID){
+      $doc = getDocFromDb($recordID);
+      if ($doc === false) continue;
+
+            $dd = new DateTime($doc["date_created"]); #Dates digital, etc. are based on the record creation date at the moment
+            $imagepaths = getImagesForId($recordID);
             $imagecount = count($imagepaths);
             /*
              * $filename = $imagepaths[0];
@@ -994,44 +1086,60 @@ function export_for_CDM($recordID_array) {
             $digispec = "TEST DIGITIZATION SPEC";
             $contributing_inst = "University of South Carolina. Music Library";
             $website = NULL;
+            $concatFields = function($fieldArray){
+              $cat = "";
+              foreach ($fieldArray as $value){
+                $cat = $cat.$value.";";
+              }
+              return $cat;
+            };
             $cdmrecord = array(
-                "Title" => array($row['Title']),
+                "Title" => array($doc['title']),
                 "Creator" => array(),
                 "Contributor 1" => array(),
                 "Contributor 2" => array(),
                 "Contributor 3" => array(),
                 "Contributor 4" => array(),
-                "Donor" => array($row["Donor"]),
+                "Donor" => array($doc["donor"]),
                 "Date" => array(),
                 "Approximate Date" => array(),
-                "Source" => array($row["Source"]),
-                "Publisher" => array($row["Publisher"]),
-                "Subject" => array($row["Subjects"]),
+                "Source" => array($doc["collection_source"]),
+                "Publisher" => array($concatFields($doc["publisher"])),
+                "Subject" => array($concatFields($doc["subject_headings"])),
                 "Digital Collection" => array($digitalcollection),
                 "Web Site" => array($website),
-                "Note" => array($row["Note"]),
+                "Note" => array(preg_replace('/\.\./','.',preg_replace('/;/','. ',$concatFields($doc["notes"])))),
                 "Contributing Institution" => array($contributing_inst),
                 "Rights" => array(), #year from date digital
                 "Type" => array("still image; text"),
                 "Format" => array("image/jpeg"),
                 "Media Type" => array("Sheet music"),
                 "Identifier" => array(""),
-                "Language" => array($row["Language"]),
+                "Language" => array($concatFields($doc["language"])),
                 "Digitization Specifications" => array($digispec), #supplied by user
                 "Date Digitized" => array($dd_ym),
-                "Scanning Technician" => array($row["scanningtech"]),
-                "Metadata Cataloger" => array($row["metadatacataloger"]),
+                "Scanning Technician" => array($doc["scanning_technician"]),
+                "Metadata Cataloger" => array($doc["media_cataloguer"]),
                 "Filename" => array("")
             );
 
+
             //Determines creator & contributors 1-4, creates & appends parenthetical qualifier for role(s)
+            
+            //concat names and roles into one string
+            $nameString = "";
+            foreach ($doc['contributors'] as $Rname){
+              $nameString = $Rname[1]." : ".$Rname[0]." ; ";
+            }
+
+
             $possible_creators = array("composer", "lyricist", "arranger of music");
             $contributors = array();
             $creator = NULL;
             $creator_relators = array();
             $notenames = array();
-            $nameswithroles = $row["name"];
-            $nr_array = explode(' ; ', $nameswithroles);
+            $nameswithroles = $nameString;//$row["name"];
+            $nr_array = array_filter(explode(' ; ', $nameswithroles));
             foreach ($possible_creators as $pc) {
                 foreach ($nr_array as $nr) {
                     $nar = explode(" : ", $nr);
@@ -1068,20 +1176,20 @@ function export_for_CDM($recordID_array) {
                 }
             }
 
+
             //Determine if single known date or approximate date range, format circa dates
-            if ($row['date1'] == $row['date2']) {
-                array_push($cdmrecord["Date"], $row['date1']);
+            if ($doc['start_year'] == $doc['end_year']) {
+                array_push($cdmrecord["Date"], $doc['start_year']);
                 array_push($cdmrecord["Approximate Date"], NULL);
             } else {
                 array_push($cdmrecord["Date"], NULL);
-                array_push($cdmrecord["Approximate Date"], "circa " . $row["date1"] . "-" . $row["date2"]);
+                array_push($cdmrecord["Approximate Date"], "circa " . $doc["start_year"] . "-" . $doc["end_year"]);
             }
 
             //array_push($cdmrecord["Alternative Title"], $row["alttitle"]);
             
             //Fill record array for tsv
-            $id_root = "smdb" . $row["recid"];
-
+            $id_root = "smdb" . $doc["id"];
             if ($imagecount != 0) {
                 for ($i = 0; $i < $imagecount; $i++) {
                     forEach (array_keys($cdmrecord) AS $fld) {
@@ -1109,11 +1217,15 @@ function export_for_CDM($recordID_array) {
                     }
                 }
             } else {
-                trigger_error("Record " . $row["recid"] . " has not been digitized");
+                trigger_error("Record " . $doc["id"] . " has not been digitized");
             }
             $cdmbatch [$id_root] = $cdmrecord;
-        }
+
     }
+    print '<pre>';
+    var_dump($cdmbatch);
+    print '</pre>';        
+die();
     zipForCDM($cdmbatch);
 }
 

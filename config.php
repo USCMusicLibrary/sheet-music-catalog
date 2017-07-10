@@ -17,6 +17,9 @@ $solrCoreName = "sheet-music-catalog1";
 global $ROOTURL;
 $ROOTURL = "http://localhost/smc/";
 
+global $ROOTDIR;
+$ROOTDIR = "/home/adrian/Documents/smc/";
+
 global $solrUrl;
 $solrUrl = 'http://localhost:8983/solr/'.$solrCoreName.'/';
 
