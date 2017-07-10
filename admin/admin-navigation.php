@@ -18,6 +18,7 @@
                 </ul>
               </li>
             <li><a href="<?php print $ROOTURL;?>admin/users">Users</a></li>
+            <li><a href="<?php print $ROOTURL;?>admin/export">Export</a></li>
           </ul>
         </div><!--/.nav-collapse -->
       </div>

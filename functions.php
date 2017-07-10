@@ -934,7 +934,7 @@ function zipForCDM($files) {
     }
 //var_dump($zip);
     header('Content-Type: application/zip');
-    header('Content-disposition: attachment; filename=' . $filename);
+    header('Content-disposition: attachment; filename=');
     header('Content-Length: ' . filesize($filename));
     readfile($filename);
     unlink($filename);
