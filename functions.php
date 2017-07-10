@@ -890,6 +890,7 @@ function addToCart($id){
   $items = json_decode(file_get_contents("data/shoppingCart.json"),true);
   $items[] = $id;
   $jsonItems = json_encode($items);
+  //print $jsonItems;
   file_put_contents("data/shoppingCart.json",$jsonItems);
 }
 
@@ -1063,6 +1064,7 @@ function export_for_CDM($recordID_array) {
     $row = array();
 
     foreach ($recordID_array as $recordID){
+      print $recordID;
       $doc = getDocFromDb($recordID);
       if ($doc === false) continue;
 
@@ -1224,7 +1226,7 @@ function export_for_CDM($recordID_array) {
 
     }
     print '<pre>';
-    var_dump($cdmbatch);
+    //var_dump($cdmbatch);
     print '</pre>';        
 //die();
     zipForCDM($cdmbatch);
