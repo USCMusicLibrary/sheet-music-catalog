@@ -14,7 +14,13 @@ $recordArray = json_decode(file_get_contents($ROOTURL."data/shoppingCart.json"),
 $exportArray = array();
 foreach ($recordArray as $rec) $exportArray[] = $rec;
 
-export_for_CDM($exportArray);
+$digitalcollection = $_GET['digital-collection'];
+$digispec = $_GET['digitization-spec'];
+$contributing_inst = $_GET['contributing-institution'];
+$website = $_GET['website'];
+
+
+export_for_CDM($exportArray,$digitalcollection,$digispec,$contributing_inst,$website);
 ?>
 <div class="container-fluid">
   <div class="row">

@@ -1054,7 +1054,7 @@ global $contribtypes;
   return $document;
 }
 
-function export_for_CDM($recordID_array) {
+function export_for_CDM($recordID_array,$digitalcollection,$digispec,$contributing_inst,$website) {
     //var_dump(implode($recordID_array,","));
     /*
      * Export selected records for USC CONTENTdm instance in accordance with USC DigiCol schema
@@ -1071,23 +1071,13 @@ function export_for_CDM($recordID_array) {
             $dd = new DateTime($doc["date_created"]); #Dates digital, etc. are based on the record creation date at the moment
             $imagepaths = getImagesForId($recordID);
             $imagecount = count($imagepaths);
-            /*
-             * $filename = $imagepaths[0];
-             * if (file_exists($filename)) {
-             *    $dd = date('c', filemtime($file));
-             *    $dd_ym = $dd_ym = date_format($dd, 'Y-m');
-             *    $rigtsyear = date_format($dd, 'Y');
-             *    $cdmrecord["Rights"] = 'Digital Copyright ' .$rightsyear. ', The University of South Carolina. All rights reserved. For more information contact the Music Library, 813 Assembly Street, Room 208, University of South Carolina, Columbia, SC 29208';
-             *     } else{
-             *        $cdmrecord["Rights"] = NULL;
-             *       }
-             */
+            
             $dd_ym = date_format($dd, 'Y-m');
             $rightsyear = date_format($dd, 'Y');
-            $digitalcollection = "TEST COLLECTION";
+            /*$digitalcollection = "TEST COLLECTION";
             $digispec = "TEST DIGITIZATION SPEC";
             $contributing_inst = "University of South Carolina. Music Library";
-            $website = NULL;
+            $website = NULL;*/
             $concatFields = function($fieldArray){
               $cat = "";
               foreach ($fieldArray as $value){
@@ -1124,6 +1114,19 @@ function export_for_CDM($recordID_array) {
                 "Metadata Cataloger" => array($doc["media_cataloguer"]),
                 "Filename" => array("")
             );
+
+            
+            $filename = $ROOTDIR.$imagepaths[0];
+            if (file_exists($filename)) {
+               $dd = date('c', filemtime($file));
+                $dd_ym = $dd_ym = date_format($dd, 'Y-m');
+                $rigtsyear = date_format($dd, 'Y');
+                $cdmrecord["Rights"] = 'Digital Copyright ' .$rightsyear. ', The University of South Carolina. All rights reserved. For more information contact the Music Library, 813 Assembly Street, Room 208, University of South Carolina, Columbia, SC 29208';
+            }
+            else{
+                    $cdmrecord["Rights"] = NULL;
+            }
+            
 
 
             //Determines creator & contributors 1-4, creates & appends parenthetical qualifier for role(s)
