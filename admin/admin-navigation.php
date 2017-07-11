@@ -19,6 +19,7 @@
               </li>
             <li><a href="<?php print $ROOTURL;?>admin/users">Users</a></li>
             <li><a href="<?php print $ROOTURL;?>admin/export">Export</a></li>
+            <li><a href="<?php print $ROOTURL;?>admin/authorityCheck">Authority check report</a></li>
           </ul>
         </div><!--/.nav-collapse -->
       </div>
