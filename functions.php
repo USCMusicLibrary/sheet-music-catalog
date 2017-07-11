@@ -386,9 +386,14 @@ function freeCallNumber($collection,$call_number){
   $jsonCallNumbers = file_get_contents($filename);
   $callNumbers = json_decode($jsonCallNumbers,true);
 
+  //delete from array
   if(($key = array_search($call_number, $callNumbers)) !== false) {
     unset($callNumbers[$key]);
-}
+  }
+
+  //save file
+  $jsonCallNumbers = json_encode($callNumbers);
+  file_put_contents($filename,$jsonCallNumbers);
 }
 
 

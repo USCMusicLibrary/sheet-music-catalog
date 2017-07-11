@@ -78,7 +78,8 @@ if (!isset($_POST['editRecord'])){
 if (isset($_POST['editRecord'])){
   deleteRecord($_POST['id']);
   if ($document['call_number'] !== $_POST['callCollOrig']){//change collections
-  
+    freeCallNumber($_POST['callCollOrig'],$_POST['callno']);//free old call number
+    $document['call_number'] = $document['call_number']." ".getNewCallNumber($document['call_number']);
   }
 }
 
