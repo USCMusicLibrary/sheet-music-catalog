@@ -154,7 +154,7 @@ function importExcelTabFile(){
     }
     $callNumbers[$collection][] = $num;
 
-continue;
+//continue;
     //print_r($document);
 
     //we need to modify the $document object before we feed it to solr
@@ -378,6 +378,17 @@ function getNewCallNumber($collection){
   $jsonCallNumbers = json_encode($callNumbers);
   file_put_contents($filename,$jsonCallNumbers);
   return $newNum;
+}
+
+function freeCallNumber($collection,$call_number){
+  $filename = "data/cat-".$collection.".json";
+
+  $jsonCallNumbers = file_get_contents($filename);
+  $callNumbers = json_decode($jsonCallNumbers,true);
+
+  if(($key = array_search($call_number, $callNumbers)) !== false) {
+    unset($callNumbers[$key]);
+}
 }
 
 

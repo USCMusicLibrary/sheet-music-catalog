@@ -57,6 +57,8 @@ else {*/
 'reviewer_id' => $_SESSION['user_id']
     );
 
+
+
 $contributor_headings = array_keys($contribtypes);
 $headingtypes = array_merge($contributor_headings, $other_heading_types);
 
@@ -69,9 +71,15 @@ foreach ($headingtypes as $htype){
     }
   }
 }
-
+if (!isset($_POST['editRecord'])){
+  //new call number
+  $document['call_number'] = $document['call_number']." ".getNewCallNumber($document['call_number']);
+}
 if (isset($_POST['editRecord'])){
   deleteRecord($_POST['id']);
+  if ($document['call_number'] !== $_POST['callCollOrig']){//change collections
+  
+  }
 }
 
 /*

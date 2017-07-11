@@ -21,6 +21,23 @@ $statement->store_result();
 $statement->bind_result($id, $title, $call_number, $series, $larger_work, 	$collection_source, $donor, $scanning_technician, $media_cataloguer, $reviewer, $admin_notes,$date_created,$startYear,$endYear);
 $statement->fetch();
 
+$call_number_coll = "";
+
+try{
+preg_match('/^[\D\s]+/',$call_number,$match);
+if (!isset($match[0])) throw new Exception("Notice: Undefined offset: 0 in collection");
+$call_number_coll = trim($match[0]);
+
+$call_number_num = 0;
+preg_match('/[\d]+$/',$call_number,$match);
+if (!isset($match[0])) throw new Exception("Notice: Undefined offset: 0 in number");
+$call_number_num = trim($match[0]);
+}
+catch (Exception $e) {
+      print 'Call number error: '.  $e->getMessage()."  On call number: ". $call_number.'<br>';
+      //die();
+    }
+
 $statement = $mysqli->prepare("SELECT contributor_id,role_id FROM contributors WHERE record_id=?");
 $statement->bind_param("i",$_GET['id']);
 $statement->execute();
@@ -392,11 +409,17 @@ $statement->fetch();*/
           </div>
           <div class="col-xs-10">
             <select class="form-control" name="call_number" id="call_number">
-                          <option <?php if ($call_number=="Sheet music") print "selected";?>>Sheet music</option>
-                          <option <?php if ($call_number=="Sheet music large") print "selected";?>>Sheet music large</option>
-                          <option <?php if ($call_number=="CSAM") print "selected";?>>CSAM</option>
+            <?php 
+              $callNumberCollection = json_decode(file_get_contents($ROOTDIR."data/callNumberCollections.json"),true);
+              foreach($callNumberCollection as $coll):
+            ?>
+                          <option <?php if ($call_number_coll==$coll) print "selected";?>><?php print $coll;?></option>
+            <?php endforeach;?>
                         </select>
           </div>
+          <input type="text" readonly name="callno" value="<?php print $call_number_num;?>">
+          <input type="hidden" value="<?php print $call_number;?>" name="callNoOrig">
+          <input type="hidden" value="<?php print $call_number_coll;?>" name="callCollOrig">
         </div>
 
         <div class="form-group">
