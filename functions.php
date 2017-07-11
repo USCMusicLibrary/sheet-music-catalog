@@ -135,7 +135,9 @@ function importExcelTabFile(){
 
 
     //call number insert into correct json file
+    $document['call_number'] = trim($document['call_number']);
     print '<br>';
+    $num = 0;
     try{
       preg_match('/^[\D\s]+/',$document['call_number'],$match);
       if (!isset($match[0])) throw new Exception("Notice: Undefined offset: 0 in collection");
@@ -197,7 +199,12 @@ continue;
     flush();
   }
 
-  var_dump($callNumbers);
+  foreach ($callNumbers as $key=>$values){
+    $jsonValues = json_encode($values);
+    file_put_contents("data/cat-".$key.".json",$jsonValues);
+  }
+
+  file_put_contents("data/callNumberErrors.json",json_encode($callNumberErrors));
 }
 
 
