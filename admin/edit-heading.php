@@ -15,17 +15,48 @@ require_once "../functions.php";
 
 require_once "../db-config.php";
 
-if (isset($_POST['id']))://if is update
+if (isset($_GET['action']) && $_GET['action']=="delete"){
+  //check that no record is currently using heading
+  $headingID = $_GET['id'];
+  $headingTable = ($_GET['type']=="name") ? "contributors": "has_subject";
+  $columnName = ($_GET['type']=="name") ? "contributor_id": "subject_id";
+  $query = "SELECT $columnName FROM $headingTable WHERE $columnName=?";
+  $statement = $mysqli->prepare($query);
+  $statement->bind_param("i",$headingID);
+  $statement->execute();
+  $statement->store_result();
+  $statement->bind_result($heading_id);
+  if ($statement->fetch()){//there are still records associated with this heading
+    ?>
+    <div class="container-fluid">
+      <div class="row">
+          <div class="col-xs-8 col-xs-offset-2">
+            <h1 class="text-danger">Unable to delete heading. Please make sure that no records are currently using this heading. -- Heading id:<?php print $headingID;?></h1>
+          </div>
+      </div>
+    </div> <!-- container-fluid -->
+    <?php  
+  }
+  else{//no records associated, safe to delete
+    $headingTable = ($_GET['type']=="name") ? "names": "subject_headings";
+    $query = "DELETE FROM $headingTable WHERE id=?";
+    $statement = $mysqli->prepare($query);
+    $statement->bind_param("i",$headingID);
+    $statement->execute();
+    $statement->store_result();
+  }
+}
+else if (isset($_POST['id']))://if is update
+  $headingID = $_POST['id'];
+  $headingTable = ($_POST['type']=="name") ? "names": "subject_headings";
+  $columnName = $_POST['type'];
+  $query = "UPDATE $headingTable SET $columnName=?,uri=? WHERE id=?";
+  //print $query;
+  $statement = $mysqli->prepare($query);
+  $statement->bind_param("ssi",$_POST['heading-value'],$_POST['uri'],$headingID);
+  $statement->execute();
+  $statement->store_result();
 
-$headingID = $_POST['id'];
-$headingTable = ($_POST['type']=="name") ? "names": "subject_headings";
-$columnName = $_POST['type'];
-$query = "UPDATE $headingTable SET $columnName=?,uri=? WHERE id=?";
-//print $query;
-$statement = $mysqli->prepare($query);
-$statement->bind_param("ssi",$_POST['heading-value'],$_POST['uri'],$headingID);
-$statement->execute();
-$statement->store_result();
 ?>
 <div class="container-fluid">
   <div class="row">
@@ -64,6 +95,7 @@ $statement->fetch();
         <label for="uri">URI: </label><input type="text" class="form-control" name="uri" id="uri" value="<?php print $uri;?>"><br>
         <input type="hidden" value="<?php print $_GET['id'];?>" name="id">
         <input type="hidden" value="<?php print $_GET['type'];?>" name="type">
+        <input type="hidden" value="edit" name="action">
         <input class="form-control btn-success btn" type="submit" value="Save">
       </div>
   </div>

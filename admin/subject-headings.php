@@ -37,9 +37,10 @@ while ($statement->fetch()):
 <td><?php print $uri;?></td>
 <?php 
 if (isSuper()):?>
-<td><a href="edit-heading?id=<?php print $id;?>&type=subject_heading" class="btn btn-danger">Edit</a></td>
+<td><a href="edit-heading?id=<?php print $id;?>&type=subject_heading" class="btn btn-success btn-sm">Edit</a></td>
+<td><a href="edit-heading?id=<?php print $id;?>&type=subject_heading&action=delete" class="btn btn-danger btn-sm">Delete</a></td>
 <?php else:
-  print "<td></td>";
+  print "<td></td><td></td>";
 endif;
 endwhile; ?>
 </table>
