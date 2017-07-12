@@ -1133,10 +1133,10 @@ function export_for_CDM($recordID_array,$digitalcollection,$digispec,$contributi
      */
     $cdmbatch = array();
     global $mysqli;
+    global $ROOTDIR;
     $row = array();
 
     foreach ($recordID_array as $recordID){
-      print $recordID;
       $doc = getDocFromDb($recordID);
       if ($doc === false) continue;
 
@@ -1190,13 +1190,13 @@ function export_for_CDM($recordID_array,$digitalcollection,$digispec,$contributi
             
             $filename = $ROOTDIR.$imagepaths[0];
             if (file_exists($filename)) {
-               $dd = date('c', filemtime($file));
-                $dd_ym = $dd_ym = date_format($dd, 'Y-m');
-                $rigtsyear = date_format($dd, 'Y');
-                $cdmrecord["Rights"] = 'Digital Copyright ' .$rightsyear. ', The University of South Carolina. All rights reserved. For more information contact the Music Library, 813 Assembly Street, Room 208, University of South Carolina, Columbia, SC 29208';
+                $dd = date('c', filemtime($filename));
+                $dd_ym = date_format(new DateTime($dd), 'Y-m');
+                $rigtsyear = date_format(new DateTime($dd), 'Y');
+                $cdmrecord["Rights"] = array('Digital Copyright ' .$rightsyear. ', The University of South Carolina. All rights reserved. For more information contact the Music Library, 813 Assembly Street, Room 208, University of South Carolina, Columbia, SC 29208');
             }
             else{
-                    $cdmrecord["Rights"] = NULL;
+                    $cdmrecord["Rights"] = array(NULL);
             }
             
 
@@ -1217,7 +1217,7 @@ function export_for_CDM($recordID_array,$digitalcollection,$digispec,$contributi
             $notenames = array();
             $nameswithroles = $nameString;//$row["name"];
             $nr_array = array_filter(explode(' ; ', $nameswithroles));
-            var_dump($nr_array);
+            
             foreach ($possible_creators as $pc) {
                 foreach ($nr_array as $nr) {
                     $nar = explode(" : ", $nr);
@@ -1243,7 +1243,17 @@ function export_for_CDM($recordID_array,$digitalcollection,$digispec,$contributi
                         } else {  //$nar[0] is in $contributors          
                             array_push($contributors[$nar[0]]["relators"], $nar[1]);
                         }
-                    }
+                    } elseif(in_array($nar[1], $possible_creators)){
+                        
+                    }else{
+                        if (in_array($nar[0], array_keys($notenames))) {
+                            if(in_array($nar[1], $notenames[$nar[0]])){
+                            }else{
+                            array_push($notenames[$nar[0]], $nar[1]);
+                            }
+                        } else {
+                                    $notenames[$nar[0]] = array($nar[1]);
+                    }}
                     $cdmrecord["Creator"] = array($creator . " (" . join(', ', $creator_relators) . ")");
                     forEach (array_keys($contributors) as $contributor) {
                         $name = $contributor;
@@ -1254,7 +1264,10 @@ function export_for_CDM($recordID_array,$digitalcollection,$digispec,$contributi
                 }
             }
 
-
+           forEach(array_keys($notenames) as $nn){
+               $roles = join("and", $notenames[$nn] );
+                    $cdmrecord["Note"][0] = join('. ', array($cdmrecord["Note"][0], ucfirst($roles).": ". $nn));
+           }
             //Determine if single known date or approximate date range, format circa dates
             if ($doc['start_year'] == $doc['end_year']) {
                 array_push($cdmrecord["Date"], $doc['start_year']);
@@ -1300,9 +1313,9 @@ function export_for_CDM($recordID_array,$digitalcollection,$digispec,$contributi
             $cdmbatch [$id_root] = $cdmrecord;
 
     }
-    print '<pre>';
+    //print '<pre>';
     //var_dump($cdmbatch);
-    print '</pre>';        
+    //print '</pre>';        
 //die();
     zipForCDM($cdmbatch);
 }
