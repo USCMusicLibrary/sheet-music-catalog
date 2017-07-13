@@ -27,7 +27,7 @@ require "admin-navigation.php";
 
         <form action="exportZip" method="GET">
         <label for="digital-collection">Digital collection: </label><input type="text" name="digital-collection"><br>
-        <label for="digitization-spec">Digitization spec: </label><input type="text" name="digitaization-spec"><br>
+        <label for="digitization-spec">Digitization spec: </label><input type="text" name="digitization-spec"><br>
         <label for="contributing-institution">Contributing institution: </label><input type="text" name="contributing-institution"><br>
         <label for="website">Website: </label><input type="text" name="website"><br>
         <input type="hidden" name="action" value="export">

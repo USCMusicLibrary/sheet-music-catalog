@@ -22,13 +22,7 @@ $website = $_GET['website'];
 
 export_for_CDM($exportArray,$digitalcollection,$digispec,$contributing_inst,$website);
 ?>
-<div class="container-fluid">
-  <div class="row">
-      <div class="col-xs-8 col-xs-offset-2">
-        <h1 class="text-success">Records exported</h1>
-      </div>
-  </div>
-</div> <!-- container-fluid -->
+
 <?php 
 endif;
 
