@@ -46,7 +46,6 @@ else {*/
 'text_t' => $_POST['text-t'],
 'notes' => $_POST['note'],
 'donor' => $_POST['donor'],
-//CALL NUMBER FIX
 'call_number' => $_POST['call_number'],
 'series' => $_POST['series'],
 'collection_source' =>$_POST['collection'],
@@ -80,6 +79,9 @@ if (isset($_POST['editRecord'])){
   if ($document['call_number'] !== $_POST['callCollOrig']){//change collections
     freeCallNumber($_POST['callCollOrig'],$_POST['callno']);//free old call number
     $document['call_number'] = $document['call_number']." ".getNewCallNumber($document['call_number']);
+  }
+  else { //if not changing collections, then we leave old call number intact
+    $document['call_number'] = $_POST['callNoOrig'];
   }
 }
 

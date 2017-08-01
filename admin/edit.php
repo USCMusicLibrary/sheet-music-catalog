@@ -129,7 +129,7 @@ $statement->fetch();*/
         <form class="form-horizontal" action="submit" method="POST" id="recordForm" name="recordForm">
 <input type="hidden" name="cataloguer_id" value="<?php print $media_cataloguer;?>">
 <input type="hidden" name="id" value="<?php print $_GET['id']?>">
-<input type="hidden" name="editRecord" value="">
+<input type="hidden" name="editRecord" value="edit">
 <input type="hidden" name="date_created" value="<?php print $date_created;?>">
 
 
