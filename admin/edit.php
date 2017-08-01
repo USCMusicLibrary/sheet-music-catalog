@@ -275,8 +275,8 @@ $statement->fetch();*/
           </div>
           <div class="col-xs-10">
             <!--<input type="text" class="form-control" name="year" id="daterange">-->
-            <label for="year_start">Start Year</label><input type="text" class="form-control" name="year_start" id="date_start" required="" value="<?php print $startYear;?>">
-            <label for="year_end">End Year</label><input type="text" class="form-control" name="year_end" id="date_end" value="<?php print $endYear;?>">
+            <label for="year_start">Start Year</label><input type="text" class="form-control" name="year_start" id="year_start" required="" value="<?php print $startYear;?>">
+            <label for="year_end">End Year</label><input type="text" class="form-control" name="year_end" id="year_end" value="<?php print $endYear;?>">
           </div>
         </div>
 

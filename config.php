@@ -12,16 +12,16 @@ else {
 }
 
 global $solrCoreName;
-$solrCoreName = "sheet-music-catalog1";
+$solrCoreName = "sheetmusic";
 
 global $ROOTURL;
-$ROOTURL = "http://localhost/smc/";
+$ROOTURL = "http://localhost:3003/";
 
 global $ROOTDIR;
-$ROOTDIR = "/home/adrian/Documents/smc/";
+$ROOTDIR = "/var/www/html/";
 
 global $solrUrl;
-$solrUrl = 'http://localhost:8983/solr/'.$solrCoreName.'/';
+$solrUrl = 'http://172.16.64.158:8983/solr/'.$solrCoreName.'/';
 
 global $solrResultsHighlightTag;
 $solrResultsHighlightTag = "mark";//bootstrap highlight <mark></mark>

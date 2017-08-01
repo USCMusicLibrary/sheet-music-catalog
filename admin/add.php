@@ -122,8 +122,8 @@ require_once "../functions.php";
           </div>
           <div class="col-xs-10">
             <!--<input type="text" class="form-control" name="year" id="daterange">-->
-            <label for="year_start">Start Year</label><input type="text" class="form-control" name="year_start" id="date_start" required="">
-            <label for="year_end">End Year</label><input type="text" class="form-control" name="year_end" id="date_end">
+            <label for="year_start">Start Year</label><input type="text" class="form-control" name="year_start" id="year_start" required="">
+            <label for="year_end">End Year</label><input type="text" class="form-control" name="year_end" id="year_end">
           </div>
         </div>
 
