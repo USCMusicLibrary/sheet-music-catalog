@@ -1,6 +1,12 @@
 <?php
 //edit page
 session_start();
+
+if (!$_SESSION['logged-in']){
+    header("Location: login");
+    die();
+}
+
 require "../header.php";
 
 

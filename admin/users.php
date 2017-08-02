@@ -6,6 +6,11 @@
 $title = "Users";
 session_start();
 
+if (!$_SESSION['logged-in']){
+    header("Location: login");
+    die();
+}
+
 require "../db-config.php";
 require_once "../functions.php";
 require "../header.php";

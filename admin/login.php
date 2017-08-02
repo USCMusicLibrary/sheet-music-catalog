@@ -3,6 +3,8 @@
  */
 session_start();
 
+
+
 $dialog = isset($_GET["dialog"]) ? $_GET["dialog"] : "";
 
 if (isset($_POST)) {
