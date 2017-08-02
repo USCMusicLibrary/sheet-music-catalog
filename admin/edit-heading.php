@@ -50,10 +50,10 @@ else if (isset($_POST['id']))://if is update
   $headingID = $_POST['id'];
   $headingTable = ($_POST['type']=="name") ? "names": "subject_headings";
   $columnName = $_POST['type'];
-  $query = "UPDATE $headingTable SET $columnName=?,uri=? WHERE id=?";
+  $query = "UPDATE $headingTable SET $columnName=?,uri=?,local_note=? WHERE id=?";
   //print $query;
   $statement = $mysqli->prepare($query);
-  $statement->bind_param("ssi",$_POST['heading-value'],$_POST['uri'],$headingID);
+  $statement->bind_param("ssi",$_POST['heading-value'],$_POST['uri'],,$_POST['localNote'],$headingID);
   $statement->execute();
   $statement->store_result();
 
@@ -72,13 +72,13 @@ $headingID = $_GET['id'];
 $headingTable = ($_GET['type']=="name") ? "names": "subject_headings";
 $columnName = $_GET['type'];
 
-$query = "SELECT $columnName,uri FROM $headingTable WHERE id=? LIMIT 1";
+$query = "SELECT $columnName,local_note,uri FROM $headingTable WHERE id=? LIMIT 1";
 //print $query;
 $statement = $mysqli->prepare($query);
 $statement->bind_param("i",$headingID);
 $statement->execute();
 $statement->store_result();
-$statement->bind_result($heading, $uri);
+$statement->bind_result($heading,$localNote, $uri);
 
 //todo: add error checking
 $statement->fetch();
@@ -93,6 +93,7 @@ $statement->fetch();
         <form action="edit-heading" method="POST">
         <label for="heading-value">Heading: </label><input type="text" class="form-control" name="heading-value" id="heading-value" value="<?php print $heading;?>"><br>
         <label for="uri">URI: </label><input type="text" class="form-control" name="uri" id="uri" value="<?php print $uri;?>"><br>
+        <label for="localNote">Local note: </label><input type="text" class="form-control" name="localNote" id="localNote" value="<?php print $localNote;?>"><br>
         <input type="hidden" value="<?php print $_GET['id'];?>" name="id">
         <input type="hidden" value="<?php print $_GET['type'];?>" name="type">
         <input type="hidden" value="edit" name="action">

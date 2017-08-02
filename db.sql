@@ -65,6 +65,7 @@ CREATE TABLE names (
   uri varchar(100),
   nameUpdate varchar(255),
   problem_note varchar(255),
+  local_note varchar(255),
   PRIMARY KEY (id)
 );
 
@@ -113,6 +114,7 @@ CREATE TABLE subject_headings (
   subject_heading text,
   subjectUpdate varchar(255),
   problem_note varchar(255),
+  local_note varchar (255),
   PRIMARY KEY (id)
 );
 

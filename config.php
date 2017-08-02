@@ -15,7 +15,7 @@ global $solrCoreName;
 $solrCoreName = "sheetmusic";
 
 global $ROOTURL;
-$ROOTURL = "http://localhost:3003/";
+$ROOTURL = "http://172.16.64.158:3003/";
 
 global $ROOTDIR;
 $ROOTDIR = "/var/www/html/";
