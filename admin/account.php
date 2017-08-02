@@ -17,7 +17,7 @@ require "admin-navigation.php";
 <div class="container-fluid">
   <div class="row">
     <div class="col-xs-12">
-      <h1>Account info goes here </h1>
+<br>
       <?php
         $statement = $mysqli->prepare("SELECT * FROM users WHERE username=? LIMIT 1");
         $statement->bind_param('s',$_SESSION['username']);

@@ -1,5 +1,5 @@
 <?php
-//index for admin part
+//authority check run
 session_start();
 require_once "../functions.php";
 
@@ -16,8 +16,18 @@ require "admin-navigation.php";
 <div class="container-fluid">
   <div class="row">
     <div class="col-xs-12">
-      <a class="btn btn-lg btn-default" href="account">Account</a>
-      <a class="btn btn-lg btn-default" href="add">Add records</a>
+    <?php
+$execString = getcwd()."/runAuthorityCheck.sh";
+
+print $execString; 
+
+//die();
+shell_exec($execString);
+
+$output1 = file_get_contents("output.txt");
+$output2 = file_get_contents("output2.txt");
+print '<pre>'.$output1."\n".$output2.'</pre>';
+    ?>
     </div>
   </div>
 </div> <!-- container-fluid -->

@@ -5,7 +5,7 @@
       <div class="container">
         <div id="navbar" class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
-            <li><a href="<?php print $ROOTURL;?>admin/index">Start</a></li>
+            <li><a href="<?php print $ROOTURL;?>admin/add">Add records</a></li>
             <li><a href="<?php print $ROOTURL;?>admin/account">Account (<?php print $_SESSION['username'];?>)</a></li>
             <li><a href="<?php print $ROOTURL;?>admin/all">View own submissions</a></li>
             <li><a href="<?php print $ROOTURL;?>admin/pending">Pending</a></li>
@@ -20,6 +20,7 @@
             <li><a href="<?php print $ROOTURL;?>admin/users">Users</a></li>
             <li><a href="<?php print $ROOTURL;?>admin/export">Export</a></li>
             <li><a href="<?php print $ROOTURL;?>admin/authorityCheck">Authority check report</a></li>
+            <li><a href="<?php print $ROOTURL;?>admin/authorityCheckRun">Run authority check</a></li>
           </ul>
         </div><!--/.nav-collapse -->
       </div>
