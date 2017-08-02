@@ -53,7 +53,7 @@ else if (isset($_POST['id']))://if is update
   $query = "UPDATE $headingTable SET $columnName=?,uri=?,local_note=? WHERE id=?";
   //print $query;
   $statement = $mysqli->prepare($query);
-  $statement->bind_param("ssi",$_POST['heading-value'],$_POST['uri'],$_POST['localNote'],$headingID);
+  $statement->bind_param("sssi",$_POST['heading-value'],$_POST['uri'],$_POST['localNote'],$headingID);
   $statement->execute();
   $statement->store_result();
 
