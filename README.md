@@ -22,4 +22,3 @@ The Sheet Music Catalog system is divided into three main sections or modules:
 - Web frontend: PHP based web interface that allows users to search for and retrieve records.
 - Search backend: Solr instance that is queried to allow for complex faceted searches.
 - Admin backend: allows for the creation and deletion of records as well as the administration of users and headings. Also includes functionality for export.
-
