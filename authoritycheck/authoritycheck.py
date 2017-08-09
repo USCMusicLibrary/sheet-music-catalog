@@ -1,6 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+"""
+    Sheet Music Catalog
+    Copyright (C) 2016-2017 - University of South Carolina
 
+    License: GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+"""
 """This module performs automated updates of authorized access points
 following vocabularies supported by services at id.loc.gov by checking
 heading recorded for a given id.loc.gov URI recorded in a local

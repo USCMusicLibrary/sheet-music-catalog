@@ -1,4 +1,12 @@
 <?php
+/* 
+    Sheet Music Catalog
+    Copyright (C) 2016-2017 - University of South Carolina
+
+    License: GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+*/
 /* search-results.php
  * this field performs a search based on parameters in the $_GET request in index.php
  * called by: index.php
