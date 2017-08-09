@@ -26,10 +26,10 @@ require "admin-navigation.php";
 
           foreach ($exportArray as $recordID):
           $doc = getDocFromDb($recordID);?>
-          <p><strong>Record id: <?php print $recordID;?></strong> - <em><?php print $doc['title'];?></em></p>
+          <p><a href="<?php print $ROOTURL."item?id=".$recordID;?>"><strong>Record id: <?php print $recordID;?></strong></a> - <em><?php print $doc['title'];?></em></p>
           <?php
           endforeach;
-        ?>
+        ?> 
 
         <form action="exportZip" method="GET">
         <label for="digital-collection">Digital collection: </label><input type="text" name="digital-collection"><br>

@@ -358,14 +358,15 @@ function insertIntoSubTable($table,$values,$recordID,$columnName){
 }
 
 function getNewCallNumber($collection){
-  $filename = "data/cat-".$collection.".json";
+  global $ROOTDIR;
+  $filename = $ROOTDIR."data/cat-".$collection.".json";
 
   $jsonCallNumbers = file_get_contents($filename);
   $callNumbers = json_decode($jsonCallNumbers,true);
   
   sort($callNumbers);
   $newNum = 0;
-  $i=1;
+  $i=1; 
 
   //this is very inefficient, but it gets the job done
   //TODO: revise algorithm to make it take O(n) time instead.
@@ -381,7 +382,8 @@ function getNewCallNumber($collection){
 }
 
 function freeCallNumber($collection,$call_number){
-  $filename = "data/cat-".$collection.".json";
+  global $ROOTDIR;
+  $filename = $ROOTDIR."data/cat-".$collection.".json";
 
   $jsonCallNumbers = file_get_contents($filename);
   $callNumbers = json_decode($jsonCallNumbers,true);
@@ -510,6 +512,32 @@ function addVocabularies($doc,$insertID){
 
 
 function deleteRecord($dbID){
+  //free call number
+  $doc = getDocFromDb($dbID);
+  $call_number = $doc['call_number'];
+  //print $call_number;
+  //return;
+
+  try{
+preg_match('/^[\D\s]+/',$call_number,$match);
+if (!isset($match[0])) throw new Exception("Notice: Undefined offset: 0 in collection");
+$call_number_coll = trim($match[0]);
+
+$call_number_num = 0;
+preg_match('/[\d]+$/',$call_number,$match);
+if (!isset($match[0])) throw new Exception("Notice: Undefined offset: 0 in number");
+$call_number_num = trim($match[0]);
+}
+catch (Exception $e) {
+      print 'Call number error: '.  $e->getMessage()."  On call number: ". $call_number.'<br>';
+      //die();
+    }
+
+    freeCallNumber($call_number_coll,$call_number_num);
+
+
+
+  //delete record from db
   deleteFromTable('records','id',$dbID);
   deleteFromTable('alternative_titles','record_id',$dbID);
   deleteFromTable('years','record_id',$dbID);
