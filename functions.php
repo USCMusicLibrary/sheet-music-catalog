@@ -358,14 +358,15 @@ function insertIntoSubTable($table,$values,$recordID,$columnName){
 }
 
 function getNewCallNumber($collection){
-  $filename = "data/cat-".$collection.".json";
+  global $ROOTDIR;
+  $filename = $ROOTDIR."data/cat-".$collection.".json";
 
   $jsonCallNumbers = file_get_contents($filename);
   $callNumbers = json_decode($jsonCallNumbers,true);
   
   sort($callNumbers);
   $newNum = 0;
-  $i=1;
+  $i=1; 
 
   //this is very inefficient, but it gets the job done
   //TODO: revise algorithm to make it take O(n) time instead.
@@ -381,7 +382,8 @@ function getNewCallNumber($collection){
 }
 
 function freeCallNumber($collection,$call_number){
-  $filename = "data/cat-".$collection.".json";
+  global $ROOTDIR;
+  $filename = $ROOTDIR."data/cat-".$collection.".json";
 
   $jsonCallNumbers = file_get_contents($filename);
   $callNumbers = json_decode($jsonCallNumbers,true);
