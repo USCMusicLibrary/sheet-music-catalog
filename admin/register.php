@@ -49,7 +49,8 @@ require "../header.php";
     <h2 class="text-danger">Debugging</h2>
     <ul>
     <?php 
-    foreach (scandir(getcwd()) as $page):?>
+    foreach (scandir(getcwd()) as $page):
+     continue;?>
       <li><a href="<?php print $page;?>"><?php print $page;?></a></li>
     <?php endforeach;
     ?>
@@ -58,7 +59,7 @@ require "../header.php";
 
   <div class="row">
     <div class="col-xs-6 center-block">
-      <form class="form-horizontal" action="<?php print htmlentities($_SERVER['PHP_SELF']); ?>" method="POST">
+      <form class="form-horizontal" action="register" method="POST">
         <fieldset>
           <section class="form-group">
             <label for="username" class="col-xs-4 control-label">Username</label>

@@ -555,6 +555,8 @@ catch (Exception $e) {
   deleteFromTable('texts','record_id',$dbID);
   deleteFromTable('languages','record_id',$dbID);
   deleteFromTable('has_subject','record_id',$dbID);
+
+  deleteRecordFromSolr($dbID);
   //deleteFromTable('hidden_subject_headings','record_id',$dbID);
 }
 
@@ -648,6 +650,22 @@ function delete_all(){
   print $data_string;
   return postJsonDataToSolr($data_string, 'update');
 }
+
+function deleteRecordFromSolr($id){
+  print 'delete_all();<br>';
+  $q = 'id:'.$id;
+  $data = array(
+      'delete' => array(
+            'query' => $q
+          ),
+      'commit' => new stdClass()
+  );
+  $data_string = json_encode($data);
+  print $data_string;
+  return postJsonDataToSolr($data_string, 'update');
+}
+
+
 /* function postJsonDataToSolr($data, $action)
  * posts a json-formatted string to solr
  *

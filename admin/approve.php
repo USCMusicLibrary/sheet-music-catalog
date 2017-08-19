@@ -53,6 +53,8 @@ $solrDoc = array();
 
 indexDocument($solrDoc);
 
+commitIndex();//commits changes in solr
+
 ?>
 <div class="container-fluid">
   <div class="row">
