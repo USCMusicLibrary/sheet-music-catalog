@@ -16,9 +16,16 @@ if (!$_SESSION['logged-in']){
 }
 
 require "../header.php";
+require "admin-navigation.php";
+
 
 
 require_once "../functions.php";
+
+if (!isLoggedIn() || !isSuper() ){
+  print "<h1 class=\"text-danger\">Unauthorized</h1>";
+  die();
+}
 
 require_once "../db-config.php";
 

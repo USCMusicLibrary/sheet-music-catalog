@@ -36,7 +36,7 @@ require_once "../functions.php";
             <label for="title" class="control-label">Title</label>
           </div>
           <div class="col-xs-10">
-            <input type="text" class="form-control" name="title" id="title" required="">
+            <input type="text" class="form-control" name="title" id="title" required="true">
           </div>
         </div>
 

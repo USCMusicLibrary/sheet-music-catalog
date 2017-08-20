@@ -17,8 +17,12 @@ if (!isLoggedIn()){
 }
 
 require "../header.php";
-
 require "admin-navigation.php";
+
+if (!isLoggedIn() || !isSuper() ){
+    print "<h1 class=\"text-danger\">Unauthorized</h1>";
+    die();
+  }
 
 ?>
 <div class="container-fluid">

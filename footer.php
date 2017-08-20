@@ -6,8 +6,19 @@
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
 */?>
-
-
+    <div class="row">
+    <?php 
+    //print $_SERVER['REQUEST_URI'];
+    if ($_SERVER['REQUEST_URI']!="/" && $_SERVER['REQUEST_URI']!="/index")
+        print '<hr>';
+        ?>
+      <div class="col-xs-4 col-xs-offset-4">
+        
+        <img class="img-responsive" src="<?php print $ROOTURL;?>img/usc_libraries_linear_sRGB_small.png">
+        
+      </div>
+      <div class="col-xs-12 text-center"><a target="_blank" href="http://library.sc.edu/music">Copyright &copy; 2016-2017 - University of South Carolina - Music Library</a></div>
+    </div>
   </div> <!-- /container-fluid -->
     <!-- Bootstrap core JavaScript
     ================================================== -->

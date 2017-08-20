@@ -7,7 +7,7 @@
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
 */
-//names list page
+//image upload
 
 session_start();
 if (!$_SESSION['logged-in']){

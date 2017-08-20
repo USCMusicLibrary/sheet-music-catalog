@@ -7,7 +7,7 @@
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
 */
-//add record page
+//reset page
 
 //session_start();
 if (!isset($_GET['id'])&& !isset($_POST['id'])){

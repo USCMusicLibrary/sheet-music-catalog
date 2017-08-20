@@ -20,6 +20,11 @@ require "../header.php";
 
 require_once "../functions.php";
 
+if (!isLoggedIn() || !isSuper() ){
+  print "<h1 class=\"text-danger\">Unauthorized</h1>";
+  die();
+}
+
 require "admin-navigation.php";
 
 ?>
