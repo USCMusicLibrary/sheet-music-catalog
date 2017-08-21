@@ -1,4 +1,5 @@
-<?php/* 
+<?php
+/* 
     Sheet Music Catalog
     Copyright (C) 2016-2017 - University of South Carolina
 
